@@ -15,18 +15,8 @@ exports.createSurvey = async (req, res, next) => {
     const pageDescription = page.description;
     let elements = page.elements;
 
-    elements = elements.map((question) => {
-      return new Question({
-        title: question.title,
-        description: question.description,
-        typeName: question.type,
-        isRequired: question.isRequired,
-        multipleSelectOption: question.multipleSelectOption,
-        elements: question.elements,
-        labels: question.labels,
-        minRateDescription: question.minRateDescription,
-        maxRateDescription: question.maxRateDescription,
-      });
+    elements = elements.map((element) => {
+      return new Question({ ...element });
     });
 
     const pageObjs = [];
@@ -39,13 +29,21 @@ exports.createSurvey = async (req, res, next) => {
           elements: result,
         });
         if (pagesIdx === pages.length - 1) {
+          if (closeAt) {
+            return Survey.create({
+              creatorKey: creatorKey,
+              hasExpiry: hasExpiry,
+              isPublic: isPublic,
+              closeAt: new Date(closeAt),
+              pages: pageObjs,
+            });
+          }
           return Survey.create({
             creatorKey: creatorKey,
             hasExpiry: hasExpiry,
             isPublic: isPublic,
-            closeAt: new Date(closeAt),
             pages: pageObjs,
-          });
+          });            
         }
       })
       .then((survey) => {
