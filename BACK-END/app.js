@@ -11,7 +11,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 
 const adminRouter = require("./routers/admin");
+const surveyRouter = require("./routers/survey");
 
 app.use("/admin", adminRouter);
+app.use("/survey", surveyRouter);
 
 module.exports.handler = serverless(app);
