@@ -1,0 +1,108 @@
+{
+	"survey": {
+		"isActive": true,
+		"createdAt": "2021-05-21T05:52:41.999Z",
+		"_id": "60a74ac0cf32641cb1b8e538",
+		"creatorKey": "AWERASDFASDF",
+		"hasExpiry": false,
+		"isPublic": true,
+		"responsesCount": 100,
+		"pages": [
+			{
+				"elements": [
+					{
+						"multipleSelectOption": {
+							"allowed": false
+						},
+						"_id": "60a74ac0cf32641cb1b8e52c",
+						"type": "checkbox",
+						"title": "나의 근무지 위치는?",
+						"isRequired": true,
+						"choices": [
+							{
+								"count": 20,
+								"_id": "60a74ac0cf32641cb1b8e52d",
+								"value": null,
+								"text": "서울시"
+							},
+							{
+								"count": 10,
+								"_id": "60a74ac0cf32641cb1b8e52e",
+								"value": null,
+								"text": "부산시"
+							},
+							{
+								"count": 30,
+								"_id": "60a74ac0cf32641cb1b8e52f",
+								"value": null,
+								"text": "울산시"
+							},
+							{
+								"count": 40,
+								"_id": "60a74ac0cf32641cb1b8e530",
+								"value": null,
+								"text": "광주시"
+							},
+							{
+								"count": 0,
+								"_id": "60a74ac0cf32641cb1b8e531",
+								"value": null,
+								"text": "인천시"
+							}
+						],
+						"__v": 0
+					},
+					{
+						"multipleSelectOption": {
+							"allowed": false
+						},
+						"_id": "60a74ac0cf32641cb1b8e532",
+						"type": "rating",
+						"title": "나의 업무 만족도는?",
+						"description": "업무 만족도를 평가해주세요.",
+						"isRequired": true,
+						"choices": [
+							{
+								"count": 10,
+								"_id": "60a74ac0cf32641cb1b8e533",
+								"value": 1,
+								"text": ""
+							},
+							{
+								"count": 20,
+								"_id": "60a74ac0cf32641cb1b8e534",
+								"value": 2,
+								"text": ""
+							},
+							{
+								"count": 30,
+								"_id": "60a74ac0cf32641cb1b8e535",
+								"value": 3,
+								"text": ""
+							},
+							{
+								"count": 20,
+								"_id": "60a74ac0cf32641cb1b8e536",
+								"value": 4,
+								"text": ""
+							},
+							{
+								"count": 10,
+								"_id": "60a74ac0cf32641cb1b8e537",
+								"value": 5,
+								"text": ""
+							}
+						],
+						"__v": 0,
+						"minRateDescription": "매우 불만족",
+						"maxRateDescription": "매우 만족"
+					}
+				],
+				"_id": "60a74ac0cf32641cb1b8e539",
+				"title": "직업에 대한 설문",
+				"description": "직업에 대한 설문입니다. 두 개의 질문이 준비되어 있습니다."
+			}
+		],
+		"__v": 0
+	}
+}
