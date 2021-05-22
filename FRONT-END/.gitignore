@@ -1,1 +1,32 @@
-node_modules
+
+# Created by https://www.toptal.com/developers/gitignore/api/vuejs,visualstudiocode,sass
+# Edit at https://www.toptal.com/developers/gitignore?templates=vuejs,visualstudiocode,sass
+
+### Sass ###
+.sass-cache/
+*.css.map
+*.sass.map
+*.scss.map
+
+### VisualStudioCode ###
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+### VisualStudioCode Patch ###
+# Ignore all local history of files
+.history
+.ionide
+
+### Vuejs ###
+# Recommended template: Node.gitignore
+
+node_modules/
+dist/
+npm-debug.log
+yarn-error.log
+
+# End of https://www.toptal.com/developers/gitignore/api/vuejs,visualstudiocode,sass
