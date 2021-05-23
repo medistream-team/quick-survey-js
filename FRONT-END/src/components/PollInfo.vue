@@ -2,8 +2,8 @@
   <div class="pollInfo" id="{{pollId}}">
     <span class="totalAnswered">총 응답 수: {{ totalCount }}</span>
     <span v-if="hasExpiry" class="closingDate"
-      >설문 기한: {{ date[0] }}년 {{ date[1] }}월 {{ date[2] }}일
-      {{ time[0] }}시 {{ time[1] }}분 까지
+      >설문 기한: {{ getDate[0] }}년 {{ getDate[1] }}월 {{ getDate[2] }}일
+      {{ getTime[0] }}시 {{ getTime[1] }}분 까지
     </span>
   </div>
 </template>
@@ -34,18 +34,13 @@ export default {
       time: null,
     };
   },
-
-  methods: {
+  computed: {
     getDate() {
-      const splittedDate = this.expiryDate.split("T");
-      this.date = splittedDate[0].split("-");
-      this.time = splittedDate[1].split(":").slice(0, 2);
+      return this.expiryDate.split("T")[0].split("-");
     },
-  },
-  created() {
-    if (this.expiryDate) {
-      this.getDate();
-    }
+    getTime() {
+      return this.expiryDate.split("T")[1].split(":").slice(0, 2);
+    },
   },
 };
 </script>

@@ -8,7 +8,7 @@
       :choiceCount="choice.count"
       :totalCount="totalCount"
       :showResult="showResult"
-      :handleChoicesCheck="handleChoicesCheck"
+      :handleChoicesStatus="handleChoicesStatus"
       :choiceStatus="choicesStatus[index]"
       :choiceIndex="index"
     />
@@ -33,24 +33,24 @@ export default {
       type: Boolean,
       required: true,
     },
-    selectMultipe: {
+    selectMultiple: {
       type: Boolean,
       required: true,
     },
   },
   data() {
     return {
-      choicesStatus: this.choices.map((choice) => {
+      choicesStatus: this.choices.map(() => {
         return false;
       }),
     };
   },
 
   methods: {
-    handleChoicesCheck(index) {
+    handleChoicesStatus(index) {
       if (!this.selectMultiple) {
         if (this.choicesStatus[index] === false) {
-          const newArr = this.choices.map((choice) => {
+          const newArr = this.choices.map(() => {
             return false;
           });
           newArr[index] = !newArr[index];

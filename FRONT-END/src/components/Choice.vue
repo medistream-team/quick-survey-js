@@ -3,15 +3,18 @@
     @click="handleChoiceBoxClick"
     :choiceStatus="choiceStatus"
     class="choiceContainer"
-    :class="{ blueBorder: !showResult && isClicked }"
+    :class="{ blueBorder: !showResult && choiceStatus }"
   >
-    <div :class="{ withResult: showResult }" :style="fillResult">
+    <div
+      :class="{ withResult: showResult }"
+      :style="showResult ? fillResult : null"
+    >
       <li class="choiceBox">
         <input
           :id="choiceId"
           type="checkbox"
           :disabled="showResult ? true : false"
-          :checked="isClicked ? true : null"
+          :checked="choiceStatus ? true : null"
         />{{ choiceText }}<span v-if="showResult">({{ getResult }})</span>
       </li>
     </div>
@@ -46,7 +49,7 @@ export default {
       type: Boolean,
       required: true,
     },
-    handleChoicesCheck: {
+    handleChoicesStatus: {
       type: Function,
       required: true,
     },
@@ -62,21 +65,18 @@ export default {
   methods: {
     handleChoiceBoxClick() {
       this.isClicked = !this.isClicked;
-      this.handleChoicesCheck(this.choiceIndex);
+      this.handleChoicesStatus(this.choiceIndex);
+      console.log(this.choiceStatus);
     },
   },
   computed: {
     fillResult() {
-      if (this.showResult) {
-        return {
-          width: `${(this.choiceCount / this.totalCount) * 100}%`,
-        };
-      }
+      return {
+        width: `${(this.choiceCount / this.totalCount) * 100}%`,
+      };
     },
     getResult() {
-      if (this.showResult) {
-        return `${(this.choiceCount / this.totalCount) * 100}%`;
-      }
+      return `${(this.choiceCount / this.totalCount) * 100}%`;
     },
     // blueBorder() {
     //   if (!this.showResult && this.isClicked) {
