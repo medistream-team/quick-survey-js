@@ -4,7 +4,8 @@
   "description": "backend api with serverless framework and mongodb",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "./node_modules/serverless/bin/serverless.js offline"
   },
   "author": "moonimooni",
   "license": "MIT",
@@ -17,6 +18,7 @@
     "serverless-http": "^2.7.0"
   },
   "devDependencies": {
+    "serverless": "^2.43.0",
     "serverless-offline": "^7.0.0"
   }
 }
