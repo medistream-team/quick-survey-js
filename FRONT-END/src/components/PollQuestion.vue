@@ -13,7 +13,7 @@
         :showResult="showResult"
         :selectMultiple="question.multipleSelectOption.allowed"
         :questionId="question._id"
-        :checkQuestionsStatus="checkQuestionsStatus"
+        :handleAnswersInfo="handleAnswersInfo"
       />
       <PollScales
         v-if="question.type === 'rating'"
@@ -23,7 +23,7 @@
         :maxDescription="question.maxRateDescription"
         :totalCount="totalCount"
         :questionId="question._id"
-        :checkQuestionsStatus="checkQuestionsStatus"
+        :handleAnswersInfo="handleAnswersInfo"
       />
     </div>
   </div>
@@ -38,10 +38,11 @@ export default {
   components: { PollTitles, PollChoices, PollScales },
   data() {
     return {
-      questionsStatus: this.page.elements.map((q) => {
+      answersStatus: this.page.elements.map((q) => {
         return {
           id: q._id,
           status: false,
+          choiceIds: [],
         };
       }),
     };
@@ -59,21 +60,57 @@ export default {
       type: Boolean,
       required: true,
     },
+    getResponsesData: {
+      type: Function,
+      required: true,
+    },
   },
   computed: {
-    readyToSubmit() {
-      return this.questionsStatus.every((question) => question.status === true);
+    allAnswered() {
+      return this.answersStatus.every((question) => question.status === true); //enable submit button condition
     },
   },
   methods: {
-    checkQuestionsStatus(questionId) {
-      for (let i = 0; i < this.questionsStatus.length; i++) {
-        if (this.questionsStatus[i].id === questionId) {
-          this.questionsStatus[i].status = true;
+    handleAnswersInfo(selectMultiple, questionId, optionIds, optionsStatus) {
+      const { getResponsesData, answersStatus } = this;
+
+      for (let i = 0; i < answersStatus.length; i++) {
+        const AS = answersStatus[i];
+
+        if (AS.id === questionId) {
+          if (optionsStatus.every((status) => status === false)) {
+            AS.status = false;
+            AS.choiceIds = [];
+          } else {
+            AS.status = true;
+
+            if (selectMultiple) {
+              if (AS.choiceIds.includes(optionIds)) {
+                const dup = AS.choiceIds.indexOf(optionIds);
+                AS.choiceIds.splice(dup, 1);
+              } else {
+                AS.choiceIds.push(optionIds);
+              }
+            } else {
+              AS.choiceIds = [optionIds];
+            }
+          }
         }
       }
-      console.log(this.questionsStatus);
-      console.log(this.readyToSubmit);
+
+      if (this.allAnswered) {
+        getResponsesData(
+          this.allAnswered,
+          answersStatus.map((status) => {
+            return {
+              questionId: status.id,
+              choiceIds: status.choiceIds,
+            };
+          })
+        );
+      } else {
+        return;
+      }
     },
   },
 };

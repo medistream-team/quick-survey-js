@@ -1,7 +1,7 @@
 <template>
   <div
     id="choiceId"
-    @click="handleChoicesStatus(choiceIndex)"
+    @click="handleChoicesStatus(choiceIndex, choiceId)"
     class="choiceContainer"
     :class="{ blueBorder: !showResult && choiceStatus }"
   >

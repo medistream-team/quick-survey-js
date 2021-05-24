@@ -1,7 +1,7 @@
 <template>
   <div
     id="scaleId"
-    @click="handleScalesStatus(scaleIndex)"
+    @click="handleScalesStatus(scaleIndex, scaleId)"
     class="scaleContainer"
     :style="fillResult(scaleSize)"
     :class="{ blueBorder: !showResult && scaleStatus }"

@@ -13,7 +13,7 @@
 				"elements": [
 					{
 						"multipleSelectOption": {
-							"allowed": false
+							"allowed": true
 						},
 						"_id": "60a74ac0cf32641cb1b8e52c",
 						"type": "checkbox",

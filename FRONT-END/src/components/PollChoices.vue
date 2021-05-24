@@ -41,7 +41,7 @@ export default {
       type: Boolean,
       required: true,
     },
-    checkQuestionsStatus: {
+    handleAnswersInfo: {
       type: Function,
       required: true,
     },
@@ -54,13 +54,8 @@ export default {
     };
   },
   methods: {
-    handleChoicesStatus(index) {
-      const {
-        selectMultiple,
-        choices,
-        checkQuestionsStatus,
-        questionId,
-      } = this;
+    handleChoicesStatus(index, choiceIds) {
+      const { selectMultiple, choices, handleAnswersInfo, questionId } = this;
       if (selectMultiple === false) {
         if (this.choicesStatus[index] === false) {
           const newArr = choices.map(() => {
@@ -71,10 +66,20 @@ export default {
         } else {
           this.choicesStatus[index] = !this.choicesStatus[index];
         }
-        checkQuestionsStatus(questionId);
+        handleAnswersInfo(
+          selectMultiple,
+          questionId,
+          choiceIds,
+          this.choicesStatus
+        );
       } else {
         this.choicesStatus[index] = !this.choicesStatus[index];
-        checkQuestionsStatus(questionId);
+        handleAnswersInfo(
+          selectMultiple,
+          questionId,
+          choiceIds,
+          this.choicesStatus
+        );
       }
     },
   },
