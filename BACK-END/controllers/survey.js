@@ -49,20 +49,19 @@ exports.postSurvey = async (req, res, next) => {
         const choiceId = String(choice._id);
         if (response.choiceIds.includes(choiceId)) {
           choice.count++;
-          question.count ++;
+          question.count++;
         }
         return choice;
       });
       await question.save();
     }
-    survey.count ++;
+    survey.count++;
     await survey.save();
 
     await session.commitTransaction();
     session.endSession();
 
     return res.status(201).json({ message: "success" });
-    
   } catch (error) {
     await session.abortTransaction();
     return res
@@ -74,13 +73,23 @@ exports.postSurvey = async (req, res, next) => {
 exports.getSurvey = async (req, res, next) => {
   await connectToDatabase();
   const surveyId = req.params.surveyId;
-  const userKey = "FPFPFPFPFPFP"; // const userKey = req.user;
+  const userKey = req.header("authorization");
 
   if (!(await Survey.exists({ _id: surveyId }))) {
-    return res.status(404).json({ MESSAGE: "SURVEY NOT FOUND" });
+    return res.status(404).json({ message: "survey not found" });
   }
 
   const survey = await Survey.findById(surveyId).populate("pages.elements");
+
+  if (new Date() >= new Date(survey.closeAt)) {
+    survey.isActive = false;
+    survey.save();
+  }
+
+  if (!survey.isPublic && !survey.isActive && survey.creatorKey !== userKey) {
+    return res.status(200).json({ message: "closed survey" });
+  }
+
   const user = await User.findOne({ userKey: userKey }).exec();
 
   if (user) {
@@ -88,7 +97,7 @@ exports.getSurvey = async (req, res, next) => {
       return history.surveyId === surveyId;
     });
     if (votedSurvey) {
-      return res.status(200).json({ survey: survey, MESSAGE: "ALREADY VOTED" });
+      return res.status(200).json({ survey: survey, message: "already voted" });
     }
   }
   return res.status(200).json({ survey: survey });
