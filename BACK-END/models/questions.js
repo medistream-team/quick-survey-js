@@ -24,6 +24,11 @@ const Question = new Schema({
     requiredMin: Number,
     requiredMax: Number,
   },
+  count: {
+    type: Number,
+    required: true,
+    default: 0,
+  },
   choices: [
     {
       _id: {
