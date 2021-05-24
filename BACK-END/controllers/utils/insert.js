@@ -27,9 +27,9 @@ exports.insertCreatorInfo = (resolveValue, creatorKey) => {
     });
 };
 
-exports.insertVoterInfo = async (voterKey, surveyId, responseObjs) => {
+exports.insertVoterInfo = async (voterKey, surveyId, responseObjs, session) => {
   if (await User.exists({ userKey: voterKey })) {
-    const user = await User.findOne({ userKey: voterKey }).exec();
+    const user = await User.findOne({ userKey: voterKey }).session(session);
     const voted = user.votedSurvey.filter((history) => {
       return String(history.surveyId) === surveyId;
     });
@@ -40,17 +40,19 @@ exports.insertVoterInfo = async (voterKey, surveyId, responseObjs) => {
       surveyId: surveyId,
       responses: responseObjs,
     });
-    user.save();
-    
+    await user.save();
   } else {
-    return await User.create({
-      userKey: voterKey,
-      votedSurvey: [
-        {
-          surveyId: surveyId,
-          responses: responseObjs,
-        },
-      ],
-    });
+    return await User.create(
+      [{
+        userKey: voterKey,
+        votedSurvey: [
+          {
+            surveyId: surveyId,
+            responses: responseObjs,
+          },
+        ],
+      }],
+      { session: session }
+    );
   }
 };
