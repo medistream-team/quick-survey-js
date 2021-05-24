@@ -42,6 +42,9 @@ exports.postSurvey = async (req, res, next) => {
       }
       return choice;
     });
+    
+    if (!question.count) question.count = 1;
+    else question.count++;
     question.save();
   }
   return res.status(201).json({ MESSAGE: "SUCCESS" });
