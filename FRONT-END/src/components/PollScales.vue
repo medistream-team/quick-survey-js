@@ -2,13 +2,16 @@
   <ul class="pollScales">
     <span class="min">{{ minDescription }}</span>
     <Scale
-      v-for="scale in scales"
+      v-for="(scale, index) in scales"
       :scaleText="scale.value"
       :scaleId="scale._id"
       :scaleCount="scale.count"
       :key="scale._id"
       :showResult="showResult"
       :totalCount="totalCount"
+      :scaleStatus="scalesStatus[index]"
+      :scaleIndex="index"
+      :handleScalesStatus="handleScalesStatus"
     />
     <span class="max">{{ maxDescription }}</span>
   </ul>
@@ -22,6 +25,10 @@ export default {
   props: {
     totalCount: {
       type: Number,
+      required: true,
+    },
+    questionId: {
+      type: String,
       required: true,
     },
     scales: {
@@ -39,6 +46,32 @@ export default {
     showResult: {
       type: Boolean,
       required: true,
+    },
+    checkQuestionsStatus: {
+      type: Function,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      scalesStatus: this.scales.map(() => {
+        return false;
+      }),
+    };
+  },
+  methods: {
+    handleScalesStatus(index) {
+      const { checkQuestionsStatus, questionId } = this;
+      if (this.scalesStatus[index] === false) {
+        const newArr = this.scales.map(() => {
+          return false;
+        });
+        newArr[index] = !newArr[index];
+        this.scalesStatus = newArr;
+      } else {
+        this.scalesStatus[index] = !this.scalesStatus[index];
+      }
+      checkQuestionsStatus(questionId);
     },
   },
 };

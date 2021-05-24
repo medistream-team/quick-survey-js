@@ -1,9 +1,10 @@
 <template>
   <div
-    @click="handleScaleClick"
+    id="scaleId"
+    @click="handleScalesStatus(scaleIndex)"
     class="scaleContainer"
     :style="fillResult(scaleSize)"
-    :class="{ clicked: isClicked }"
+    :class="{ blueBorder: !showResult && scaleStatus }"
   >
     <div class="scaleResult">
       <li class="eachScale">
@@ -37,23 +38,26 @@ export default {
       type: Boolean,
       required: true,
     },
+    scaleStatus: {
+      type: Boolean,
+      required: true,
+    },
+    scaleIndex: {
+      type: Number,
+      required: true,
+    },
+    handleScalesStatus: {
+      type: Function,
+      required: true,
+    },
   },
-  data() {
-    return {
-      isClicked: false,
-    };
-  },
+
   computed: {
     scaleSize() {
       return (this.scaleCount / this.totalCount) * 100;
     },
   },
   methods: {
-    handleScaleClick() {
-      if (!this.showResult) {
-        this.isClicked = !this.isClicked;
-      }
-    },
     fillResult(num) {
       if (this.showResult) {
         return {
@@ -81,6 +85,7 @@ export default {
   border: 1px solid #d8d8d8;
   border-radius: 50%;
   list-style-type: none;
+  font-weight: 500;
   cursor: pointer;
   .eachScale {
     display: flex;
@@ -91,8 +96,11 @@ export default {
       font-size: 12px;
     }
   }
-  &.clicked {
+  &.blueBorder {
     border: 1px solid #2275ff;
+    background-color: #2275ff;
+    color: white;
+    font-weight: 500;
   }
 }
 </style>
