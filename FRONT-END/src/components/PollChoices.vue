@@ -25,6 +25,10 @@ export default {
       type: Object,
       required: true,
     },
+    questionId: {
+      type: String,
+      required: true,
+    },
     totalCount: {
       type: Number,
       required: true,
@@ -37,6 +41,10 @@ export default {
       type: Boolean,
       required: true,
     },
+    checkQuestionsStatus: {
+      type: Function,
+      required: true,
+    },
   },
   data() {
     return {
@@ -45,12 +53,17 @@ export default {
       }),
     };
   },
-
   methods: {
     handleChoicesStatus(index) {
-      if (!this.selectMultiple) {
+      const {
+        selectMultiple,
+        choices,
+        checkQuestionsStatus,
+        questionId,
+      } = this;
+      if (selectMultiple === false) {
         if (this.choicesStatus[index] === false) {
-          const newArr = this.choices.map(() => {
+          const newArr = choices.map(() => {
             return false;
           });
           newArr[index] = !newArr[index];
@@ -58,6 +71,10 @@ export default {
         } else {
           this.choicesStatus[index] = !this.choicesStatus[index];
         }
+        checkQuestionsStatus(questionId);
+      } else {
+        this.choicesStatus[index] = !this.choicesStatus[index];
+        checkQuestionsStatus(questionId);
       }
     },
   },

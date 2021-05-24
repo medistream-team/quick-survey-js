@@ -1,7 +1,7 @@
 <template>
   <div
-    @click="handleChoiceBoxClick"
-    :choiceStatus="choiceStatus"
+    id="choiceId"
+    @click="handleChoicesStatus(choiceIndex)"
     class="choiceContainer"
     :class="{ blueBorder: !showResult && choiceStatus }"
   >
@@ -23,11 +23,6 @@
 <script>
 export default {
   name: "Choice",
-  data() {
-    return {
-      isClicked: false,
-    };
-  },
   props: {
     choiceId: {
       type: String,
@@ -62,13 +57,6 @@ export default {
       required: true,
     },
   },
-  methods: {
-    handleChoiceBoxClick() {
-      this.isClicked = !this.isClicked;
-      this.handleChoicesStatus(this.choiceIndex);
-      console.log(this.choiceStatus);
-    },
-  },
   computed: {
     fillResult() {
       return {
@@ -78,13 +66,6 @@ export default {
     getResult() {
       return `${(this.choiceCount / this.totalCount) * 100}%`;
     },
-    // blueBorder() {
-    //   if (!this.showResult && this.isClicked) {
-    //     return {
-    //       border: "1px solid rgb(205, 205, 205)",
-    //     };
-    //   }
-    // },
   },
 };
 </script>

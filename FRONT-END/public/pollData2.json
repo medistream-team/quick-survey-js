@@ -7,7 +7,7 @@
 		"creatorKey": "AWERASDFASDF",
 		"hasExpiry": true,
 		"isPublic": true,
-		"responsesCount": 100,
+		"count": 100,
 		"pages": [
 			{
 				"elements": [
@@ -55,7 +55,7 @@
 					},
 					{
 						"multipleSelectOption": {
-							"allowed": false
+							"allowed": true
 						},
 						"_id": "60a74ac0cf32641cb1b8e532",
 						"type": "rating",
