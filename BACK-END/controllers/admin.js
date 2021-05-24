@@ -6,55 +6,67 @@ const { insertCreatorInfo } = require("./utils/insert");
 
 exports.createSurvey = async (req, res, next) => {
   await connectToDatabase();
-  const creatorKey = "AWERASDFASDF";
-  const { hasExpiry, closeAt, isPublic } = req.body;
-  const pages = req.body.pages;
+  const creatorKey = "AWERASDFASDF"; //req.user;
+  const { pages, hasExpiry, closeAt, isPublic } = req.body;
 
-  pages.forEach((page, pagesIdx) => {
-    const pageTitle = page.title;
-    const pageDescription = page.description;
-    let elements = page.elements;
+  try {
+    if (
+      !("pages" in req.body) ||
+      !("hasExpiry" in req.body) ||
+      !("closeAt" in req.body) ||
+      !("isPublic" in req.body)
+    ) {
+      const keyError = new Error("key error");
+      keyError.code = 400;
+      throw keyError;
+    }
 
-    elements = elements.map((element) => {
-      return new Question({ ...element });
-    });
+    let pageObjs = [];
 
-    const pageObjs = [];
-
-    Question.insertMany(elements)
-      .then((result) => {
-        pageObjs.push({
-          title: pageTitle,
-          description: pageDescription,
-          elements: result,
-        });
-        if (pagesIdx === pages.length - 1) {
-          if (closeAt) {
-            return Survey.create({
-              creatorKey: creatorKey,
-              hasExpiry: hasExpiry,
-              isPublic: isPublic,
-              closeAt: new Date(closeAt),
-              pages: pageObjs,
-            });
-          }
-          return Survey.create({
-            creatorKey: creatorKey,
-            hasExpiry: hasExpiry,
-            isPublic: isPublic,
-            pages: pageObjs,
-          });            
+    for (const page of pages) {
+      const elements = page.elements.map((element) => {
+        if (
+          !("type" in element) ||
+          !("title" in element) ||
+          !("isRequired" in element) ||
+          !("multipleSelectOption" in element) ||
+          !("choices" in element)
+        ) {
+          const keyError = new Error("key error");
+          keyError.code = 400;
+          throw keyError;
         }
-      })
-      .then((survey) => {
-        return insertCreatorInfo(survey, creatorKey);
-      })
-      .then(() => {
-        return res.status(201).json({ MESSAGE: "SUCCESS" });
-      })
-      .catch((error) => {
-        console.log(error);
-        return res.status(400).json({ ERROR: error });
+        if (!element.description) {
+          return new Question({ ...element, description: null });
+        }
+        return new Question({ ...element });
       });
-  });
+      const insertedQuestions = await Question.insertMany(elements);
+      pageObjs.push({ ...page, elements: insertedQuestions });
+    }
+
+    let survey = {
+      creatorKey: creatorKey,
+      hasExpiry: hasExpiry,
+      isPublic: isPublic,
+      pages: pageObjs,
+    };
+
+    if (closeAt) {
+      survey = await Survey.create({
+        ...survey,
+        closeAt: new Date(closeAt),
+      });
+    } else {
+      survey = await Survey.create({
+        ...survey,
+        closeAt: null,
+      });
+    }
+
+    await insertCreatorInfo(survey, creatorKey);
+    return res.status(201).json({ message: "success" });
+  } catch (error) {
+    return res.status(error.code).json({ message: error.message });
+  }
 };
