@@ -1,3 +1,5 @@
+const mongoose = require("mongoose");
+
 const Survey = require("../models/surveys");
 const Question = require("../models/questions");
 const User = require("../models/users");
@@ -9,14 +11,16 @@ const { newError } = require("./utils/error");
 
 exports.postSurvey = async (req, res, next) => {
   await connectToDatabase();
+
   const surveyId = req.params.surveyId;
   const { responses } = req.body;
-  const voterKey = "XLXLXLXLXLXL"; // const voterKey = req.user;
+  const voterKey = "G1jPHapA/H/uE4Gh1"; // const voterKey = req.user;
+
+  const session = await mongoose.startSession();
 
   try {
-    const survey = await Survey.findById(surveyId)
-      .populate("pages.elements")
-      .exec();
+    session.startTransaction();
+    const survey = await Survey.findById(surveyId).populate("pages.elements");
 
     if (!survey) throw newError("survey not found", 404);
     if (!responses) throw newError("key error", 400);
@@ -28,33 +32,38 @@ exports.postSurvey = async (req, res, next) => {
     const insertVoterResult = await insertVoterInfo(
       voterKey,
       surveyId,
-      responses
+      responses,
+      session
     );
 
     if (!insertVoterResult) throw newError("already voted", 400);
 
     for (const response of responses) {
       const question = await Question.findById(response.questionId)
-        .select("choices")
-        .exec();
+        .select("choices count")
+        .session(session);
 
       if (!question) continue;
 
       question.choices.map((choice) => {
         const choiceId = String(choice._id);
-        if (response.choiceIds.includes(choiceId)) {
-          choice.count++;
-        }
+        if (response.choiceIds.includes(choiceId)) choice.count++;
         return choice;
       });
-
-      if (!question.count) question.count = 1;
-      else question.count++;
-      question.save();
+      question.count++;
+      await question.save();
     }
-    return res.status(201).json({ message: success });
+
+    await session.commitTransaction();
+    session.endSession();
+
+    return res.status(201).json({ message: "success" });
+    
   } catch (error) {
-    return res.status(error.code).json({ message: error.message });
+    await session.abortTransaction();
+    return res
+      .status(error.code ? error.code : 400)
+      .json({ message: error.message });
   }
 };
 
