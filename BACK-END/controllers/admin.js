@@ -3,6 +3,7 @@ const Question = require("../models/questions");
 
 const { connectToDatabase } = require("../models/utils/connectDB");
 const { insertCreatorInfo } = require("./utils/insert");
+const { newError } = require("./utils/error");
 
 exports.createSurvey = async (req, res, next) => {
   await connectToDatabase();
@@ -16,9 +17,7 @@ exports.createSurvey = async (req, res, next) => {
       !("closeAt" in req.body) ||
       !("isPublic" in req.body)
     ) {
-      const keyError = new Error("key error");
-      keyError.code = 400;
-      throw keyError;
+      throw newError("key error", 400);
     }
 
     let pageObjs = [];
@@ -32,9 +31,7 @@ exports.createSurvey = async (req, res, next) => {
           !("multipleSelectOption" in element) ||
           !("choices" in element)
         ) {
-          const keyError = new Error("key error");
-          keyError.code = 400;
-          throw keyError;
+          throw newError("key error", 400);
         }
         if (!element.description) {
           return new Question({ ...element, description: null });

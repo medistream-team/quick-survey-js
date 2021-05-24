@@ -5,49 +5,57 @@ const User = require("../models/users");
 const { connectToDatabase } = require("../models/utils/connectDB");
 const { insertVoterInfo } = require("./utils/insert");
 const { missingElements } = require("./utils/filter");
+const { newError } = require("./utils/error");
 
 exports.postSurvey = async (req, res, next) => {
   await connectToDatabase();
   const surveyId = req.params.surveyId;
   const { responses } = req.body;
   const voterKey = "XLXLXLXLXLXL"; // const voterKey = req.user;
-  const survey = await Survey.findById(surveyId)
-    .populate("pages.elements")
-    .exec();
 
-  if (missingElements(survey, responses)) {
-    return res
-      .status(400)
-      .json({ MESSAGE: "some neccessary questions missing." });
-  }
-
-  const insertVoterResult = await insertVoterInfo(
-    voterKey,
-    surveyId,
-    responses
-  );
-
-  if (!insertVoterResult)
-    return res.status(400).json({ MESSAGE: "ALREADY VOTED" });
-
-  for await (let response of responses) {
-    const question = await Question.findById(response.questionId)
-      .select("choices")
+  try {
+    const survey = await Survey.findById(surveyId)
+      .populate("pages.elements")
       .exec();
 
-    question.choices.map((choice) => {
-      const choiceId = String(choice._id);
-      if (response.choiceIds.includes(choiceId)) {
-        choice.count++;
-      }
-      return choice;
-    });
-    
-    if (!question.count) question.count = 1;
-    else question.count++;
-    question.save();
+    if (!survey) throw newError("survey not found", 404);
+    if (!responses) throw newError("key error", 400);
+
+    if (missingElements(survey, responses)) {
+      throw newError("some necessary questions not responded", 400);
+    }
+
+    const insertVoterResult = await insertVoterInfo(
+      voterKey,
+      surveyId,
+      responses
+    );
+
+    if (!insertVoterResult) throw newError("already voted", 400);
+
+    for (const response of responses) {
+      const question = await Question.findById(response.questionId)
+        .select("choices")
+        .exec();
+
+      if (!question) continue;
+
+      question.choices.map((choice) => {
+        const choiceId = String(choice._id);
+        if (response.choiceIds.includes(choiceId)) {
+          choice.count++;
+        }
+        return choice;
+      });
+
+      if (!question.count) question.count = 1;
+      else question.count++;
+      question.save();
+    }
+    return res.status(201).json({ message: success });
+  } catch (error) {
+    return res.status(error.code).json({ message: error.message });
   }
-  return res.status(201).json({ MESSAGE: "SUCCESS" });
 };
 
 exports.getSurvey = async (req, res, next) => {
