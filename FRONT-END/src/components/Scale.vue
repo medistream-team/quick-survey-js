@@ -1,11 +1,12 @@
 <template>
-  <div class="scaleContainer" :style="fillResult(scaleSize)">
+  <div
+    @click="handleScaleClick"
+    class="scaleContainer"
+    :style="fillResult(scaleSize)"
+    :class="{ clicked: isClicked }"
+  >
     <div class="scaleResult">
-      <li
-        @click="handleScaleClick"
-        class="eachScale"
-        :class="{ clicked: isClicked }"
-      >
+      <li class="eachScale">
         {{ scaleText }}
         <span v-if="showResult">{{ getResult(scaleSize) }}</span>
       </li>
@@ -49,7 +50,7 @@ export default {
   },
   methods: {
     handleScaleClick() {
-      if (this.showResult) {
+      if (!this.showResult) {
         this.isClicked = !this.isClicked;
       }
     },
@@ -80,15 +81,17 @@ export default {
   border: 1px solid #d8d8d8;
   border-radius: 50%;
   list-style-type: none;
+  cursor: pointer;
   .eachScale {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
     span {
       font-size: 12px;
     }
   }
-  .clicked {
+  &.clicked {
     border: 1px solid #2275ff;
   }
 }
