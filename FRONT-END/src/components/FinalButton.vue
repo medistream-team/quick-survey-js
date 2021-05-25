@@ -2,11 +2,11 @@
   <div class="buttonContainer">
     <router-link to="/results"
       ><button
-        @click="submitPoll"
+        @click="readyToSubmit ? submitPoll : null"
         class="finalButton"
         :disabled="!readyToSubmit"
       >
-        투표하기
+        {{ finalButtonText }}
       </button></router-link
     >
   </div>
@@ -17,6 +17,10 @@ export default {
   props: {
     readyToSubmit: {
       type: Boolean,
+      required: true,
+    },
+    finalButtonText: {
+      type: String,
       required: true,
     },
   },

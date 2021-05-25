@@ -1,9 +1,8 @@
 <template>
   <div>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link> |
+    <router-link to="/poll/admin">Create Poll</router-link> |
     <router-link to="/poll">Poll</router-link> |
-    <router-link to="/results">Poll Results</router-link>
+    <router-link to="/poll/results">Poll Results</router-link>
   </div>
   <router-view />
 </template>
@@ -16,6 +15,10 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  h2,
+  h3 {
+    font-weight: normal;
+  }
   button,
   a,
   li,

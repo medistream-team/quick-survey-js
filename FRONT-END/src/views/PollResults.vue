@@ -17,8 +17,9 @@
 </template>
 
 <script>
-import PollInfo from "../components/PollInfo";
-import PollQuestion from "../components/PollQuestion";
+import { USER_POLL_API } from "../config";
+import PollInfo from "../components/UserView/PollInfo";
+import PollQuestion from "../components/UserView/PollQuestion";
 const axios = require("axios");
 
 export default {
@@ -35,9 +36,7 @@ export default {
   created() {
     axios
       // .get("/pollData2.json")
-      .get(
-        "https://n70xgo22r2.execute-api.ap-northeast-2.amazonaws.com/dev/survey/60ab6887cf0eff24444a36c4"
-      )
+      .get(`${USER_POLL_API}/60ac8be9f04b09184f1120db`)
       .then((res) => {
         console.log(res);
         this.pollData = res.data.survey;
