@@ -67,3 +67,25 @@ exports.createSurvey = async (req, res, next) => {
     return res.status(error.code).json({ message: error.message });
   }
 };
+
+exports.patchSurvey = async (req, res, next) => {
+  await connectToDatabase();
+  const creatorKey = "AWERASDFASDF"; //req.user;
+  const surveyId = req.params.surveyId;
+  const { status } = req.body;
+
+  try {
+    const survey = await Survey.findById(surveyId);
+    if (survey.creatorKey !== creatorKey) {
+      throw new Error("unauthorized", 401);
+    }
+    if (typeof status !== "boolean") {
+      throw new Error("value error", 400);
+    }
+    survey.isActive = status;
+    survey.save();
+    return res.status(200).json({ message: "success" });
+  } catch (error) {
+    return res.status(error.code).json({ message: error.message });
+  }
+};
