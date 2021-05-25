@@ -1,5 +1,5 @@
 <template>
-  <div class="pollInfo" id="{{pollId}}">
+  <div class="pollInfo" :id="pollId">
     <span class="totalAnswered">총 응답 수: {{ totalCount }}</span>
     <span v-if="hasExpiry" class="closingDate"
       >설문 기한: {{ getDate[0] }}년 {{ getDate[1] }}월 {{ getDate[2] }}일

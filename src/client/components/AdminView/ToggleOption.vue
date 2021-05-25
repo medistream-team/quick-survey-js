@@ -1,6 +1,8 @@
 <template>
-  <span>{{ toggleTitle }}</span>
-  <input type="checkbox" />
+  <div>
+    <span>{{ toggleTitle }}</span>
+    <input type="checkbox" />
+  </div>
 </template>
 <script>
 export default {
