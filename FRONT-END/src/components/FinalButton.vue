@@ -1,8 +1,12 @@
 <template>
   <div class="buttonContainer">
     <router-link to="/results"
-      ><button @click="submitPoll" class="finalButton">
-        제출하기
+      ><button
+        @click="submitPoll"
+        class="finalButton"
+        :disabled="!readyToSubmit"
+      >
+        투표하기
       </button></router-link
     >
   </div>
@@ -10,15 +14,15 @@
 <script>
 export default {
   name: "FinalButton",
-  data() {
-    return {
-      isSubmitted: false,
-    };
+  props: {
+    readyToSubmit: {
+      type: Boolean,
+      required: true,
+    },
   },
   methods: {
     submitPoll() {
-      this.isSubmitted = !this.isSubmitted;
-      // this.$emit("submit", this.isSubmitted);
+      this.$emit("submitResponsesData");
     },
   },
 };

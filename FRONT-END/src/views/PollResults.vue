@@ -34,10 +34,10 @@ export default {
   computed: {},
   created() {
     axios
-      .get("/pollData2.json")
-      // .get(
-      //   "https://n70xgo22r2.execute-api.ap-northeast-2.amazonaws.com/dev/survey/60a74ac0cf32641cb1b8e538"
-      // )
+      // .get("/pollData2.json")
+      .get(
+        "https://n70xgo22r2.execute-api.ap-northeast-2.amazonaws.com/dev/survey/60ab6887cf0eff24444a36c4"
+      )
       .then((res) => {
         console.log(res);
         this.pollData = res.data.survey;

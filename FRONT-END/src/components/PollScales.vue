@@ -47,7 +47,7 @@ export default {
       type: Boolean,
       required: true,
     },
-    checkQuestionsStatus: {
+    handleAnswersInfo: {
       type: Function,
       required: true,
     },
@@ -60,8 +60,8 @@ export default {
     };
   },
   methods: {
-    handleScalesStatus(index) {
-      const { checkQuestionsStatus, questionId } = this;
+    handleScalesStatus(index, scaleId) {
+      const { handleAnswersInfo, questionId } = this;
       if (this.scalesStatus[index] === false) {
         const newArr = this.scales.map(() => {
           return false;
@@ -71,7 +71,7 @@ export default {
       } else {
         this.scalesStatus[index] = !this.scalesStatus[index];
       }
-      checkQuestionsStatus(questionId);
+      handleAnswersInfo(null, questionId, scaleId, this.scalesStatus);
     },
   },
 };
