@@ -1,30 +1,33 @@
 const User = require("../../models/users");
 
-exports.insertCreatorInfo = (resolveValue, creatorKey) => {
-  return User.findOne({ userKey: creatorKey })
-    .exec()
-    .then((user) => {
-      if (!user) {
-        return User.create({
-          userKey: creatorKey,
-          createdSurvey: [
-            {
-              surveyId: resolveValue._id,
-              createdAt: resolveValue.createdAt,
-            },
-          ],
-        });
-      }
-      user.createdSurvey.push({
-        surveyId: resolveValue._id,
-        createdAt: resolveValue.createdAt,
-      });
-      return user.save();
-    })
-    .catch((error) => {
-      console.log(error);
-      throw new Error(error);
+exports.insertCreatorInfo = async (resolveValue, creatorKey, session) => {
+  if (await User.exists({ userKey: creatorKey })) {
+    const user = await User.findOne({ userKey: creatorKey })
+      .select("createdSurvey")
+      .session(session);
+
+    user.createdSurvey.push({
+      surveyId: resolveValue._id,
+      createdAt: resolveValue.createdAt,
     });
+
+    return await user.save();
+  }
+
+  return await User.create(
+    [
+      {
+        userKey: creatorKey,
+        createdSurvey: [
+          {
+            surveyId: resolveValue._id,
+            createdAt: resolveValue.createdAt,
+          },
+        ],
+      },
+    ],
+    { session: session }
+  );
 };
 
 exports.insertVoterInfo = async (voterKey, surveyId, responseObjs, session) => {
@@ -43,15 +46,17 @@ exports.insertVoterInfo = async (voterKey, surveyId, responseObjs, session) => {
     await user.save();
   } else {
     return await User.create(
-      [{
-        userKey: voterKey,
-        votedSurvey: [
-          {
-            surveyId: surveyId,
-            responses: responseObjs,
-          },
-        ],
-      }],
+      [
+        {
+          userKey: voterKey,
+          votedSurvey: [
+            {
+              surveyId: surveyId,
+              responses: responseObjs,
+            },
+          ],
+        },
+      ],
       { session: session }
     );
   }
