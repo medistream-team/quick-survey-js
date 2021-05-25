@@ -1,3 +1,5 @@
+const mongoose = require("mongoose");
+
 const Survey = require("../models/surveys");
 const Question = require("../models/questions");
 
@@ -10,7 +12,10 @@ exports.createSurvey = async (req, res, next) => {
   const creatorKey = "AWERASDFASDF"; //req.user;
   const { pages, hasExpiry, closeAt, isPublic } = req.body;
 
+  const session = await mongoose.startSession();
+
   try {
+    session.startTransaction();
     if (
       !("pages" in req.body) ||
       !("hasExpiry" in req.body) ||
@@ -38,7 +43,9 @@ exports.createSurvey = async (req, res, next) => {
         }
         return new Question({ ...element });
       });
-      const insertedQuestions = await Question.insertMany(elements);
+      const insertedQuestions = await Question.insertMany(elements, {
+        session: session,
+      });
       pageObjs.push({ ...page, elements: insertedQuestions });
     }
 
@@ -50,21 +57,38 @@ exports.createSurvey = async (req, res, next) => {
     };
 
     if (closeAt) {
-      survey = await Survey.create({
-        ...survey,
-        closeAt: new Date(closeAt),
-      });
+      survey = await Survey.create(
+        [
+          {
+            ...survey,
+            closeAt: new Date(closeAt),
+          },
+        ],
+        { session: session }
+      );
     } else {
-      survey = await Survey.create({
-        ...survey,
-        closeAt: null,
-      });
+      survey = await Survey.create(
+        [
+          {
+            ...survey,
+            closeAt: null,
+          },
+        ],
+        { session: session }
+      );
     }
 
-    await insertCreatorInfo(survey, creatorKey);
+    await insertCreatorInfo(survey, creatorKey, session);
+
+    await session.commitTransaction();
+    session.endSession();
+
     return res.status(201).json({ message: "success" });
   } catch (error) {
-    return res.status(error.code).json({ message: error.message });
+    await session.abortTransaction();
+    return res
+      .status(error.code ? error.code : 400)
+      .json({ message: error.message });
   }
 };
 
