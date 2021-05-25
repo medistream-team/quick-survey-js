@@ -47,12 +47,16 @@ exports.postSurvey = async (req, res, next) => {
 
       question.choices.map((choice) => {
         const choiceId = String(choice._id);
-        if (response.choiceIds.includes(choiceId)) choice.count++;
+        if (response.choiceIds.includes(choiceId)) {
+          choice.count++;
+          question.count ++;
+        }
         return choice;
       });
-      question.count++;
       await question.save();
     }
+    survey.count ++;
+    await survey.save();
 
     await session.commitTransaction();
     session.endSession();
