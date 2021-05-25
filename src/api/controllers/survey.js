@@ -19,7 +19,6 @@ exports.voteSurvey = async (req, res, next) => {
   if (!mongoose.Types.ObjectId.isValid(surveyId)) {
     return res.status(400).json({ message: "invalid object id" });
   }
-
   const session = await mongoose.startSession();
 
   try {
@@ -81,6 +80,7 @@ exports.voteSurvey = async (req, res, next) => {
 
 exports.getSurvey = async (req, res, next) => {
   await connectToDatabase();
+
   const surveyId = req.params.surveyId;
   const userKey = req.header("authorization");
 
