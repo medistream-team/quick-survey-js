@@ -9,12 +9,16 @@ const { insertVoterInfo } = require("./utils/insert");
 const { missingElements } = require("./utils/filter");
 const { newError } = require("./utils/error");
 
-exports.postSurvey = async (req, res, next) => {
+exports.voteSurvey = async (req, res, next) => {
   await connectToDatabase();
 
   const surveyId = req.params.surveyId;
+  const voterKey = req.header("authorization");
   const { responses } = req.body;
-  const voterKey = "G1jPHapA/H/uE4Gh1"; // const voterKey = req.user;
+
+  if (!mongoose.Types.ObjectId.isValid(surveyId)) {
+    return res.status(400).json({ message: "invalid object id" });
+  }
 
   const session = await mongoose.startSession();
 
@@ -48,14 +52,15 @@ exports.postSurvey = async (req, res, next) => {
       question.choices.map((choice) => {
         const choiceId = String(choice._id);
         if (response.choiceIds.includes(choiceId)) {
-          choice.count++;
-          question.count++;
+          choice.responsesCount++;
+          question.responsesCount++;
         }
         return choice;
       });
+      question.participantCount++;
       await question.save();
     }
-    survey.count++;
+    survey.participantCount++;
     await survey.save();
 
     await session.commitTransaction();
