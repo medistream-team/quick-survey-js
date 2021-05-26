@@ -26,7 +26,7 @@ const Survey = new Schema({
     type: Boolean,
     required: true,
   },
-  count: {
+  participantCount: {
     type: Number,
     required: true,
     default: 0
