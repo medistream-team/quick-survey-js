@@ -10,8 +10,8 @@ app.use(bodyParser.json({ strict: false }));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 
-const adminRouter = require("./routers/admin");
-const surveyRouter = require("./routers/survey");
+const adminRouter = require("./routes/admin");
+const surveyRouter = require("./routes/survey");
 
 app.use("/admin", adminRouter);
 app.use("/survey", surveyRouter);
