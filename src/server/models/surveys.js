@@ -31,6 +31,11 @@ const Survey = new Schema({
     required: true,
     default: 0
   },
+  responseCount: {
+    type: Number,
+    required: true,
+    default: 0
+  },
   pages: [
     {
       _id: {
