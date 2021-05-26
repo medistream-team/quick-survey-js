@@ -17,7 +17,7 @@ export default {
   props: {
     readyToSubmit: {
       type: Boolean,
-      required: true,
+      required: false,
     },
     finalButtonText: {
       type: String,
