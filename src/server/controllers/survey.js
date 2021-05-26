@@ -43,8 +43,11 @@ exports.voteSurvey = async (req, res, next) => {
     if (!insertVoterResult) throw newError("already voted", 400);
 
     for (const response of responses) {
+      if (!mongoose.Types.ObjectId.isValid(response.questionId)) {
+        throw newError("invalid object id", 400);
+      }
       const question = await Question.findById(response.questionId)
-        .select("choices count")
+        .select("choices responseCount participantCount")
         .session(session);
 
       if (!question) continue;
@@ -52,8 +55,9 @@ exports.voteSurvey = async (req, res, next) => {
       question.choices.map((choice) => {
         const choiceId = String(choice._id);
         if (response.choiceIds.includes(choiceId)) {
-          choice.responsesCount++;
-          question.responsesCount++;
+          choice.responseCount++;
+          question.responseCount++;
+          survey.responseCount++;
         }
         return choice;
       });
