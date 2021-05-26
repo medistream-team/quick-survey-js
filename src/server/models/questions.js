@@ -24,7 +24,12 @@ const Question = new Schema({
     requiredMin: Number,
     requiredMax: Number,
   },
-  count: {
+  participantCount: {
+    type: Number,
+    required: true,
+    default: 0,
+  },
+  responsesCount: {
     type: Number,
     required: true,
     default: 0,
@@ -37,7 +42,7 @@ const Question = new Schema({
       },
       value: Number,
       text: String,
-      count: {
+      responsesCount: {
         type: Number,
         required: true,
         default: 0,
