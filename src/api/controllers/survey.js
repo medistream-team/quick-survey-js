@@ -84,6 +84,10 @@ exports.getSurvey = async (req, res, next) => {
   const surveyId = req.params.surveyId;
   const userKey = req.header("authorization");
 
+  if (!mongoose.Types.ObjectId.isValid(surveyId)) {
+    return res.status(400).json({ message: "invalid object id" });
+  }
+
   if (!(await Survey.exists({ _id: surveyId }))) {
     return res.status(404).json({ message: "survey not found" });
   }
@@ -99,7 +103,7 @@ exports.getSurvey = async (req, res, next) => {
     return res.status(200).json({ message: "closed survey" });
   }
 
-  const user = await User.findOne({ userKey: userKey }).exec();
+  const user = await User.findOne({ userKey: userKey }).select("votedSurvey");
 
   if (user) {
     const votedSurvey = user.votedSurvey.filter((history) => {
