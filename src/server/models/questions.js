@@ -29,7 +29,7 @@ const Question = new Schema({
     required: true,
     default: 0,
   },
-  responsesCount: {
+  responseCount: {
     type: Number,
     required: true,
     default: 0,
@@ -42,7 +42,7 @@ const Question = new Schema({
       },
       value: Number,
       text: String,
-      responsesCount: {
+      responseCount: {
         type: Number,
         required: true,
         default: 0,
