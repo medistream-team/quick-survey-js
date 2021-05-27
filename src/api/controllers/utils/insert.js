@@ -32,7 +32,10 @@ exports.insertCreatorInfo = async (resolveValue, creatorKey, session) => {
 
 exports.insertVoterInfo = async (voterKey, surveyId, responseObjs, session) => {
   if (await User.exists({ userKey: voterKey })) {
-    const user = await User.findOne({ userKey: voterKey }).session(session);
+    const user = await User.findOne({ userKey: voterKey })
+      .select("votedSurvey")
+      .session(session);
+      
     const voted = user.votedSurvey.filter((history) => {
       return String(history.surveyId) === surveyId;
     });

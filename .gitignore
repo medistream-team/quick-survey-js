@@ -1,6 +1,6 @@
 
-# Created by https://www.toptal.com/developers/gitignore/api/node,serverless,macos,visualstudio,visualstudiocode,vuejs,sass
-# Edit at https://www.toptal.com/developers/gitignore?templates=node,serverless,macos,visualstudio,visualstudiocode,vuejs,sass
+# Created by https://www.toptal.com/developers/gitignore/api/node,serverless,sass,vue,vuejs,macos,visualstudio,visualstudiocode
+# Edit at https://www.toptal.com/developers/gitignore?templates=node,serverless,sass,vue,vuejs,macos,visualstudio,visualstudiocode
 
 ### macOS ###
 # General
@@ -179,6 +179,17 @@ temp/
 # Ignore all local history of files
 .history
 .ionide
+
+### Vue ###
+# gitignore template for Vue.js projects
+#
+# Recommended template: Node.gitignore
+
+# TODO: where does this rule come from?
+docs/_book
+
+# TODO: where does this rule come from?
+test/
 
 ### Vuejs ###
 # Recommended template: Node.gitignore
@@ -550,4 +561,4 @@ FodyWeavers.xsd
 # Additional files built by Visual Studio
 *.tlog
 
-# End of https://www.toptal.com/developers/gitignore/api/node,serverless,macos,visualstudio,visualstudiocode,vuejs,sass
+# End of https://www.toptal.com/developers/gitignore/api/node,serverless,sass,vue,vuejs,macos,visualstudio,visualstudiocode
