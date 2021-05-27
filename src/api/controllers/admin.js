@@ -4,7 +4,7 @@ const Survey = require("../models/surveys");
 const Question = require("../models/questions");
 
 const { connectToDatabase } = require("../models/utils/connectDB");
-const { insertCreatorInfo, insertSurvey } = require("./utils/insert");
+const { insertCreatorInfo } = require("./utils/insert");
 const { newError } = require("./utils/error");
 
 const ALLOWED_TYPES = {
@@ -20,6 +20,10 @@ exports.createSurvey = async (req, res, next) => {
   const { pages, hasExpiry, closeAt, isPublic } = req.body;
 
   try {
+    if (!creatorKey) {
+      throw newError("unauthorized", 401);
+    }
+
     if (
       !("pages" in req.body) ||
       !("hasExpiry" in req.body) ||
@@ -41,7 +45,7 @@ exports.createSurvey = async (req, res, next) => {
       throw newError("value error", 400);
     }
 
-    if (closeAt & (new Date() >= new Date(closeAt))) {
+    if (closeAt && Date.now() >= new Date(closeAt)) {
       throw newError("invalid closing time", 400);
     }
 
@@ -51,6 +55,14 @@ exports.createSurvey = async (req, res, next) => {
     for (const page of pages) {
       const elements = page.elements.map((element /** @object */) => {
         if (
+          !Array.isArray(element.choices) ||
+          typeof element.isRequired !== "boolean" ||
+          typeof element.multipleSelectOption !== "object"
+        ) {
+          throw newError("value error", 400);
+        }
+
+        if (
           !("type" in element) ||
           !("title" in element) ||
           !("isRequired" in element) ||
@@ -59,14 +71,6 @@ exports.createSurvey = async (req, res, next) => {
           !("choices" in element)
         ) {
           throw newError("key error", 400);
-        }
-
-        if (
-          !Array.isArray(element.choices) ||
-          typeof element.isRequired !== "boolean" ||
-          typeof element.multipleSelectOption !== "object"
-        ) {
-          throw newError("value error", 400);
         }
 
         if (!ALLOWED_TYPES[element.type]) {
@@ -118,7 +122,9 @@ exports.createSurvey = async (req, res, next) => {
 
     return res.status(201).json({ message: "success" });
   } catch (error) {
-    await session.abortTransaction();
+    if (session.inTransaction()) {
+      await session.abortTransaction();
+    }
     return res
       .status(error.code ? error.code : 400)
       .json({ message: error.message });
@@ -135,12 +141,12 @@ exports.patchSurvey = async (req, res, next) => {
     if (!creatorKey) {
       throw newError("unauthorized", 401);
     }
-    
+
     if (!mongoose.Types.ObjectId.isValid(surveyId)) {
       throw newError("invalid object id", 400);
     }
 
-    if (!"status" in req.body) {
+    if (!("status" in req.body)) {
       throw newError("key error", 400);
     }
 

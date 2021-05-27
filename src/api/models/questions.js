@@ -21,8 +21,8 @@ const Question = new Schema({
       type: Boolean,
       required: true,
     },
-    requiredMin: Number,
-    requiredMax: Number,
+    allowedMin: Number,
+    allowedMax: Number,
   },
   participantCount: {
     type: Number,
