@@ -9,7 +9,7 @@
     "dev": "sls offline --httpPort ${API_PORT:-8000}",
     "deploy": "sls deploy",
     "serve": "vue-cli-service serve src/client/main.js",
-    "build": "vue-cli-service build",
+    "build": "vue-cli-service build src/client/index.js --target lib",
     "lint": "vue-cli-service lint"
   },
   "repository": {
