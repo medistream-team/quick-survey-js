@@ -1,8 +1,13 @@
 <template>
   <div class="pollInputContainer">
-    <input :placeholder="placeholder" class="pollInputBox" />
+    <input
+      @change="handlePollInput"
+      :placeholder="placeholder"
+      class="pollInputBox"
+      :name="name"
+    />
     <button
-      @click="$emit('deleteChoiceBox')"
+      @click="$emit('deleteChoiceBox', boxId)"
       depressed
       text
       class="deleteButton"
@@ -28,11 +33,20 @@ export default {
       type: Function,
       required: false,
     },
-  },
-  method: {
-    deleteBox() {
-      this.$emit("deleteChoiceBox");
+    handlePollInput: {
+      type: Function,
     },
+    name: {
+      type: String,
+    },
+    boxId: {
+      type: Number,
+    },
+  },
+  methods: {
+    // handleInput(e) {
+    //   console.log(e.target.value);
+    // },
   },
 };
 </script>

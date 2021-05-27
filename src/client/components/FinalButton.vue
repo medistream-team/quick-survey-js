@@ -1,10 +1,10 @@
 <template>
   <div class="buttonContainer">
-    <router-link to="/results"
+    <router-link :to="isAdmin ? `/poll` : `/results`"
       ><button
-        @click="readyToSubmit ? submitPoll : null"
+        @click="clickFinalButton"
         class="finalButton"
-        :disabled="!readyToSubmit"
+        :disabled="isAdmin ? !readyToCreate : !readyToSubmit"
       >
         {{ finalButtonText }}
       </button></router-link
@@ -15,6 +15,14 @@
 export default {
   name: "FinalButton",
   props: {
+    isAdmin: {
+      type: Boolean,
+      required: true,
+    },
+    readyToCreate: {
+      type: Boolean,
+      required: false,
+    },
     readyToSubmit: {
       type: Boolean,
       required: false,
@@ -25,8 +33,13 @@ export default {
     },
   },
   methods: {
-    submitPoll() {
-      this.$emit("submitResponsesData");
+    clickFinalButton() {
+      if (this.readyToSubmit) {
+        this.$emit("submitResponsesData");
+      }
+      if (this.readyToCreate) {
+        this.$emit("sendPollData");
+      }
     },
   },
 };
