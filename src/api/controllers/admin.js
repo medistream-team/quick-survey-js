@@ -127,22 +127,46 @@ exports.createSurvey = async (req, res, next) => {
 
 exports.patchSurvey = async (req, res, next) => {
   await connectToDatabase();
-  const creatorKey = "AWERASDFASDF"; //req.user;
+  const creatorKey = req.header("authorization");
   const surveyId = req.params.surveyId;
   const { status } = req.body;
 
   try {
-    const survey = await Survey.findById(surveyId);
-    if (survey.creatorKey !== creatorKey) {
-      throw new Error("unauthorized", 401);
+    if (!creatorKey) {
+      throw newError("unauthorized", 401);
     }
+    
+    if (!mongoose.Types.ObjectId.isValid(surveyId)) {
+      throw newError("invalid object id", 400);
+    }
+
+    if (!"status" in req.body) {
+      throw newError("key error", 400);
+    }
+
     if (typeof status !== "boolean") {
-      throw new Error("value error", 400);
+      throw newError("value error", 400);
     }
+
+    if (!(await Survey.exists({ _id: surveyId }))) {
+      throw newError("survey not found", 404);
+    }
+
+    const survey = await Survey.findById(surveyId).select(
+      "isActive creatorKey"
+    );
+
+    if (survey.creatorKey !== creatorKey) {
+      throw newError("unauthorized", 401);
+    }
+
     survey.isActive = status;
     survey.save();
+
     return res.status(200).json({ message: "success" });
   } catch (error) {
-    return res.status(error.code).json({ message: error.message });
+    return res
+      .status(error.code ? error.code : 400)
+      .json({ message: error.message });
   }
 };
