@@ -11,27 +11,41 @@ const { newError } = require("./utils/error");
 
 exports.voteSurvey = async (req, res, next) => {
   await connectToDatabase();
+  const session = await mongoose.startSession();
 
   const surveyId = req.params.surveyId;
   const voterKey = req.header("authorization");
   const { responses } = req.body;
 
-  if (!mongoose.Types.ObjectId.isValid(surveyId)) {
-    return res.status(400).json({ message: "invalid object id" });
-  }
-
-  const session = await mongoose.startSession();
-
   try {
-    session.startTransaction();
-    const survey = await Survey.findById(surveyId).populate("pages.elements");
+    if (!mongoose.Types.ObjectId.isValid(surveyId)) {
+      throw newError("invalid object id", 400);
+    }
 
-    if (!survey) throw newError("survey not found", 404);
+    if (!(await Survey.exists({ _id: surveyId }))) {
+      throw newError("survey not found", 404);
+    }
+
+    if (!voterKey) {
+      throw newError("unauthorized", 401);
+    }
+
     if (!responses) throw newError("key error", 400);
 
-    if (missingElements(survey, responses)) {
+    const survey = await Survey.findById(surveyId).populate("pages.elements");
+
+    if (
+      !survey.isActive ||
+      (survey.closeAt && Date.now() > new Date(survey.closeAt))
+    ) {
+      throw newError("closed survey", 400);
+    }
+
+    if (missingElements(survey, responses) /** @boolean */) {
       throw newError("some necessary questions not responded", 400);
     }
+
+    session.startTransaction();
 
     const insertVoterResult = await insertVoterInfo(
       voterKey,
@@ -40,7 +54,8 @@ exports.voteSurvey = async (req, res, next) => {
       session
     );
 
-    if (!insertVoterResult) throw newError("already voted", 400);
+    if (!insertVoterResult /** @boolean or @resolve */)
+      throw newError("already voted", 400);
 
     for (const response of responses) {
       if (!mongoose.Types.ObjectId.isValid(response.questionId)) {
@@ -52,13 +67,14 @@ exports.voteSurvey = async (req, res, next) => {
 
       if (!question) continue;
 
-      question.choices.map((choice) => {
-        const choiceId = String(choice._id);
-        if (response.choiceIds.includes(choiceId)) {
-          choice.responseCount++;
-          question.responseCount++;
-          survey.responseCount++;
+      question.choices.map((choice /** @object */) => {
+        if (!response.choiceIds.includes(String(choice._id))) {
+          throw newError("question and choice not match", 400);
         }
+        choice.responseCount++;
+        question.responseCount++;
+        survey.responseCount++;
+        
         return choice;
       });
       question.participantCount++;
@@ -81,6 +97,7 @@ exports.voteSurvey = async (req, res, next) => {
 
 exports.getSurvey = async (req, res, next) => {
   await connectToDatabase();
+
   const surveyId = req.params.surveyId;
   const userKey = req.header("authorization");
 

@@ -11,5 +11,7 @@ exports.missingElements = (survey, responses, mustElements = []) => {
   const missingElements = mustElements.filter((element) => {
     return !respondedElements.includes(element);
   });
-  return missingElements.length;
+
+  if (missingElements.length) return true;
+  return false;
 };
