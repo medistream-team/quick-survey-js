@@ -18,6 +18,10 @@ exports.voteSurvey = async (req, res, next) => {
   const { responses } = req.body;
 
   try {
+    if (!Array.isArray(responses)) {
+      throw newError("value error", 400);
+    }
+
     if (!mongoose.Types.ObjectId.isValid(surveyId)) {
       throw newError("invalid object id", 400);
     }
@@ -47,6 +51,55 @@ exports.voteSurvey = async (req, res, next) => {
 
     session.startTransaction();
 
+    for (const response of responses) {
+      if (!("questionId" in response) || !("choiceIds" in response)) {
+        throw newError("key error", 400);
+      }
+
+      if (!Array.isArray(response.choiceIds)) {
+        throw newError("value error", 400);
+      }
+
+      if (!mongoose.Types.ObjectId.isValid(response.questionId)) {
+        throw newError("invalid object id", 400);
+      }
+
+      if (!(await Question.exists({ _id: response.questionId }))) {
+        throw newError("question not found", 404);
+      }
+
+      const question = await Question.findById(response.questionId)
+        .select("choices responseCount participantCount")
+        .session(session);
+
+      response.choiceIds.forEach((choiceId) => {
+        if (!mongoose.Types.ObjectId.isValid(choiceId)) {
+          throw newError("invalid object id", 400);
+        }
+      });
+
+      const match = question.choices.some((choice) => {
+        return response.choiceIds.includes(String(choice._id));
+      });
+
+      if (!match) {
+        throw newError("choice not found", 400);
+      }
+
+      question.choices.map((choice /** @object */) => {
+        if (response.choiceIds.includes(String(choice._id))) {
+          choice.responseCount++;
+          question.responseCount++;
+          survey.responseCount++;
+        }
+        return choice;
+      });
+      question.participantCount++;
+      await question.save();
+    }
+    survey.participantCount++;
+    await survey.save();
+
     const insertVoterResult = await insertVoterInfo(
       voterKey,
       surveyId,
@@ -57,38 +110,14 @@ exports.voteSurvey = async (req, res, next) => {
     if (!insertVoterResult /** @boolean or @resolve */)
       throw newError("already voted", 400);
 
-    for (const response of responses) {
-      if (!mongoose.Types.ObjectId.isValid(response.questionId)) {
-        throw newError("invalid object id", 400);
-      }
-      const question = await Question.findById(response.questionId)
-        .select("choices responseCount participantCount")
-        .session(session);
-
-      if (!question) continue;
-
-      question.choices.map((choice /** @object */) => {
-        if (!response.choiceIds.includes(String(choice._id))) {
-          throw newError("question and choice not match", 400);
-        }
-        choice.responseCount++;
-        question.responseCount++;
-        survey.responseCount++;
-        
-        return choice;
-      });
-      question.participantCount++;
-      await question.save();
-    }
-    survey.participantCount++;
-    await survey.save();
-
     await session.commitTransaction();
     session.endSession();
 
-    return res.status(201).json({ message: "success" });
+    return res.status(200).json({ message: "success" });
   } catch (error) {
-    await session.abortTransaction();
+    if (session.inTransaction()) {
+      await session.abortTransaction();
+    }
     return res
       .status(error.code ? error.code : 400)
       .json({ message: error.message });
@@ -109,15 +138,15 @@ exports.getSurvey = async (req, res, next) => {
     return res.status(404).json({ message: "survey not found" });
   }
 
-  const survey = await Survey.findById(surveyId).populate("pages.elements");
+  let survey = await Survey.findById(surveyId).populate("pages.elements");
 
-  if (new Date() >= new Date(survey.closeAt)) {
+  if (Date.now() >= new Date(survey.closeAt)) {
     survey.isActive = false;
     survey.save();
   }
 
   if (!survey.isPublic && !survey.isActive && survey.creatorKey !== userKey) {
-    return res.status(200).json({ message: "closed survey" });
+    return res.status(200).json({ survey: "closed" });
   }
 
   const user = await User.findOne({ userKey: userKey }).select("votedSurvey");
@@ -126,7 +155,8 @@ exports.getSurvey = async (req, res, next) => {
     const votedSurvey = user.votedSurvey.filter((history) => {
       return history.surveyId === surveyId;
     });
-    if (votedSurvey) {
+    if (votedSurvey.length && !survey.isPublic) survey = "closed";
+    if (votedSurvey.length) {
       return res.status(200).json({ survey: survey, message: "already voted" });
     }
   }
