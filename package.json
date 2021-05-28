@@ -5,12 +5,12 @@
   "main": "src/server/app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "sls offline --httpPort ${PORT:-8000} && vue-cli-service serve src/client/main.js",
+    "postinstall": "echo \"now serverless install globally....\" && npm install -g serverless && source ./config/settings.sh",
+    "dev": "sls offline --httpPort ${API_PORT:-8000}",
     "deploy": "sls deploy",
-    "serve": "vue-cli-service serve src/client/main.js",
+    "serve": "vue-cli-service serve src/client/main.js && x-www-browser http://localhost:8080/",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint",
-    "install": "npm install -g serverless && npm install"
+    "lint": "vue-cli-service lint"
   },
   "repository": {
     "type": "git",
