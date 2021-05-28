@@ -23,6 +23,7 @@
 		"dotenv": "^9.0.2",
 		"express": "^4.17.1",
 		"mongoose": "^5.12.10",
+		"serverless": "^2.43.1",
 		"serverless-http": "^2.7.0",
 		"vue": "^2.6.11",
 		"vue-axios": "^3.2.4",
@@ -45,7 +46,6 @@
 		"prettier": "^2.2.1",
 		"sass": "^1.34.0",
 		"sass-loader": "^8.0.2",
-		"serverless": "^2.43.0",
 		"serverless-offline": "^7.0.0",
 		"vue-template-compiler": "^2.6.11"
 	},
