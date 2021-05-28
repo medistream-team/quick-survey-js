@@ -1,4 +1,4 @@
-service: surveys-test
+service: my-survey
 
 provider:
   name: aws
