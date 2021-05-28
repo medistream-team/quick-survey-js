@@ -3,7 +3,7 @@
     <div v-if="pollData" class="pollPage">
       <PollInfo
         :pollId="pollData._id"
-        :totalCount="pollData.count"
+        :totalCount="pollData.responseCount"
         :expiryDate="pollData.closeAt"
         :hasExpiry="pollData.hasExpiry"
       />
@@ -11,7 +11,7 @@
         v-for="page in pages"
         :key="page._id"
         :page="page"
-        :totalCount="pollData.count"
+        :totalCount="pollData.responseCount"
         :showResult="showResult"
         :getResponsesData="getResponsesData"
       />

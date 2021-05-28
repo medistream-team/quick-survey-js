@@ -13,7 +13,7 @@ export default {
       required: true,
     },
     subtitle: {
-      type: String,
+      type: null,
       required: true,
     },
   },

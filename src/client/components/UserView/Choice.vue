@@ -35,6 +35,7 @@ export default {
     choiceCount: {
       type: Number,
       required: true,
+      default: 0,
     },
     totalCount: {
       type: Number,
@@ -57,6 +58,7 @@ export default {
       required: true,
     },
   },
+
   computed: {
     fillResult() {
       return {
