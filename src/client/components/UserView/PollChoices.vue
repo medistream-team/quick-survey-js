@@ -5,11 +5,11 @@
       :key="choice._id"
       :choiceId="choice._id"
       :choiceText="choice.text"
-      :choiceCount="choice.count"
+      :choiceCount="choice.responseCount"
       :totalCount="totalCount"
       :showResult="showResult"
-      :handleChoicesStatus="handleChoicesStatus"
       :choiceStatus="choicesStatus[index]"
+      :handleChoicesStatus="handleChoicesStatus"
       :choiceIndex="index"
     />
   </ul>
@@ -22,7 +22,7 @@ export default {
   components: { Choice },
   props: {
     choices: {
-      type: Object,
+      type: Array,
       required: true,
     },
     questionId: {
@@ -51,20 +51,23 @@ export default {
       choicesStatus: this.choices.map(() => {
         return false;
       }),
+      clicked: false,
     };
   },
   methods: {
     handleChoicesStatus(index, choiceIds) {
       const { selectMultiple, choices, handleAnswersInfo, questionId } = this;
+      const newArr = choices.map(() => {
+        return false;
+      });
+
       if (selectMultiple === false) {
         if (this.choicesStatus[index] === false) {
-          const newArr = choices.map(() => {
-            return false;
-          });
           newArr[index] = !newArr[index];
           this.choicesStatus = newArr;
         } else {
-          this.choicesStatus[index] = !this.choicesStatus[index];
+          newArr[index] = !newArr[index];
+          this.choicesStatus = newArr;
         }
         handleAnswersInfo(
           selectMultiple,
@@ -73,7 +76,8 @@ export default {
           this.choicesStatus
         );
       } else {
-        this.choicesStatus[index] = !this.choicesStatus[index];
+        newArr[index] = !newArr[index];
+        this.choicesStatus = newArr;
         handleAnswersInfo(
           selectMultiple,
           questionId,
@@ -81,6 +85,8 @@ export default {
           this.choicesStatus
         );
       }
+
+      console.log(this.choicesStatus);
     },
   },
 };

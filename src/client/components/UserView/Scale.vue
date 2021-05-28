@@ -27,7 +27,7 @@ export default {
       required: true,
     },
     scaleText: {
-      type: String,
+      type: [String, Number],
       required: true,
     },
     scaleCount: {

@@ -5,7 +5,7 @@
       v-for="(scale, index) in scales"
       :scaleText="scale.value"
       :scaleId="scale._id"
-      :scaleCount="scale.count"
+      :scaleCount="scale.responseCount"
       :key="scale._id"
       :showResult="showResult"
       :totalCount="totalCount"
@@ -32,7 +32,7 @@ export default {
       required: true,
     },
     scales: {
-      type: Object,
+      type: Array,
       required: true,
     },
     minDescription: {
