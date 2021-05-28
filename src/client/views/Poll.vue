@@ -17,6 +17,7 @@
       />
     </div>
     <FinalButton
+      :isAdmin="false"
       finalButtonText="투표하기"
       :readyToSubmit="readyToSubmit"
       @submitResponsesData="submitResponsesData"
@@ -25,7 +26,7 @@
 </template>
 
 <script>
-import { USER_POLL_API } from "../config";
+import { USER_POLL_API, SURVEY_ID } from "../config";
 import PollInfo from "../components/UserView/PollInfo";
 import PollQuestion from "../components/UserView/PollQuestion";
 import FinalButton from "../components/FinalButton";
@@ -50,7 +51,7 @@ export default {
   created() {
     axios
       // .get("/pollData2.json")
-      .get(`${USER_POLL_API}/60ac8be9f04b09184f1120db`)
+      .get(`${USER_POLL_API}/${SURVEY_ID}`)
       .then((res) => {
         this.pollData = res.data.survey;
         this.pages = res.data.survey.pages;
@@ -66,7 +67,7 @@ export default {
     },
     submitResponsesData() {
       axios
-        .post(`${USER_POLL_API}/60ac8be9f04b09184f1120db`, this.ResponsesData)
+        .post(`${USER_POLL_API}/${SURVEY_ID}`, this.ResponsesData)
         .then((res) => console.log(res))
         .catch((err) => console.dir(err.response.data));
     },
