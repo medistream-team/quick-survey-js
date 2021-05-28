@@ -140,30 +140,28 @@ exports.getSurvey = async (req, res, next) => {
 
   let survey = await Survey.findById(surveyId).populate("pages.elements");
 
-  survey.createdAt = new Date(survey.createdAt);
-
   if (survey.closeAt) {
     survey.closeAt = new Date(survey.closeAt);
   }
-  if (survey.closeAt && Date.now() > new Date(survey.closeAt)) {
-    survey.isActive = false;
-    survey.save();
-  }
+  survey.createdAt = new Date(survey.createdAt);
 
-  if (!survey.isPublic && !survey.isActive && survey.creatorKey !== userKey) {
-    return res.status(200).json({ survey: "closed" });
+  let isAdmin = false;
+  if (survey.creatorKey === userKey) {
+    isAdmin = true;
   }
 
   const user = await User.findOne({ userKey: userKey }).select("votedSurvey");
 
+  let voted = false;
   if (user) {
-    const votedSurvey = user.votedSurvey.filter((history) => {
-      return history.surveyId === surveyId;
+    const votedSurvey = user.votedSurvey.filter((votedHistory) => {
+      return votedHistory.surveyId === surveyId;
     });
-    if (votedSurvey.length && !survey.isPublic) survey = "closed";
     if (votedSurvey.length) {
-      return res.status(200).json({ survey: survey, message: "already voted" });
+      voted = true;
     }
   }
-  return res.status(200).json({ survey: survey });
+  return res
+    .status(200)
+    .json({ survey: survey, isAdmin: isAdmin, voted: voted });
 };
