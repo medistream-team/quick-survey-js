@@ -11,7 +11,7 @@ functions:
     handler: src/api/app.handler
     events:
       - http: ANY /
-      - http: 'ANY {proxy+}'
+      - http: "ANY {proxy+}"
 
 plugins:
   - serverless-offline
