@@ -9,7 +9,6 @@
       <PollChoices
         v-if="question.type === 'checkbox'"
         :choices="question.choices"
-        :totalCount="totalCount"
         :showResult="showResult"
         :selectMultiple="question.multipleSelectOption.allowed"
         :questionId="question._id"
@@ -21,7 +20,6 @@
         :showResult="showResult"
         :minDescription="question.minRateDescription"
         :maxDescription="question.maxRateDescription"
-        :totalCount="totalCount"
         :questionId="question._id"
         :handleAnswersInfo="handleAnswersInfo"
       />

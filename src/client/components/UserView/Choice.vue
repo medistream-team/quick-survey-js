@@ -14,7 +14,7 @@
           :id="choiceId"
           type="checkbox"
           :disabled="showResult ? true : false"
-          :checked="choiceStatus ? true : null"
+          :checked="!showResult && choiceStatus ? true : null"
         />{{ choiceText }}<span v-if="showResult">({{ getResult }})</span>
       </li>
     </div>
@@ -61,11 +61,18 @@ export default {
 
   computed: {
     fillResult() {
+      if (this.totalCount === 0) {
+        return { width: "0%" };
+      }
+
       return {
         width: `${(this.choiceCount / this.totalCount) * 100}%`,
       };
     },
     getResult() {
+      if (this.totalCount === 0) {
+        return "0%";
+      }
       return `${(this.choiceCount / this.totalCount) * 100}%`;
     },
   },
