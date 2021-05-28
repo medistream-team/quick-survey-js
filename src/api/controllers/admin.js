@@ -7,9 +7,9 @@ const { connectToDatabase } = require("../models/utils/connectDB");
 const { insertCreatorInfo } = require("./utils/insert");
 const { newError } = require("./utils/error");
 
-const ALLOWED_TYPES = {
+const MULTIPLE_SELECT_ALLOWED_TYPES = {
   checkbox: true,
-  rating: true,
+  rating: false,
 };
 
 exports.createSurvey = async (req, res, next) => {
@@ -67,13 +67,13 @@ exports.createSurvey = async (req, res, next) => {
           !("title" in element) ||
           !("isRequired" in element) ||
           !("multipleSelectOption" in element) ||
-          !("allowed" in element.multipleSelectOption) ||
+          !("allowed" in element.multipleSelectOption) ||          
           !("choices" in element)
         ) {
           throw newError("key error", 400);
         }
 
-        if (!ALLOWED_TYPES[element.type]) {
+        if (!(element.type in MULTIPLE_SELECT_ALLOWED_TYPES)) {
           throw newError("not allowed question type", 400);
         }
 
@@ -82,10 +82,14 @@ exports.createSurvey = async (req, res, next) => {
         }
 
         let multipleSelectOption = element.multipleSelectOption;
+
         if (
-          multipleSelectOption.allowedMin &&
-          multipleSelectOption.allowedMax &&
-          multipleSelectOption.allowedMin > multipleSelectOption.allowedMax
+          (multipleSelectOption.allowed &&
+            !MULTIPLE_SELECT_ALLOWED_TYPES[element.type]) ||
+
+          (multipleSelectOption.allowedMin &&
+            multipleSelectOption.allowedMax &&
+            multipleSelectOption.allowedMin > multipleSelectOption.allowedMax)
         ) {
           throw newError("invalid selection allowance range", 400);
         }
