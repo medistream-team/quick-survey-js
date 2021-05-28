@@ -140,7 +140,12 @@ exports.getSurvey = async (req, res, next) => {
 
   let survey = await Survey.findById(surveyId).populate("pages.elements");
 
-  if (Date.now() >= new Date(survey.closeAt)) {
+  survey.createdAt = new Date(survey.createdAt);
+
+  if (survey.closeAt) {
+    survey.closeAt = new Date(survey.closeAt);
+  }
+  if (survey.closeAt && Date.now() > new Date(survey.closeAt)) {
     survey.isActive = false;
     survey.save();
   }
