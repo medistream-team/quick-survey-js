@@ -23,7 +23,7 @@ Here is an example.
 MONGO_URI=mongodb+srv://test:test123@example.mongodb.net/surveyDB?retryWrites=true&w=majority
 ```
 
-### 1. Check yml file
+### 2. Check yml file
 
 Before you run server, you need to configure `service` and `provider` values inside serverless.yml.
 Default values are set as below.
@@ -39,7 +39,7 @@ provider:
 ```
 
 ## Open API server
-### 2-1. local api
+### 1. local api
 
 To run this project on local, use `npm run dev` command.
 
@@ -53,7 +53,7 @@ Here is an example. The `provider[stage]` value you set inside `serverless.yml` 
 localhost:8000/dev
 ```
 
-### 2-2. deploy api
+### 2. deploy api
 
 Or, to deploy your api on aws lambda via serverless framework, use `npm deploy` command.
 
@@ -63,7 +63,7 @@ npm run deploy
 
 According to serverless documents, the console will show your endpoints. For more information, please visit [this page](https://www.serverless.com/blog/serverless-express-rest-api).
 
-### use endpoints
+### 3. use endpoints
 
 If you get your api endpoints, you should fill up `API_ENDPOINTS` value inside `.env` file.
 
