@@ -8,10 +8,10 @@
       :scaleCount="scale.responseCount"
       :key="scale._id"
       :showResult="showResult"
-      :totalCount="totalCount"
       :scaleStatus="scalesStatus[index]"
       :scaleIndex="index"
       :handleScalesStatus="handleScalesStatus"
+      :totalCount="totalCount"
     />
     <span class="max">{{ maxDescription }}</span>
   </ul>
@@ -23,10 +23,6 @@ export default {
   name: "PollScales",
   components: { Scale },
   props: {
-    totalCount: {
-      type: Number,
-      required: true,
-    },
     questionId: {
       type: String,
       required: true,
@@ -50,6 +46,15 @@ export default {
     handleAnswersInfo: {
       type: Function,
       required: true,
+    },
+  },
+  computed: {
+    totalCount() {
+      let count = 0;
+      for (let i = 0; i < this.scales.length; i++) {
+        count += this.scales[i].responseCount;
+      }
+      return count;
     },
   },
   data() {

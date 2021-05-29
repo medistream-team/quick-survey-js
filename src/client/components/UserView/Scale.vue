@@ -54,6 +54,9 @@ export default {
 
   computed: {
     scaleSize() {
+      if (this.totalCount === 0) {
+        return 0;
+      }
       return (this.scaleCount / this.totalCount) * 100;
     },
   },

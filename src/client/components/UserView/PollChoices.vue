@@ -29,10 +29,6 @@ export default {
       type: String,
       required: true,
     },
-    totalCount: {
-      type: Number,
-      required: true,
-    },
     showResult: {
       type: Boolean,
       required: true,
@@ -44,6 +40,15 @@ export default {
     handleAnswersInfo: {
       type: Function,
       required: true,
+    },
+  },
+  computed: {
+    totalCount() {
+      let count = 0;
+      for (let i = 0; i < this.choices.length; i++) {
+        count += this.choices[i].responseCount;
+      }
+      return count;
     },
   },
   data() {
@@ -76,8 +81,10 @@ export default {
           this.choicesStatus
         );
       } else {
-        newArr[index] = !newArr[index];
-        this.choicesStatus = newArr;
+        this.choicesStatus[index] = !this.choicesStatus[index];
+        this.choicesStatus = this.choicesStatus.map((status) => {
+          return status;
+        });
         handleAnswersInfo(
           selectMultiple,
           questionId,
