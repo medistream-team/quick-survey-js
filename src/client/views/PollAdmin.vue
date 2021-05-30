@@ -57,7 +57,6 @@ export default {
   },
   data() {
     return {
-      readyToCreate: true,
       createPoll: {
         hasExpiry: false,
         closeAt: "",
@@ -83,13 +82,37 @@ export default {
       },
     };
   },
-  computed: {},
+  computed: {
+    readyToCreate() {
+      return (
+        this.createPoll.pages[0].elements[0].title !== "" &&
+        this.createPoll.pages[0].elements[0].choices.length >= 2
+      );
+      // this.createPoll.pages.every((page) => {
+      //   page.elements.some((el) => el.title !== "" && el.choices.length >= 2);
+      //   page.elements[0].title !== "" && page.elements[0].choices.length >= 2;
+      // });
+    },
+  },
   methods: {
     checkReadyToCreate() {
-      //condition to check before submit
+      let pollInfo = this.createPoll.pages;
+      for (let i = 0; i < pollInfo.length, i++; ) {
+        for (let j = 0; j < pollInfo[i].elements.length, j++; ) {
+          let required = pollInfo[i].elements[j];
+          if (
+            required.title !== "" &&
+            required.rateMax !== "" &&
+            required.choices.length >= 2
+          ) {
+            return true;
+          } else {
+            return false;
+          }
+        }
+      }
     },
     sendPollData() {
-      console.log(this.createPoll);
       const headers = {
         Authorization: TOKEN,
       };
