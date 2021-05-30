@@ -2,6 +2,7 @@
   <div class="buttonContainer">
     <v-btn
       large
+      depressed
       color="primary"
       @click="clickFinalButton"
       class="finalButton"
@@ -52,14 +53,6 @@ export default {
   display: flex;
   justify-content: center;
   margin-top: 20px;
-  // button {
-  //   padding: 10px;
-  //   border-style: none;
-  //   border-radius: 5px;
-  //   background-color: black;
-  //   color: white;
-  //   font-size: 18px;
-  // }
 }
 </style>
 

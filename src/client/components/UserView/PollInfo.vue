@@ -45,6 +45,7 @@ export default {
     margin-right: 10px;
     font-size: 12px;
     text-align: left;
+    white-space: pre-wrap;
   }
 }
 </style>

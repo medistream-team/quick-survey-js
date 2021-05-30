@@ -61,38 +61,39 @@ export default {
   },
   methods: {
     handleChoicesStatus(index, choiceIds) {
-      const { selectMultiple, choices, handleAnswersInfo, questionId } = this;
-      const newArr = choices.map(() => {
-        return false;
-      });
-
-      if (selectMultiple === false) {
-        if (this.choicesStatus[index] === false) {
-          newArr[index] = !newArr[index];
-          this.choicesStatus = newArr;
-        } else {
-          newArr[index] = !newArr[index];
-          this.choicesStatus = newArr;
-        }
-        handleAnswersInfo(
-          selectMultiple,
-          questionId,
-          choiceIds,
-          this.choicesStatus
-        );
-      } else {
-        this.choicesStatus[index] = !this.choicesStatus[index];
-        this.choicesStatus = this.choicesStatus.map((status) => {
-          return status;
+      if (!this.showResult) {
+        const { selectMultiple, choices, handleAnswersInfo, questionId } = this;
+        const newArr = choices.map(() => {
+          return false;
         });
-        handleAnswersInfo(
-          selectMultiple,
-          questionId,
-          choiceIds,
-          this.choicesStatus
-        );
-      }
 
+        if (selectMultiple === false) {
+          if (this.choicesStatus[index] === false) {
+            newArr[index] = !newArr[index];
+            this.choicesStatus = newArr;
+          } else {
+            newArr[index] = !newArr[index];
+            this.choicesStatus = newArr;
+          }
+          handleAnswersInfo(
+            selectMultiple,
+            questionId,
+            choiceIds,
+            this.choicesStatus
+          );
+        } else {
+          this.choicesStatus[index] = !this.choicesStatus[index];
+          this.choicesStatus = this.choicesStatus.map((status) => {
+            return status;
+          });
+          handleAnswersInfo(
+            selectMultiple,
+            questionId,
+            choiceIds,
+            this.choicesStatus
+          );
+        }
+      }
       console.log(this.choicesStatus);
     },
   },
