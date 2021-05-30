@@ -166,9 +166,6 @@ export default {
       console.log(this.pollQuestion);
     },
   },
-  mounted() {
-    console.log(this.pollQuestion);
-  },
 };
 </script>
 <style lang="scss" scoped>
