@@ -18,7 +18,17 @@ const routes = [
     component: Poll,
   },
   {
+    path: "/poll/:id",
+    name: "Poll",
+    component: Poll,
+  },
+  {
     path: "/poll/results",
+    name: "PollResults",
+    component: PollResults,
+  },
+  {
+    path: "/poll/results/:id",
     name: "PollResults",
     component: PollResults,
   },

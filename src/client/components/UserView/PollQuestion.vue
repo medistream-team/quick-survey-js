@@ -90,6 +90,7 @@ export default {
             }
           }
         }
+        console.log(this.allAnswered);
       }
 
       if (this.allAnswered) {
@@ -103,7 +104,7 @@ export default {
           })
         );
       } else {
-        return;
+        getResponsesData(this.allAnswered, []);
       }
     },
   },

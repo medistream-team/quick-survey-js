@@ -10,12 +10,14 @@
       :style="showResult ? fillResult : null"
     >
       <li class="choiceBox">
-        <input
+        <v-checkbox
           :id="choiceId"
           type="checkbox"
-          :disabled="showResult ? true : false"
-          :checked="!showResult && choiceStatus ? true : null"
-        />{{ choiceText }}<span v-if="showResult">({{ getResult }})</span>
+          v-model="choiceStatus"
+          :disabled="showResult"
+          :label="choiceText"
+          ><span v-if="showResult">({{ getResult }})</span></v-checkbox
+        >
       </li>
     </div>
   </div>
@@ -92,13 +94,14 @@ export default {
   cursor: pointer;
 
   &.blueBorder {
-    border: 1px solid #2275ff;
+    border: 1px solid #3281d5;
   }
 
   .choiceBox {
     white-space: nowrap;
     input {
       margin-right: 10px;
+      background-color: #3281d5;
     }
     span {
       margin-left: 5px;

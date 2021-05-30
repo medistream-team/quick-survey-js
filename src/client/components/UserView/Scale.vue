@@ -9,7 +9,9 @@
     <div class="scaleResult">
       <li class="eachScale">
         {{ scaleText }}
-        <span v-if="showResult">{{ getResult(scaleSize) }}</span>
+        <span class="scaleResult" v-if="showResult">{{
+          getResult(scaleSize)
+        }}</span>
       </li>
     </div>
   </div>
@@ -95,15 +97,27 @@ export default {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    span {
+    .scaleResult {
       font-size: 12px;
     }
   }
   &.blueBorder {
-    border: 1px solid #2275ff;
-    background-color: #2275ff;
+    border: 1px solid #3281d5;
+    background-color: #3281d5;
     color: white;
     font-weight: 500;
+  }
+}
+@media screen and (max-width: 500px) {
+  .scaleContainer {
+    width: 40px;
+    height: 40px;
+    .eachScale {
+      font-size: 14px;
+      .scaleResult {
+        font-size: 10px;
+      }
+    }
   }
 }
 </style>

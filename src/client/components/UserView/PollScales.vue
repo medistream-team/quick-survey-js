@@ -85,10 +85,10 @@ export default {
 <style lang="scss" scoped>
 .pollScales {
   display: flex;
+  overflow: scroll;
   justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
   padding: 0;
+  margin-top: 20px;
 
   span {
     margin: auto 5px;
