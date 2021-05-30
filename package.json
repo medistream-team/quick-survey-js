@@ -1,8 +1,9 @@
 {
   "name": "quick-survey-js",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "",
   "main": "src/api/app.js",
+  "files": ["dist/medi-poll.css", "dist/medi-poll.umd.min.js"],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "postinstall": "echo \"now installing serverless package globally....\" && npm install -g serverless && source ./config/settings.sh",
