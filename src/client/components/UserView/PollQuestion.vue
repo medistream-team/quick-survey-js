@@ -50,17 +50,13 @@ export default {
       type: Object,
       required: true,
     },
-    totalCount: {
-      type: Number,
-      required: true,
-    },
     showResult: {
       type: Boolean,
       required: true,
     },
     getResponsesData: {
       type: Function,
-      required: true,
+      required: false,
     },
   },
   computed: {
