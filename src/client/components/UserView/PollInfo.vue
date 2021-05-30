@@ -28,12 +28,6 @@ export default {
       required: true,
     },
   },
-  data() {
-    return {
-      date: null,
-      time: null,
-    };
-  },
   computed: {
     getDate() {
       return this.expiryDate.split("T")[0].split("-");

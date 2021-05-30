@@ -1,14 +1,14 @@
 <template>
   <div class="buttonContainer">
-    <router-link :to="isAdmin ? `/poll` : `/results`"
-      ><button
-        @click="clickFinalButton"
-        class="finalButton"
-        :disabled="isAdmin ? !readyToCreate : !readyToSubmit"
-      >
-        {{ finalButtonText }}
-      </button></router-link
+    <v-btn
+      large
+      color="primary"
+      @click="clickFinalButton"
+      class="finalButton"
+      :disabled="isAdmin ? !readyToCreate : !readyToSubmit"
     >
+      {{ finalButtonText }}
+    </v-btn>
   </div>
 </template>
 <script>
@@ -36,9 +36,11 @@ export default {
     clickFinalButton() {
       if (this.readyToSubmit) {
         this.$emit("submitResponsesData");
+        this.$router.push("/poll/results");
       }
       if (this.readyToCreate) {
         this.$emit("sendPollData");
+        this.$router.push("/poll");
       }
     },
   },
@@ -50,14 +52,14 @@ export default {
   display: flex;
   justify-content: center;
   margin-top: 20px;
-  button {
-    padding: 10px;
-    border-style: none;
-    border-radius: 5px;
-    background-color: black;
-    color: white;
-    font-size: 18px;
-  }
+  // button {
+  //   padding: 10px;
+  //   border-style: none;
+  //   border-radius: 5px;
+  //   background-color: black;
+  //   color: white;
+  //   font-size: 18px;
+  // }
 }
 </style>
 
