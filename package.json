@@ -2,13 +2,13 @@
   "name": "medi-poll",
   "version": "0.1.0",
   "description": "",
-  "main": "src/server/app.js",
+  "main": "src/api/app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "echo \"now serverless install globally....\" && npm install -g serverless && source ./config/settings.sh",
+    "postinstall": "echo \"now installing serverless package globally....\" && npm install -g serverless && source ./config/settings.sh",
     "dev": "sls offline --httpPort ${API_PORT:-8000}",
     "deploy": "sls deploy",
-    "serve": "vue-cli-service serve src/client/main.js && x-www-browser http://localhost:8080/",
+    "serve": "vue-cli-service serve src/client/main.js",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
