@@ -8,6 +8,7 @@ const { connectToDatabase } = require("../models/utils/connectDB");
 const { insertVoterInfo } = require("./utils/insert");
 const { missingElements } = require("./utils/filter");
 const { newError } = require("./utils/error");
+const { UTCToLocalTime } = require("./utils/switch");
 
 const MULTIPLE_SELECT_ALLOWED_TYPES = {
   checkbox: true,
@@ -45,7 +46,7 @@ exports.voteSurvey = async (req, res, next) => {
 
     if (
       !survey.isActive ||
-      (survey.closeAt && Date.now() > new Date(String(survey.closeAt)))
+      (survey.closeAt && new Date() > UTCToLocalTime(survey.closeAt))
     ) {
       throw newError("closed survey", 400);
     }
@@ -154,12 +155,12 @@ exports.getSurvey = async (req, res, next) => {
     return res.status(404).json({ message: "survey not found" });
   }
 
-  let survey = await Survey.findById(surveyId).populate("pages.elements");
+  const survey = await Survey.findById(surveyId).populate("pages.elements");
 
   if (survey.closeAt) {
-    survey.closeAt = new Date(survey.closeAt);
+    survey.closeAt = UTCToLocalTime(survey.closeAt);
   }
-  survey.createdAt = new Date(survey.createdAt);
+  survey.createdAt = UTCToLocalTime(survey.createdAt);
 
   let isAdmin = false;
   if (survey.creatorKey === userKey) {
