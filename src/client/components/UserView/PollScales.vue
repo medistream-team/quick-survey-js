@@ -12,6 +12,7 @@
       :scaleIndex="index"
       :handleScalesStatus="handleScalesStatus"
       :totalCount="totalCount"
+      :maxScale="maxScale"
     />
     <span class="max">{{ maxDescription }}</span>
   </ul>
@@ -55,6 +56,12 @@ export default {
         count += this.scales[i].responseCount;
       }
       return count;
+    },
+    maxScale() {
+      let scaleArr = this.scales.map((scale) => {
+        return Number(scale.responseCount);
+      });
+      return Math.max(...scaleArr);
     },
   },
   data() {

@@ -4,16 +4,17 @@
     @click="handleScalesStatus(scaleIndex, scaleId)"
     class="scaleContainer"
     :style="fillResult(scaleSize)"
-    :class="{ blueBorder: !showResult && scaleStatus }"
+    :class="{
+      selected: !showResult && scaleStatus,
+      fillMostSelected: isMostSelected,
+    }"
   >
-    <div class="scaleResult">
-      <li class="eachScale">
-        {{ scaleText }}
-        <span class="scaleResult" v-if="showResult">{{
-          getResult(scaleSize)
-        }}</span>
-      </li>
-    </div>
+    <li class="eachScale">
+      {{ scaleText }}
+      <span class="scaleResult" v-if="showResult">{{
+        getResult(scaleSize)
+      }}</span>
+    </li>
   </div>
 </template>
 <script>
@@ -52,18 +53,30 @@ export default {
       type: Function,
       required: true,
     },
+    maxScale: {
+      type: Number,
+      required: true,
+    },
   },
 
   computed: {
+    isMostSelected() {
+      return this.showResult && this.scaleCount === this.maxScale;
+    },
     scaleSize() {
       if (this.totalCount === 0) {
         return 0;
       }
-      return (this.scaleCount / this.totalCount) * 100;
+      return ((this.scaleCount / this.totalCount) * 100).toFixed(0);
     },
   },
   methods: {
     fillResult(num) {
+      if (this.showResult && this.isMostSelected) {
+        return {
+          background: `linear-gradient(to top, #e6eef8 ${num}%, #fff ${num}%)`,
+        };
+      }
       if (this.showResult) {
         return {
           background: `linear-gradient(to top, #ddd ${num}%, #fff ${num}%)`,
@@ -101,11 +114,16 @@ export default {
       font-size: 12px;
     }
   }
-  &.blueBorder {
+  &.selected {
     border: 1px solid #3281d5;
     background-color: #3281d5;
     color: white;
     font-weight: 500;
+  }
+
+  &.fillMostSelected {
+    border: 1px solid #3281d5;
+    background-color: #e6eef8;
   }
 }
 @media screen and (max-width: 500px) {

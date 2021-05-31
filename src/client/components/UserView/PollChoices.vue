@@ -11,6 +11,7 @@
       :choiceStatus="choicesStatus[index]"
       :handleChoicesStatus="handleChoicesStatus"
       :choiceIndex="index"
+      :maxChoice="maxChoice"
     />
   </ul>
 </template>
@@ -49,6 +50,12 @@ export default {
         count += this.choices[i].responseCount;
       }
       return count;
+    },
+    maxChoice() {
+      let choiceArr = this.choices.map((choice) => {
+        return Number(choice.responseCount);
+      });
+      return Math.max(...choiceArr);
     },
   },
   data() {
