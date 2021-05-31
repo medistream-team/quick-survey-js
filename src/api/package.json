@@ -1,0 +1,36 @@
+{
+  "name": "quick-survey-js",
+  "version": "0.1.9",
+  "description": "",
+  "main": "src/api/app.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/medistream-team/quick-survey-js.git"
+  },
+  "author": {
+    "name": "mooni",
+    "email": "munhw1408@gmail.com"
+  },
+  "scripts": {
+    "dev": "./node_modules/serverless/bin/serverless.js offline --httpPort ${API_PORT:-8000}",
+    "deploy": "./node_modules/serverless/bin/serverless.js deploy"
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "dotenv": "^9.0.2",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "mongoose": "^5.12.10",
+    "serverless-http": "^2.7.0"
+  },
+  "devDependencies": {
+    "serverless": "^2.43.0",
+    "serverless-offline": "^7.0.0"
+  },
+  "license": "MIT",
+  "private": "true",
+  "bugs": {
+    "url": "https://github.com/medistream-team/quick-survey-js/issues"
+  },
+  "homepage": "https://github.com/medistream-team/quick-survey-js#readme"
+}
