@@ -124,7 +124,7 @@ exports.createSurvey = async (req, res, next) => {
     await session.commitTransaction();
     session.endSession();
 
-    return res.status(201).json({ message: "success" });
+    return res.status(201).json({ surveyId: survey[0]._id });
   } catch (error) {
     if (session.inTransaction()) {
       await session.abortTransaction();
