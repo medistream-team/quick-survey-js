@@ -16,14 +16,27 @@
 </template>
 
 <script>
-import { USER_POLL_API, SURVEY_ID } from "../config";
+import { USER_POLL_API, SURVEY_ID, USER_KEY } from "../config";
 import PollInfo from "../components/UserView/PollInfo";
 import PollQuestion from "../components/UserView/PollQuestion";
 const axios = require("axios");
+const headers = {
+  Authorization: USER_KEY,
+};
 
 export default {
   name: "Poll",
   components: { PollInfo, PollQuestion },
+  props: {
+    surveyId: {
+      type: String,
+      default: SURVEY_ID,
+    },
+    userKey: {
+      type: String,
+      default: USER_KEY,
+    },
+  },
   data() {
     return {
       pollData: null,
@@ -31,20 +44,18 @@ export default {
       showResult: true,
     };
   },
-  computed: {},
   created() {
     axios
-      // .get("/pollData2.json")
-      .get(`${USER_POLL_API}/${SURVEY_ID}`)
+      // .get("../public/pollData.json")
+      .get(`${USER_POLL_API}/${this.surveyId}`, {
+        headers: headers,
+      })
       .then((res) => {
-        console.log(res);
         this.pollData = res.data.survey;
         this.pages = res.data.survey.pages;
-        console.log(this.pages);
       })
       .catch((err) => console.log(err));
   },
-  methods: {},
 };
 </script>
 

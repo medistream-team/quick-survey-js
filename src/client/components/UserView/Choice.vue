@@ -3,10 +3,12 @@
     id="choiceId"
     @click="handleChoicesStatus(choiceIndex, choiceId)"
     class="choiceContainer"
-    :class="{ blueBorder: !showResult && choiceStatus }"
+    :class="{
+      blueBorder: isSelected || isMostSelected,
+    }"
   >
     <div
-      :class="{ withResult: showResult }"
+      :class="{ withResult: showResult, fillMostSelected: isMostSelected }"
       :style="showResult ? fillResult : null"
     >
       <li class="choiceBox">
@@ -16,8 +18,8 @@
           v-model="choiceStatus"
           :disabled="showResult"
           :label="choiceText"
-          ><span v-if="showResult">({{ getResult }})</span></v-checkbox
-        >
+        ></v-checkbox
+        ><span v-if="showResult">({{ getResult }})</span>
       </li>
     </div>
   </div>
@@ -59,23 +61,34 @@ export default {
       type: Number,
       required: true,
     },
+    maxChoice: {
+      type: Number,
+      required: true,
+    },
   },
 
   computed: {
+    isSelected() {
+      return !this.showResult && this.choiceStatus;
+    },
+    isMostSelected() {
+      return this.showResult && this.choiceCount === this.maxChoice;
+    },
     fillResult() {
-      if (this.totalCount === 0) {
+      if (this.choiceCount === 0) {
         return { width: "0%" };
+      } else {
+        return {
+          width: `${((this.choiceCount / this.totalCount) * 100).toFixed(0)}%`,
+        };
       }
-
-      return {
-        width: `${(this.choiceCount / this.totalCount) * 100}%`,
-      };
     },
     getResult() {
-      if (this.totalCount === 0) {
+      if (this.choiceCount === 0) {
         return "0%";
+      } else {
+        return `${((this.choiceCount / this.totalCount) * 100).toFixed(0)}%`;
       }
-      return `${(this.choiceCount / this.totalCount) * 100}%`;
     },
   },
 };
@@ -92,31 +105,36 @@ export default {
   border-radius: 5px;
   list-style: none;
   cursor: pointer;
+  font-weight: 500;
 
   &.blueBorder {
-    border: 1px solid #3281d5;
+    border: 1px solid rgb(50, 129, 213);
+    background-color: #e6eef8;
   }
 
   .choiceBox {
     white-space: nowrap;
-    input {
-      margin-right: 10px;
-      background-color: #3281d5;
-    }
+    display: flex;
+    align-items: center;
     span {
       margin-left: 5px;
-      font-size: 14px;
+      font-size: 12px;
     }
   }
   .withResult {
     position: absolute;
     display: flex;
     align-items: center;
+    height: 100%;
     top: 0;
     left: 0;
+    border-radius: 5px;
     padding: 0px 10px;
     background-color: #ddd;
-    height: 100%;
+  }
+
+  .fillMostSelected {
+    background-color: #e6eef8;
   }
 }
 </style>

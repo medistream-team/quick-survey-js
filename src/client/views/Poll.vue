@@ -66,6 +66,9 @@ import PollInfo from "../components/UserView/PollInfo";
 import PollQuestion from "../components/UserView/PollQuestion";
 import FinalButton from "../components/FinalButton";
 const axios = require("axios");
+const headers = {
+  Authorization: USER_KEY,
+};
 
 export default {
   name: "Poll",
@@ -99,7 +102,9 @@ export default {
   created() {
     axios
       // .get("/pollData2.json")
-      .get(`${USER_POLL_API}/${this.surveyId}`)
+      .get(`${USER_POLL_API}/${this.surveyId}`, {
+        headers: headers,
+      })
       .then((res) => {
         if (res.data.survey.isActive) {
           this.pollData = res.data.survey;
@@ -112,7 +117,7 @@ export default {
 
         if (this.pollData.closeAt && new Date(this.pollData.closeAt) < today) {
           this.pollData.isPublic
-            ? this.$router.push(`/poll/results/${SURVEY_ID}`)
+            ? this.$router.push(`/poll/results/${this.surveyId}`)
             : (this.isClosed = true);
         }
 
@@ -122,7 +127,7 @@ export default {
 
         if (this.pollData.voted) {
           alert("이미 참여한 투표입니다.");
-          this.$router.push(`/poll/results/${SURVEY_ID}`);
+          this.$router.push(`/poll/results/${this.surveyId}`);
         }
       })
       .catch((err) => console.log(err));
@@ -134,12 +139,31 @@ export default {
       this.ResponsesData.responses = pollAnswers;
     },
     submitResponsesData() {
-      const headers = {
-        Authorization: USER_KEY,
+      axios
+        .post(`${USER_POLL_API}/${this.surveyId}`, this.ResponsesData, {
+          headers: headers,
+        })
+        .then((res) =>
+          res.response.data.message === "success"
+            ? this.$router.push(`/poll/results/${this.surveyId}`)
+            : console.log(res)
+        )
+        .catch((err) => {
+          if (err.response.data.message === "already voted") {
+            alert("이미 참여한 투표입니다.");
+            this.$router.push(`/poll/results/${this.surveyId}`);
+          }
+        });
+    },
+    closePoll() {
+      this.dialog = false;
+      //POST close poll - test needed
+      const body = {
+        isActive: false,
       };
 
       axios
-        .post(`${USER_POLL_API}/${SURVEY_ID}`, this.ResponsesData, {
+        .post(`${USER_POLL_API}/${SURVEY_ID}`, body, {
           headers: headers,
         })
         .then((res) =>
@@ -148,15 +172,8 @@ export default {
             : console.log(res)
         )
         .catch((err) => {
-          if (err.response.data.message === "already voted") {
-            alert("이미 참여한 투표입니다.");
-            this.$router.push(`/poll/results/${SURVEY_ID}`);
-          }
+          console.log(err);
         });
-    },
-    closePoll() {
-      this.dialog = false;
-      //POST close poll
     },
   },
 };

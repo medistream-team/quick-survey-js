@@ -8,6 +8,16 @@ Vue.use(VueRouter);
 
 const routes = [
   {
+    path: "/poll/results",
+    name: "PollResults",
+    component: PollResults,
+  },
+  {
+    path: "/poll/results/:id",
+    name: "PollResults",
+    component: PollResults,
+  },
+  {
     path: "/poll/admin",
     name: "PollAdmin",
     component: PollAdmin,
@@ -21,16 +31,6 @@ const routes = [
     path: "/poll/:id",
     name: "Poll",
     component: Poll,
-  },
-  {
-    path: "/poll/results",
-    name: "PollResults",
-    component: PollResults,
-  },
-  {
-    path: "/poll/results/:id",
-    name: "PollResults",
-    component: PollResults,
   },
 ];
 
