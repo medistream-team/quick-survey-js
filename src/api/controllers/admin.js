@@ -142,7 +142,7 @@ exports.patchSurvey = async (req, res, next) => {
   await connectToDatabase();
   const creatorKey = req.header("authorization");
   const surveyId = req.params.surveyId;
-  const { status } = req.body;
+  const { isActive } = req.body;
 
   try {
     if (!creatorKey) {
@@ -153,11 +153,11 @@ exports.patchSurvey = async (req, res, next) => {
       throw newError("invalid object id", 400);
     }
 
-    if (!("status" in req.body)) {
+    if (!("isActive" in req.body)) {
       throw newError("key error", 400);
     }
 
-    if (typeof status !== "boolean") {
+    if (typeof isActive !== "boolean") {
       throw newError("value error", 400);
     }
 
@@ -173,7 +173,7 @@ exports.patchSurvey = async (req, res, next) => {
       throw newError("unauthorized", 401);
     }
 
-    survey.isActive = status;
+    survey.isActive = isActive;
     survey.save();
 
     return res.status(200).json({ message: "success" });
