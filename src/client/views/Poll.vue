@@ -1,5 +1,8 @@
 <template>
   <form @submit.prevent class="pollContainer">
+    <div class="closedPoll" v-if="isClosed">
+      <h3>종료된 투표입니다.</h3>
+    </div>
     <div v-if="pollData" class="pollPage">
       <PollInfo
         :pollId="pollData._id"
@@ -58,7 +61,7 @@
 </template>
 
 <script>
-import { USER_POLL_API, SURVEY_ID } from "../config";
+import { USER_POLL_API, SURVEY_ID, USER_KEY } from "../config";
 import PollInfo from "../components/UserView/PollInfo";
 import PollQuestion from "../components/UserView/PollQuestion";
 import FinalButton from "../components/FinalButton";
@@ -67,8 +70,19 @@ const axios = require("axios");
 export default {
   name: "Poll",
   components: { PollInfo, PollQuestion, FinalButton },
+  props: {
+    surveyId: {
+      type: String,
+      default: SURVEY_ID,
+    },
+    userKey: {
+      type: String,
+      default: USER_KEY,
+    },
+  },
   data() {
     return {
+      isClosed: false,
       isAdmin: true,
       dialog: false,
       pollData: null,
@@ -85,20 +99,21 @@ export default {
   created() {
     axios
       // .get("/pollData2.json")
-      .get(`${USER_POLL_API}/${SURVEY_ID}`)
+      .get(`${USER_POLL_API}/${this.surveyId}`)
       .then((res) => {
         if (res.data.survey.isActive) {
           this.pollData = res.data.survey;
           this.pages = res.data.survey.pages;
         } else {
-          alert("종료된 투표입니다");
+          this.isClosed = true;
         }
 
         let today = new Date();
-        if (this.pollData.closeAt && this.pollData.closeAt < today) {
+
+        if (this.pollData.closeAt && new Date(this.pollData.closeAt) < today) {
           this.pollData.isPublic
-            ? this.$router.push("/poll/results")
-            : alert("종료된 투표입니다");
+            ? this.$router.push(`/poll/results/${SURVEY_ID}`)
+            : (this.isClosed = true);
         }
 
         if (this.pollData.isAdmin) {
@@ -106,7 +121,8 @@ export default {
         }
 
         if (this.pollData.voted) {
-          this.$router.push("/poll/results");
+          alert("이미 참여한 투표입니다.");
+          this.$router.push(`/poll/results/${SURVEY_ID}`);
         }
       })
       .catch((err) => console.log(err));
@@ -118,10 +134,25 @@ export default {
       this.ResponsesData.responses = pollAnswers;
     },
     submitResponsesData() {
+      const headers = {
+        Authorization: USER_KEY,
+      };
+
       axios
-        .post(`${USER_POLL_API}/${SURVEY_ID}`, this.ResponsesData)
-        .then((res) => console.log(res))
-        .catch((err) => console.dir(err.response.data));
+        .post(`${USER_POLL_API}/${SURVEY_ID}`, this.ResponsesData, {
+          headers: headers,
+        })
+        .then((res) =>
+          res.response.data.message === "success"
+            ? this.$router.push(`/poll/results/${SURVEY_ID}`)
+            : console.log(res)
+        )
+        .catch((err) => {
+          if (err.response.data.message === "already voted") {
+            alert("이미 참여한 투표입니다.");
+            this.$router.push(`/poll/results/${SURVEY_ID}`);
+          }
+        });
     },
     closePoll() {
       this.dialog = false;
@@ -137,6 +168,18 @@ export default {
   max-width: 600px;
   margin: 50px auto;
   padding: 10px;
+
+  .closedPoll {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    z-index: 100;
+    background-color: rgba(255, 255, 255, 0.8);
+    font-size: 24px;
+  }
 
   .closeButton {
     position: absolute;
