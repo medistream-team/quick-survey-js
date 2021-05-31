@@ -9,16 +9,21 @@ const { insertVoterInfo } = require("./utils/insert");
 const { missingElements } = require("./utils/filter");
 const { newError } = require("./utils/error");
 
+const MULTIPLE_SELECT_ALLOWED_TYPES = {
+  checkbox: true,
+  rating: false,
+};
+
 exports.voteSurvey = async (req, res, next) => {
   await connectToDatabase();
   const session = await mongoose.startSession();
 
   const surveyId = req.params.surveyId;
   const voterKey = req.header("authorization");
-  const { responses } = req.body;
+  const { answers } = req.body;
 
   try {
-    if (!Array.isArray(responses)) {
+    if (!Array.isArray(answers)) {
       throw newError("value error", 400);
     }
 
@@ -34,82 +39,93 @@ exports.voteSurvey = async (req, res, next) => {
       throw newError("unauthorized", 401);
     }
 
-    if (!responses) throw newError("key error", 400);
+    if (!answers) throw newError("key error", 400);
 
     const survey = await Survey.findById(surveyId).populate("pages.elements");
 
     if (
       !survey.isActive ||
-      (survey.closeAt && Date.now() > new Date(survey.closeAt))
+      (survey.closeAt && Date.now() > new Date(String(survey.closeAt)))
     ) {
       throw newError("closed survey", 400);
     }
 
-    if (missingElements(survey, responses) /** @boolean */) {
+    if (missingElements(survey, answers) /** @boolean */) {
       throw newError("some necessary questions not responded", 400);
     }
 
     session.startTransaction();
 
-    for (const response of responses) {
-      if (!("questionId" in response) || !("choiceIds" in response)) {
+    for (const answer of answers) {
+      if (!("questionId" in answer) || !("choiceIds" in answer)) {
         throw newError("key error", 400);
       }
 
-      if (!Array.isArray(response.choiceIds)) {
+      if (!Array.isArray(answer.choiceIds)) {
         throw newError("value error", 400);
       }
 
-      if (!mongoose.Types.ObjectId.isValid(response.questionId)) {
+      if (!mongoose.Types.ObjectId.isValid(answer.questionId)) {
         throw newError("invalid object id", 400);
       }
 
-      if (!(await Question.exists({ _id: response.questionId }))) {
+      if (!(await Question.exists({ _id: answer.questionId }))) {
         throw newError("question not found", 404);
       }
 
-      const question = await Question.findById(response.questionId)
-        .select("choices responseCount participantCount")
+      const question = await Question.findById(answer.questionId)
+        .select(
+          "choices responseCount participantCount multipleSelectOption type"
+        )
         .session(session);
 
-      response.choiceIds.forEach((choiceId) => {
+      const multipleSelectOption = question.multipleSelectOption;
+      const choicesLength = answer.choiceIds.length;
+
+      if (
+        (!MULTIPLE_SELECT_ALLOWED_TYPES[question.type] && choicesLength > 1) ||
+        (multipleSelectOption.allowedMin &&
+          multipleSelectOption.allowedMax &&
+          (multipleSelectOption.allowedMin > choicesLength ||
+            multipleSelectOption.allowedMax < choicesLength))
+      ) {
+        throw newError("invalid selection allowance range", 400);
+      }
+
+      answer.choiceIds.forEach((choiceId) => {
         if (!mongoose.Types.ObjectId.isValid(choiceId)) {
           throw newError("invalid object id", 400);
         }
       });
 
-      const match = question.choices.some((choice) => {
-        return response.choiceIds.includes(String(choice._id));
-      });
-
-      if (!match) {
-        throw newError("choice not found", 400);
-      }
-
-      question.choices.map((choice /** @object */) => {
-        if (response.choiceIds.includes(String(choice._id))) {
-          choice.responseCount++;
-          question.responseCount++;
-          survey.responseCount++;
+      answer.choiceIds.forEach((choiceId) => {
+        const choice = question.choices.find((choiceObj) => {
+          return String(choiceObj._id) === choiceId;
+        });
+        if (!choice) {
+          throw newError("choice not found", 400);
         }
-        return choice;
+        choice.responseCount++;
+        question.responseCount++;
+        survey.responseCount++;
       });
+
       question.participantCount++;
       await question.save();
     }
     survey.participantCount++;
-    await survey.save();
 
     const insertVoterResult = await insertVoterInfo(
       voterKey,
       surveyId,
-      responses,
+      answers,
       session
     );
 
     if (!insertVoterResult /** @boolean or @resolve */)
       throw newError("already voted", 400);
 
+    await survey.save();
     await session.commitTransaction();
     session.endSession();
 
