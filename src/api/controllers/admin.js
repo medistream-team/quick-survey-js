@@ -6,6 +6,7 @@ const Question = require("../models/questions");
 const { connectToDatabase } = require("../models/utils/connectDB");
 const { insertCreatorInfo } = require("./utils/insert");
 const { newError } = require("./utils/error");
+const { UTCToLocalTime } = require("./utils/switch");
 
 const MULTIPLE_SELECT_ALLOWED_TYPES = {
   checkbox: true,
@@ -45,7 +46,10 @@ exports.createSurvey = async (req, res, next) => {
       throw newError("value error", 400);
     }
 
-    if (closeAt && Date.now() >= new Date(closeAt)) {
+    if (
+      closeAt &&
+      UTCToLocalTime(new Date()) >= UTCToLocalTime(new Date(closeAt))
+    ) {
       throw newError("invalid closing time", 400);
     }
 
@@ -67,7 +71,7 @@ exports.createSurvey = async (req, res, next) => {
           !("title" in element) ||
           !("isRequired" in element) ||
           !("multipleSelectOption" in element) ||
-          !("allowed" in element.multipleSelectOption) ||          
+          !("allowed" in element.multipleSelectOption) ||
           !("choices" in element)
         ) {
           throw newError("key error", 400);
@@ -86,7 +90,6 @@ exports.createSurvey = async (req, res, next) => {
         if (
           (multipleSelectOption.allowed &&
             !MULTIPLE_SELECT_ALLOWED_TYPES[element.type]) ||
-
           (multipleSelectOption.allowedMin &&
             multipleSelectOption.allowedMax &&
             multipleSelectOption.allowedMin > multipleSelectOption.allowedMax)
