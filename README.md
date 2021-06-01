@@ -1,10 +1,15 @@
 ## Quick-Survey-JS is a JavaScript Survey Module.
 
 Quick-Survey-JS offers a quick way to add a simple survey to your website.<br>
-It is a set of Vue components of creating, completing, and viewing survey questions and results.
-<br>
+It is a set of components of creating, completing, and viewing survey questions and results.<br>
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-red.svg)](https://opensource.org/licenses/MIT)
+
+## Quick Start
+Intsall the client side package using npm.
+```
+npm install quick-survey-js
+```
 
 ## Features
 
@@ -16,6 +21,7 @@ It is a set of Vue components of creating, completing, and viewing survey questi
 [API Document](https://documenter.getpostman.com/view/12457751/TzXukyiL#7e4f1f5e-1643-40df-b94c-374aed364f03)
 
 ## Clone Git repository
+Please refer to the following sections for establising an api server and setting up a client server as needed.
 
 ```bash
 git clone https://github.com/medistream-team/quick-survey-js.git
@@ -27,7 +33,7 @@ git clone https://github.com/medistream-team/quick-survey-js.git
 
 ### 1. Install packages
 
-After you clone git repository, go to root directory and run `npm run install:api` to download required packages for api server. When installation is done, `.env` file will be automatically created in a `./src/api` directory.
+After you clone git repository, go to the root directory and run `npm run install:api` to download required packages for an api server. Once the installation is done, `.env` file will be automatically created in `./src/api` directory.
 
 ```bash
 npm run install:api
@@ -35,7 +41,7 @@ npm run install:api
 
 ### 2. Set your DB endpoints
 
-You should fill up `MONGO_URI` value inside `.env` at `./src/api` file first. MONGO_URI indicates MongoDB server endpoints and this is necessary to run api on whether local or aws lambda.
+You should fill out `MONGO_URI` value inside `.env` at `./src/api` file first. MONGO_URI indicates MongoDB server endpoints and this is necessary to run api on either local or aws lambda.
 
 Here is an example.
 ```
@@ -65,7 +71,7 @@ To run this project on local, use `npm run dev` command.
 npm run dev
 ```
 
-This command will run serverless offline on your local, and default port 8000 will be opened. 
+This command will run serverless offline on your local, and default port 8000 will open. 
 Here is an example. The `provider[stage]` value you set inside `serverless.yml` will follow the endpoints.
 
 ```
@@ -94,15 +100,15 @@ npm run install:client
 
 ### 1. Set your API endpoints
 
-You should fill up `API_ENDPOINTS` value inside `.env` file at `./src/client`. This indicates API server endpoints.
+You should fill out `API_ENDPOINTS` value inside `.env` file at `./src/client`. This indicates API server endpoints.
 
-It would be like this, 👇
+As an example, 👇
 
 ```
 API_ENDPOINTS=https://92pz8mf1w2.execute-api.ap-northeast-2.amazonaws.com/dev
 ```
 
-or, like this 👇, if you're running API server on local. 
+or 👇, if you're running an API server on local. 
 
 ```
 API_ENDPOINTS=http://localhost:8000/dev
@@ -115,3 +121,54 @@ To run client server on local, run `npm run serve:client` and it will open port 
 ```
 npm run serve:client
 ```
+### 3. Import components
+
+There are 3 components that you may import as needed - to create a poll, submit answers to a poll, and view poll results.
+You may import the components on your existing or new application as guided below. 
+
+#### Example
+
+```js
+<template>
+  <PollAdmin @poll-created="onCreated" @failed-to-create-poll="onFailed" />
+</template>
+
+<script>
+  import PollAdmin from "../components/PollAdmin";
+  ...
+</script>
+```
+### 4. Use components
+
+To get the components working, there are required props to pass each, and methods that you can specify the actions to take in each component.
+Please refer to below for **required** props and methods.
+
+#### Create Poll
+```js
+<PollAdmin 
+    @poll-created="yourMethodOnCreated" 
+    @failed-to-create-poll="yourMethodOnFailed" 
+  />
+
+```
+
+#### Submit Poll
+```js
+<Poll
+    :surveyId="yourSurveyID"
+    :userKey="yourUserKey"
+    @vote-success="yourMethodOnVoted"
+    @already-voted="yourMethodOnAlreadyVoted"
+    @poll-closed="yourMethodOnPollClosed"
+  />
+```
+
+#### View Poll Results
+```js
+<PollResults 
+    :surveyId="yourSurveyID"
+    :userKey="yourUserKey"
+  />
+```
+
+
