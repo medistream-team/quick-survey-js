@@ -21,7 +21,6 @@ npm install quick-survey-js
 [API Document](https://documenter.getpostman.com/view/12457751/TzXukyiL#7e4f1f5e-1643-40df-b94c-374aed364f03)
 
 ## Clone Git repository
-Please refer to the following sections for establising an api server and setting up a client server as needed.
 
 ```bash
 git clone https://github.com/medistream-team/quick-survey-js.git
@@ -30,6 +29,7 @@ git clone https://github.com/medistream-team/quick-survey-js.git
 <br>
 
 ## API Server
+Please refer to the following steps for establising an api server.
 
 ### 1. Install packages
 
@@ -90,8 +90,9 @@ According to serverless documents, the console will show your endpoints. For mor
 
 <br>
 
-## Client Server
 
+## Client Server
+Please refer to the following steps for setting up a client server as needed.
 If you want to check client-side, use `npm run install:client` command. When installation is done, `.env` file will be automatically created in a `./src/client` directory.
 
 ```bash
