@@ -45,6 +45,8 @@
   </v-app>
 </template>
 <script>
+// TODO: apiEndpoint, userKey를 prop으로 받을 수 있게하기
+// TODO: poll-created, failed-to-create-poll 2개의 event를 문서에서 명시해주기
 import { ADMIN_POLL_API, USER_KEY } from "../config";
 import PollPage from "./AdminView/PollPage";
 import FinalButton from "./FinalButton";
@@ -59,15 +61,9 @@ export default {
     PollPage,
     FinalButton,
   },
-  props: {
-    onSubmit: {
-      type: Function,
-    },
-  },
   data() {
     return {
       createPoll: {
-        newSurveyId: "",
         hasExpiry: false,
         closeAt: "",
         isPublic: true,
@@ -120,13 +116,11 @@ export default {
           headers: headers,
         })
         .then((res) => {
-          // console.log(res.data.surveyId);
-          this.newSurveyId = res.data.surveyId;
-          this.$router.push(`/poll/${this.newSurveyId}`);
+          this.$emit("poll-created", res.data.surveyId);
         })
-        .catch((err) => console.log(err));
-
-      this.$emit("poll-created", this.createPoll);
+        .catch(() => {
+          this.$emit("failed-to-create-poll");
+        });
     },
   },
 };

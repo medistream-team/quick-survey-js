@@ -1,5 +1,5 @@
 <template>
-  <PollAdmin @poll-created="onCreated" />
+  <PollAdmin @poll-created="onCreated" @failed-to-create-poll="onFailed" />
 </template>
 <script>
 import PollAdmin from "../components/PollAdmin";
@@ -13,6 +13,9 @@ export default {
     onCreated(createPoll) {
       console.log(createPoll);
       this.$router.push("/poll");
+    },
+    onFailed() {
+      console.log("create failed");
     },
   },
 };
