@@ -63,11 +63,13 @@
 </template>
 
 <script>
+// TODO: survey id, userkey 삭제
 import { ADMIN_POLL_API, USER_POLL_API, SURVEY_ID, USER_KEY } from "../config";
-import PollInfo from "../components/UserView/PollInfo";
-import PollQuestion from "../components/UserView/PollQuestion";
-import FinalButton from "../components/FinalButton";
+import PollInfo from "./UserView/PollInfo";
+import PollQuestion from "./UserView/PollQuestion";
+import FinalButton from "./FinalButton";
 import vuetify from "../plugins/vuetify";
+
 const axios = require("axios");
 const headers = {
   Authorization: USER_KEY,
@@ -82,6 +84,7 @@ export default {
     FinalButton,
   },
   props: {
+    // TODO: default 삭제, required
     surveyId: {
       type: String,
       default: SURVEY_ID,

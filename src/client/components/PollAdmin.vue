@@ -46,14 +46,11 @@
 </template>
 <script>
 import { ADMIN_POLL_API, USER_KEY } from "../config";
-import PollPage from "../components/AdminView/PollPage";
-import FinalButton from "../components/FinalButton";
+import PollPage from "./AdminView/PollPage";
+import FinalButton from "./FinalButton";
 import vuetify from "../plugins/vuetify";
 
 const axios = require("axios");
-const headers = {
-  Authorization: USER_KEY,
-};
 
 export default {
   name: "PollAdmin",
@@ -61,6 +58,11 @@ export default {
   components: {
     PollPage,
     FinalButton,
+  },
+  props: {
+    onSubmit: {
+      type: Function,
+    },
   },
   data() {
     return {
@@ -92,14 +94,27 @@ export default {
   },
   computed: {
     readyToCreate() {
-      return (
-        this.createPoll.pages[0].elements[0].title !== "" &&
-        this.createPoll.pages[0].elements[0].choices.length >= 2
-      );
+      const titlesAreValid = this.createPoll.pages.every((page) => {
+        return page.elements.every((element) => {
+          return element.title !== "";
+        });
+      });
+
+      const choicesAreValid = this.createPoll.pages.every((page) => {
+        return page.elements.every((element) => {
+          return element.choices.length >= 2;
+        });
+      });
+
+      return titlesAreValid && choicesAreValid;
     },
   },
   methods: {
     sendPollData() {
+      const headers = {
+        Authorization: USER_KEY,
+      };
+
       axios
         .post(ADMIN_POLL_API, this.createPoll, {
           headers: headers,
@@ -110,6 +125,8 @@ export default {
           this.$router.push(`/poll/${this.newSurveyId}`);
         })
         .catch((err) => console.log(err));
+
+      this.$emit("poll-created", this.createPoll);
     },
   },
 };
