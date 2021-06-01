@@ -13,6 +13,7 @@ app.use(cors());
 const adminRouter = require("./routes/admin");
 const surveyRouter = require("./routes/survey");
 
+// auth middleware 추가
 app.use("/admin", adminRouter);
 app.use("/survey", surveyRouter);
 
