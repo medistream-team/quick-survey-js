@@ -1,5 +1,5 @@
 <template>
-  <v-btn class="addButton" depressed block @click="$emit('addChoiceBox')"
+  <v-btn class="add-button" depressed block @click="$emit('addChoiceBox')"
     >항목 추가</v-btn
   >
 </template>

@@ -1,5 +1,5 @@
 <template>
-  <div v-if="pollData" class="pollResultsContainer">
+  <div v-if="pollData" class="poll-results-container">
     <PollInfo
       :pollId="pollData._id"
       :totalCount="pollData.responseCount"

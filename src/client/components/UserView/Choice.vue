@@ -2,7 +2,7 @@
   <div
     id="choiceId"
     @click="handleChoicesStatus(choiceIndex, choiceId)"
-    class="choiceContainer"
+    class="choice-container"
     :class="{
       blueBorder: isSelected || isMostSelected,
     }"
@@ -11,7 +11,7 @@
       :class="{ withResult: showResult, fillMostSelected: isMostSelected }"
       :style="showResult ? fillResult : null"
     >
-      <li class="choiceBox">
+      <li class="choice-box">
         <v-checkbox
           :id="choiceId"
           type="checkbox"

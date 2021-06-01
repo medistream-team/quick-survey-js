@@ -1,6 +1,6 @@
 <template>
-  <div class="pollPage">
-    <div class="pollAdminInfo">
+  <div class="poll-page">
+    <div class="poll-admin-info">
       <h2>투표</h2>
       <PollInput
         :handlePollInput="handlePollInput"
@@ -13,9 +13,9 @@
         :name="`description`"
       />
     </div>
-    <div class="pollTypes">
+    <div class="poll-types">
       <h2>투표 유형</h2>
-      <div class="typeCheckbox">
+      <div class="type-checkbox">
         <v-checkbox
           v-model="pollType"
           class="checkbox"
@@ -29,15 +29,15 @@
         ></v-checkbox>
       </div>
     </div>
-    <div v-if="pollType" class="choicePoll">
+    <div v-if="pollType" class="choice-poll">
       <h2>객관식 항목</h2>
-      <div class="multipleOption">
+      <div class="multiple-option">
         <v-switch
           label="중복 선택 가능"
           v-model="pollQuestion.multipleSelectOption.allowed"
           dense
           inset
-          class="toggleBox"
+          class="toggle-box"
         ></v-switch>
       </div>
       <PollInput
@@ -52,10 +52,10 @@
       />
       <AddButton @addChoiceBox="addChoiceBox" />
     </div>
-    <div v-if="!pollType" class="scalePoll">
+    <div v-if="!pollType" class="scale-poll">
       <h2>스케일 항목</h2>
-      <div class="minScale">
-        <input name="value" class="minNum" value="1" disabled />
+      <div class="min-scale">
+        <input name="value" class="min-num" value="1" disabled />
         <PollInput
           :handlePollInput="handlePollInput"
           :placeholder="`최하 스케일 설명 예)매우 싫다`"
@@ -63,8 +63,8 @@
           v-model="minText"
         />
       </div>
-      <div class="maxScale">
-        <input v-model="maxScale" class="maxNum" @change="handleScaleNum" />
+      <div class="max-scale">
+        <input v-model="maxScale" class="max-num" @change="handleScaleNum" />
         <PollInput
           :handlePollInput="handlePollInput"
           :placeholder="`최상 스케일 설명 예)매우 좋다`"

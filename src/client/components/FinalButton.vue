@@ -1,11 +1,11 @@
 <template>
-  <div class="buttonContainer">
+  <div class="button-container">
     <v-btn
       large
       depressed
       color="primary"
       @click="clickFinalButton"
-      class="finalButton"
+      class="final-button"
       :disabled="isAdmin ? !readyToCreate : !readyToSubmit"
     >
       {{ finalButtonText }}

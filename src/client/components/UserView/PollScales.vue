@@ -1,5 +1,5 @@
 <template>
-  <ul class="pollScales">
+  <ul class="poll-scales">
     <span class="min">{{ minDescription }}</span>
     <Scale
       v-for="(scale, index) in scales"

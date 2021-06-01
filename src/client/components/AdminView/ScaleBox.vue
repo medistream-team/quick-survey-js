@@ -1,6 +1,6 @@
 <template>
-  <select class="scaleSelect">
-    <option class="scaleValue" v-for="value in scaleValues" :key="value">
+  <select class="scale-select">
+    <option class="scale-value" v-for="value in scaleValues" :key="value">
       {{ value }}
     </option>
   </select>

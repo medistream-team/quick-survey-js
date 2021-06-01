@@ -1,7 +1,7 @@
 <template>
-  <div class="pollQuestionContainer">
+  <div class="poll-question-container">
     <div
-      class="pollQuestion"
+      class="poll-question"
       v-for="question in page.elements"
       :key="question._id"
     >

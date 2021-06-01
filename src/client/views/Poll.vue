@@ -1,9 +1,9 @@
 <template>
-  <form @submit.prevent class="pollContainer">
-    <div class="closedPoll" v-if="isClosed">
+  <form @submit.prevent class="poll-container">
+    <div class="closed-poll" v-if="isClosed">
       <h3>종료된 투표입니다.</h3>
     </div>
-    <div v-if="pollData" class="pollPage">
+    <div v-if="pollData" class="poll-page">
       <PollInfo
         :pollId="pollData._id"
         :totalCount="pollData.responseCount"
@@ -33,7 +33,7 @@
             depressed
             small
             outlined
-            class="closeButton"
+            class="close-button"
             color="red lighten-2"
             dark
             v-bind="attrs"

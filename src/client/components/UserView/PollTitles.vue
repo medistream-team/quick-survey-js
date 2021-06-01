@@ -1,7 +1,7 @@
 <template>
-  <div class="pollTitleContainer">
-    <div class="pollTitle">{{ title }}</div>
-    <div class="pollSubtitle">{{ subtitle }}</div>
+  <div class="poll-title-container">
+    <div class="poll-title">{{ title }}</div>
+    <div class="poll-subtitle">{{ subtitle }}</div>
   </div>
 </template>
 <script>

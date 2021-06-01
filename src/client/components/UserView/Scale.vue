@@ -2,16 +2,16 @@
   <div
     id="scaleId"
     @click="handleScalesStatus(scaleIndex, scaleId)"
-    class="scaleContainer"
+    class="scale-container"
     :style="fillResult(scaleSize)"
     :class="{
       selected: !showResult && scaleStatus,
       fillMostSelected: isMostSelected,
     }"
   >
-    <li class="eachScale">
+    <li class="each-scale">
       {{ scaleText }}
-      <span class="scaleResult" v-if="showResult">{{
+      <span class="scale-result" v-if="showResult">{{
         getResult(scaleSize)
       }}</span>
     </li>

@@ -1,16 +1,16 @@
 <template>
-  <div class="pollInputContainer">
+  <div class="poll-input-container">
     <input
       @change="handlePollInput"
       :placeholder="placeholder"
-      class="pollInputBox"
+      class="poll-input-box"
       :name="name"
     />
     <button
       @click="$emit('deleteChoiceBox', boxId)"
       depressed
       text
-      class="deleteButton"
+      class="delete-button"
       v-if="deleteOption"
     >
       <v-icon>mdi-trash-can-outline</v-icon>
