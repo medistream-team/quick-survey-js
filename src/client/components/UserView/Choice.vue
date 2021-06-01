@@ -8,7 +8,7 @@
     }"
   >
     <div
-      :class="{ withResult: showResult, fillMostSelected: isMostSelected }"
+      :class="{ ['with-result']: showResult, ['fill-most-selected']: isMostSelected }"
       :style="showResult ? fillResult : null"
     >
       <li class="choice-box">
