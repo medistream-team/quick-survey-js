@@ -1,5 +1,5 @@
 {
-  "name": "medi-poll",
+  "name": "quick-survey-js",
   "version": "0.1.0",
   "description": "",
   "main": "src/api/app.js",
@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/medistream-team/medi-poll.git"
+    "url": "git+https://github.com/medistream-team/quick-survey-js.git"
   },
   "author": "",
   "dependencies": {
@@ -53,7 +53,7 @@
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/medistream-team/medi-poll/issues"
+    "url": "https://github.com/medistream-team/quick-survey-js/issues"
   },
-  "homepage": "https://github.com/medistream-team/medi-poll#readme"
+  "homepage": "https://github.com/medistream-team/quick-survey-js#readme"
 }

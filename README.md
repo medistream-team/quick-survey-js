@@ -10,7 +10,7 @@ Node.js, express, serverless framework, VueJS, MongoDB
 
 First, you should clone git repository.
 ```bash
-git clone https://github.com/medistream-team/medi-poll.git
+git clone https://github.com/medistream-team/quick-survey-js.git
 ```
 
 Then, go to downloaded folder and run `npm install` to download required packages. This command will also install `serverless@2.43.1` globally. When installation is done, `.env` file will be automatically created in a root directory.
