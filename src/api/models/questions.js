@@ -40,8 +40,14 @@ const Question = new Schema({
         type: Schema.Types.ObjectId,
         auto: true,
       },
-      value: Number,
-      text: String,
+      value: {
+        type: Number,
+        default: null,
+      },
+      text: {
+        type: String,
+        default: "",
+      },
       responseCount: {
         type: Number,
         required: true,
