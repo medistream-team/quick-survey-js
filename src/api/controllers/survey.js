@@ -5,15 +5,21 @@ const Question = require("../models/questions");
 const User = require("../models/users");
 
 const { connectToDatabase } = require("../models/utils/connectDB");
-const { insertVoterInfo } = require("./utils/insert");
-const { missingElements } = require("./utils/filter");
-const { newError } = require("./utils/error");
-const { UTCToLocalTime } = require("./utils/switch");
 
-const MULTIPLE_SELECT_ALLOWED_TYPES = {
-  checkbox: true,
-  rating: false,
-};
+const {
+  throwError,
+  convertUTCToLocalTime,
+  insertSurveyVoterInfo,
+  checkMissingEssentialElements,
+} = require("./utils/utils");
+
+const {
+  validateId,
+  validateAuth,
+  validateKeyError,
+  validateValueError,
+  validateReqMultipleSelectOption,
+} = require("./utils/validators");
 
 exports.voteSurvey = async (req, res, next) => {
   await connectToDatabase();
@@ -21,58 +27,33 @@ exports.voteSurvey = async (req, res, next) => {
 
   const surveyId = req.params.surveyId;
   const voterKey = req.header("authorization");
-  const { answers } = req.body;
 
   try {
-    if (!Array.isArray(answers)) {
-      throw newError("value error", 400);
-    }
+    validateKeyError(req.body, "answers");
+    const { answers } = req.body;
 
-    if (!mongoose.Types.ObjectId.isValid(surveyId)) {
-      throw newError("invalid object id", 400);
-    }
-
-    if (!(await Survey.exists({ _id: surveyId }))) {
-      throw newError("survey not found", 404);
-    }
-
-    if (!voterKey) {
-      throw newError("unauthorized", 401);
-    }
-
-    if (!answers) throw newError("key error", 400);
+    await validateId(surveyId, Survey);
+    validateAuth(voterKey);
+    validateValueError(answers, Array);
 
     const survey = await Survey.findById(surveyId).populate("pages.elements");
 
     if (
       !survey.isActive ||
-      (survey.closeAt && new Date() > UTCToLocalTime(survey.closeAt))
+      (survey.closeAt &&
+        convertUTCToLocalTime(new Date()) >
+          convertUTCToLocalTime(survey.closeAt))
     ) {
-      throw newError("closed survey", 400);
+      throwError("closed survey", 400);
     }
-
-    if (missingElements(survey, answers) /** @boolean */) {
-      throw newError("some necessary questions not responded", 400);
-    }
+    checkMissingEssentialElements(survey, answers);
 
     session.startTransaction();
-
-    for (const answer of answers) {
-      if (!("questionId" in answer) || !("choiceIds" in answer)) {
-        throw newError("key error", 400);
-      }
-
-      if (!Array.isArray(answer.choiceIds)) {
-        throw newError("value error", 400);
-      }
-
-      if (!mongoose.Types.ObjectId.isValid(answer.questionId)) {
-        throw newError("invalid object id", 400);
-      }
-
-      if (!(await Question.exists({ _id: answer.questionId }))) {
-        throw newError("question not found", 404);
-      }
+    for await (const answer of answers) {
+      validateKeyError(answer, "questionId");
+      validateKeyError(answer, "choiceIds");
+      await validateId(answer.questionId, Question);
+      validateValueError(answer.choiceIds, Array);
 
       const question = await Question.findById(answer.questionId)
         .select(
@@ -80,52 +61,32 @@ exports.voteSurvey = async (req, res, next) => {
         )
         .session(session);
 
-      const multipleSelectOption = question.multipleSelectOption;
-      const choicesLength = answer.choiceIds.length;
+      validateReqMultipleSelectOption(
+        question.type,
+        question.multipleSelectOption,
+        answer.choiceIds.length
+      );
 
-      if (
-        (!MULTIPLE_SELECT_ALLOWED_TYPES[question.type] && choicesLength > 1) ||
-        (multipleSelectOption.allowedMin &&
-          multipleSelectOption.allowedMax &&
-          (multipleSelectOption.allowedMin > choicesLength ||
-            multipleSelectOption.allowedMax < choicesLength))
-      ) {
-        throw newError("invalid selection allowance range", 400);
-      }
+      for await (const choiceId of answer.choiceIds) {
+        await validateId(choiceId);
 
-      answer.choiceIds.forEach((choiceId) => {
-        if (!mongoose.Types.ObjectId.isValid(choiceId)) {
-          throw newError("invalid object id", 400);
-        }
-      });
-
-      answer.choiceIds.forEach((choiceId) => {
         const choice = question.choices.find((choiceObj) => {
           return String(choiceObj._id) === choiceId;
         });
         if (!choice) {
-          throw newError("choice not found", 400);
+          throwError("choice belonging to a given question not found", 400);
         }
         choice.responseCount++;
         question.responseCount++;
         survey.responseCount++;
-      });
+      }
 
       question.participantCount++;
       await question.save();
     }
     survey.participantCount++;
 
-    const insertVoterResult = await insertVoterInfo(
-      voterKey,
-      surveyId,
-      answers,
-      session
-    );
-
-    if (!insertVoterResult /** @boolean or @resolve */)
-      throw newError("already voted", 400);
-
+    await insertSurveyVoterInfo(voterKey, surveyId, answers, session);
     await survey.save();
     await session.commitTransaction();
     session.endSession();
@@ -147,36 +108,30 @@ exports.getSurvey = async (req, res, next) => {
   const surveyId = req.params.surveyId;
   const userKey = req.header("authorization");
 
-  if (!mongoose.Types.ObjectId.isValid(surveyId)) {
-    return res.status(400).json({ message: "invalid object id" });
-  }
-
-  if (!(await Survey.exists({ _id: surveyId }))) {
-    return res.status(404).json({ message: "survey not found" });
+  try {
+    await validateId(surveyId, Survey);
+  } catch (error) {
+    return res
+      .status(error.code ? error.code : 400)
+      .json({ message: error.message });
   }
 
   const survey = await Survey.findById(surveyId).populate("pages.elements");
 
-  if (survey.closeAt) {
-    survey.closeAt = UTCToLocalTime(survey.closeAt);
-  }
-  survey.createdAt = UTCToLocalTime(survey.createdAt);
+  survey.createdAt = convertUTCToLocalTime(survey.createdAt);
+  survey.closeAt = survey.closeAt
+    ? convertUTCToLocalTime(survey.closeAt)
+    : null;
 
-  let isAdmin = false;
-  if (survey.creatorKey === userKey) {
-    isAdmin = true;
-  }
-
+  const isAdmin = survey.creatorKey === userKey ? true : false;
   const user = await User.findOne({ userKey: userKey }).select("votedSurvey");
 
   let voted = false;
   if (user) {
     const votedSurvey = user.votedSurvey.filter((votedHistory) => {
-      return votedHistory.surveyId === surveyId;
+      return String(votedHistory.surveyId) === surveyId;
     });
-    if (votedSurvey.length) {
-      voted = true;
-    }
+    voted = votedSurvey.length ? true : false;
   }
   return res
     .status(200)

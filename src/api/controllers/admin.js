@@ -4,53 +4,49 @@ const Survey = require("../models/surveys");
 const Question = require("../models/questions");
 
 const { connectToDatabase } = require("../models/utils/connectDB");
-const { insertCreatorInfo } = require("./utils/insert");
-const { newError } = require("./utils/error");
-const { UTCToLocalTime } = require("./utils/switch");
+const {
+  throwError,
+  convertUTCToLocalTime,
+  insertSurveyCreatorInfo,
+} = require("./utils/utils");
 
-const MULTIPLE_SELECT_ALLOWED_TYPES = {
-  checkbox: true,
-  rating: false,
-};
+const {
+  validateId,
+  validateAuth,
+  validateKeyError,
+  validateValueError,
+  validateReqMultipleSelectOption,
+} = require("./utils/validators");
 
 exports.createSurvey = async (req, res, next) => {
   await connectToDatabase();
   const session = await mongoose.startSession();
-
   const creatorKey = req.header("authorization");
-  const { pages, hasExpiry, closeAt, isPublic } = req.body;
 
   try {
-    if (!creatorKey) {
-      throw newError("unauthorized", 401);
-    }
+    validateKeyError(req.body, "pages");
+    validateKeyError(req.body, "closeAt");
+    validateKeyError(req.body, "isPublic");
+    validateKeyError(req.body, "hasExpiry");
 
-    if (
-      !("pages" in req.body) ||
-      !("hasExpiry" in req.body) ||
-      !("isPublic" in req.body)
-    ) {
-      throw newError("key error", 400);
-    }
+    const { pages, hasExpiry, closeAt, isPublic } = req.body;
+
+    validateAuth(creatorKey);
 
     if (hasExpiry && !closeAt) {
-      throw newError("closing time is required", 400);
+      throwError("closing time is required", 400);
     }
 
-    if (
-      !Array.isArray(pages) ||
-      typeof hasExpiry !== "boolean" ||
-      (closeAt && isNaN(new Date(closeAt))) ||
-      typeof isPublic !== "boolean"
-    ) {
-      throw newError("value error", 400);
-    }
+    validateValueError(pages, Array);
+    validateValueError(hasExpiry, Boolean);
+    validateValueError(isPublic, Boolean);
 
     if (
       closeAt &&
-      UTCToLocalTime(new Date()) >= UTCToLocalTime(new Date(closeAt))
+      convertUTCToLocalTime(new Date()) >=
+        convertUTCToLocalTime(new Date(closeAt) || isNaN(new Date(closeAt)))
     ) {
-      throw newError("invalid closing time", 400);
+      throwError("invalid closing time", 400);
     }
 
     session.startTransaction();
@@ -58,44 +54,24 @@ exports.createSurvey = async (req, res, next) => {
     let pageObjs = [];
     for (const page of pages) {
       const elements = page.elements.map((element /** @object */) => {
-        if (
-          !Array.isArray(element.choices) ||
-          typeof element.isRequired !== "boolean" ||
-          typeof element.multipleSelectOption !== "object"
-        ) {
-          throw newError("value error", 400);
-        }
+        validateKeyError(element, "type");
+        validateKeyError(element, "title");
+        validateKeyError(element, "isRequired");
+        validateKeyError(element, "multipleSelectOption");
+        validateKeyError(element, "choices");
 
-        if (
-          !("type" in element) ||
-          !("title" in element) ||
-          !("isRequired" in element) ||
-          !("multipleSelectOption" in element) ||
-          !("allowed" in element.multipleSelectOption) ||
-          !("choices" in element)
-        ) {
-          throw newError("key error", 400);
-        }
-
-        if (!(element.type in MULTIPLE_SELECT_ALLOWED_TYPES)) {
-          throw newError("not allowed question type", 400);
-        }
+        validateValueError(element.choices, Array);
+        validateValueError(element.isRequired, Boolean);
+        validateValueError(element.multipleSelectOption, Object);
 
         if (element.choices.length < 2) {
-          throw newError("at least two choices are required", 400);
+          throwError("at least two choices are required", 400);
         }
 
-        let multipleSelectOption = element.multipleSelectOption;
-
-        if (
-          (multipleSelectOption.allowed &&
-            !MULTIPLE_SELECT_ALLOWED_TYPES[element.type]) ||
-          (multipleSelectOption.allowedMin &&
-            multipleSelectOption.allowedMax &&
-            multipleSelectOption.allowedMin > multipleSelectOption.allowedMax)
-        ) {
-          throw newError("invalid selection allowance range", 400);
-        }
+        validateReqMultipleSelectOption(
+          element.type,
+          element.multipleSelectOption
+        );
 
         return new Question({
           ...element,
@@ -106,7 +82,6 @@ exports.createSurvey = async (req, res, next) => {
       const insertedQuestions = await Question.insertMany(elements, {
         session: session,
       });
-
       pageObjs.push({ ...page, elements: insertedQuestions });
     }
     const survey = await Survey.create(
@@ -122,8 +97,7 @@ exports.createSurvey = async (req, res, next) => {
       { session: session }
     );
 
-    await insertCreatorInfo(survey, creatorKey, session);
-
+    await insertSurveyCreatorInfo(survey, creatorKey, session);
     await session.commitTransaction();
     session.endSession();
 
@@ -142,37 +116,21 @@ exports.patchSurvey = async (req, res, next) => {
   await connectToDatabase();
   const creatorKey = req.header("authorization");
   const surveyId = req.params.surveyId;
-  const { isActive } = req.body;
 
   try {
-    if (!creatorKey) {
-      throw newError("unauthorized", 401);
-    }
+    validateKeyError(req.body, "isActive");
+    const { isActive } = req.body;
 
-    if (!mongoose.Types.ObjectId.isValid(surveyId)) {
-      throw newError("invalid object id", 400);
-    }
-
-    if (!("isActive" in req.body)) {
-      throw newError("key error", 400);
-    }
-
-    if (typeof isActive !== "boolean") {
-      throw newError("value error", 400);
-    }
-
-    if (!(await Survey.exists({ _id: surveyId }))) {
-      throw newError("survey not found", 404);
-    }
+    await validateId(surveyId, Survey);
+    validateAuth(creatorKey);
+    validateValueError(isActive, Boolean);
 
     const survey = await Survey.findById(surveyId).select(
       "isActive creatorKey"
     );
-
     if (survey.creatorKey !== creatorKey) {
-      throw newError("unauthorized", 401);
+      throwError("unauthorized", 401);
     }
-
     survey.isActive = isActive;
     survey.save();
 

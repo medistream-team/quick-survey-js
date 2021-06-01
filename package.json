@@ -12,9 +12,5 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/medistream-team/quick-survey-js.git"
-  },
-  "dependencies": {
-    "client": "^0.0.1",
-    "quick-survey-js": "file:src/api"
   }
 }
