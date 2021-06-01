@@ -1,5 +1,6 @@
 import PollAdmin from "./views/PollAdmin.vue";
 import Poll from "./views/Poll.vue";
+import "vuetify/dist/vuetify.min.css";
 
 const Plugin = {
   // eslint-disable-next-line no-unused-vars

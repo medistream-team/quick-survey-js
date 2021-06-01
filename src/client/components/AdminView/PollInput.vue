@@ -5,6 +5,7 @@
       :placeholder="placeholder"
       class="poll-input-box"
       :name="name"
+      :id="boxId"
     />
     <button
       @click="$emit('deleteChoiceBox', boxId)"

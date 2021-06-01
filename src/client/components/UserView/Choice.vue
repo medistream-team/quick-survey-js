@@ -8,7 +8,11 @@
     }"
   >
     <div
+<<<<<<< HEAD
       :class="{ ['with-result']: showResult, ['fill-most-selected']: isMostSelected }"
+=======
+      :class="{ withResult: showResult }"
+>>>>>>> 149bc79... Modify: 투표 객관식 옵션 로직 수정 중
       :style="showResult ? fillResult : null"
     >
       <li class="choice-box">
@@ -78,9 +82,20 @@ export default {
       if (this.choiceCount === 0) {
         return { width: "0%" };
       } else {
-        return {
-          width: `${((this.choiceCount / this.totalCount) * 100).toFixed(0)}%`,
-        };
+        if (this.isMostSelected) {
+          return {
+            width: `${((this.choiceCount / this.totalCount) * 100).toFixed(
+              0
+            )}%`,
+            "background-color": "#e6eef8",
+          };
+        } else {
+          return {
+            width: `${((this.choiceCount / this.totalCount) * 100).toFixed(
+              0
+            )}%`,
+          };
+        }
       }
     },
     getResult() {
@@ -109,7 +124,7 @@ export default {
 
   &.blue-border {
     border: 1px solid rgb(50, 129, 213);
-    background-color: #e6eef8;
+    // background-color: #e6eef8;
   }
 
   .choice-box {
@@ -132,8 +147,12 @@ export default {
     padding: 0px 10px;
     background-color: #ddd;
   }
+<<<<<<< HEAD
 
   .fill-most-selected {
+=======
+  .fillMostSelected {
+>>>>>>> 149bc79... Modify: 투표 객관식 옵션 로직 수정 중
     background-color: #e6eef8;
   }
 }

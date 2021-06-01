@@ -18,12 +18,13 @@
       <div class="type-checkbox">
         <v-checkbox
           v-model="pollType"
-          class="checkbox"
+          class="typeBox checkbox"
           @click="handlePollType(true, 'checkbox')"
           :label="`객관식`"
         ></v-checkbox>
         <v-checkbox
           :value="!pollType"
+          class="typeBox"
           @click="handlePollType(false, 'rating')"
           :label="`스케일`"
         ></v-checkbox>
@@ -114,24 +115,25 @@ export default {
     },
 
     handlePollInput(e) {
-      const { value, name } = e.target;
+      const { value, name, id } = e.target;
       const { pollQuestion } = this;
+
       if (this.pollType && name !== "text") {
         pollQuestion[name] = value;
         this.pollInputValue = value;
       }
 
       if (this.pollType && name === "text") {
-        pollQuestion.choices.push({
-          [name]: value,
-          value: null,
-        });
-        console.log(pollQuestion);
+        if (pollQuestion.choices[id]) {
+          pollQuestion.choices[id] = { [name]: value, value: null };
+        } else {
+          pollQuestion.choices.push({ [name]: value, value: null });
+        }
+        console.log(pollQuestion.choices);
       }
 
       if (!this.pollType && name !== "text") {
         pollQuestion[name] = value;
-        console.log(pollQuestion);
       }
     },
     deleteChoiceBox(id) {
@@ -184,6 +186,9 @@ export default {
   .poll-types {
     .type-checkbox {
       display: flex;
+    }
+    .typeBox {
+      margin-top: 0;
     }
     .checkbox {
       margin-right: 20px;
