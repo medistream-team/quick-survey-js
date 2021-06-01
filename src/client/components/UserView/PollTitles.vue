@@ -22,13 +22,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.pollTitleContainer {
-  .pollTitle {
+.poll-title-container {
+  .poll-title {
     font-size: 24px;
     overflow-wrap: break-word;
   }
 
-  .pollSubtitle {
+  .poll-subtitle {
     font-size: 14px;
   }
 }

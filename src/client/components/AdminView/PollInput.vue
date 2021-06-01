@@ -51,10 +51,10 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.pollInputContainer {
+.poll-input-container {
   position: relative;
   width: 100%;
-  .pollInputBox {
+  .poll-input-box {
     display: block;
     width: 100%;
     border: 1px solid #d8d8d8;
@@ -63,7 +63,7 @@ export default {
     padding: 0px 10px;
     font-size: 14px;
   }
-  .deleteButton {
+  .delete-button {
     position: absolute;
     top: 20%;
     right: 10px;

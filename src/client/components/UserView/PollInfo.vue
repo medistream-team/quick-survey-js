@@ -39,7 +39,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.pollInfo {
+.poll-info {
   margin-bottom: 10px;
   span {
     margin-right: 10px;

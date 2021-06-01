@@ -130,7 +130,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.pollAdminContainer {
+.poll-admin-container {
   max-width: 600px;
   margin: 50px auto;
   padding: 10px;
@@ -140,12 +140,12 @@ export default {
     border-bottom: 1px solid #d8d8d8;
   }
 
-  .pollSetting {
+  .poll-setting {
     margin-bottom: 25px;
   }
 
-  .pollTypes {
-    .typeCheckbox {
+  .poll-types {
+    .type-checkbox {
       display: flex;
     }
     .checkbox {
@@ -153,10 +153,10 @@ export default {
     }
   }
 
-  .expiryOption {
+  .expiry-option {
     display: flex;
     align-items: baseline;
-    .dateBox {
+    .date-box {
       margin-left: 20px;
       width: 150px;
     }

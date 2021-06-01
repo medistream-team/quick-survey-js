@@ -180,13 +180,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.pollContainer {
+.poll-container {
   position: relative;
   max-width: 600px;
   margin: 50px auto;
   padding: 10px;
 
-  .closedPoll {
+  .closed-poll {
     position: absolute;
     display: flex;
     align-items: center;
@@ -198,7 +198,7 @@ export default {
     font-size: 24px;
   }
 
-  .closeButton {
+  .close-button {
     position: absolute;
     top: 10px;
     right: 10px;

@@ -169,20 +169,20 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.pollPage {
+.poll-page {
   h2 {
     margin-bottom: 20px;
     padding-bottom: 5px;
     border-bottom: 1px solid #d8d8d8;
   }
-  .pollAdminInfo,
-  .pollTypes,
-  .choicePoll {
+  .poll-admin-info,
+  .poll-types,
+  .choice-poll {
     margin-bottom: 25px;
   }
 
-  .pollTypes {
-    .typeCheckbox {
+  .poll-types {
+    .type-checkbox {
       display: flex;
     }
     .checkbox {
@@ -190,14 +190,14 @@ export default {
     }
   }
 
-  .scalePoll {
-    .minScale,
-    .maxScale {
+  .scale-poll {
+    .min-scale,
+    .max-scale {
       display: flex;
     }
 
-    .minNum,
-    .maxNum {
+    .min-num,
+    .max-num {
       width: 40px;
       height: 42px;
       margin-right: 10px;

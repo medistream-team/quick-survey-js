@@ -60,7 +60,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.pollResultsContainer {
+.poll-results-container {
   max-width: 600px;
   margin: 50px auto;
   padding: 10px;

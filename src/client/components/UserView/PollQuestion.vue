@@ -111,7 +111,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.pollQuestion {
+.poll-question {
   margin-bottom: 40px;
 }
 </style>

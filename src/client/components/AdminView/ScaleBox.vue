@@ -29,7 +29,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.scaleSelect {
+.scale-select {
   appearance: checkbox;
   width: 45px;
   height: 42px;

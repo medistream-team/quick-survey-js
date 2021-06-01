@@ -49,7 +49,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.buttonContainer {
+.button-container {
   display: flex;
   justify-content: center;
   margin-top: 20px;
