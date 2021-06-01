@@ -77,7 +77,7 @@ localhost:8000/dev
 Or, to deploy your api on aws lambda via serverless framework, use `npm deploy:api` command.
 
 ```bash
-npm run deploy
+npm run deploy:api
 ```
 
 According to serverless documents, the console will show your endpoints. For more information, please visit [this page](https://www.serverless.com/blog/serverless-express-rest-api).
