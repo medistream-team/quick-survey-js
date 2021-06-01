@@ -1,7 +1,7 @@
 <template>
-  <div class="pollTitleContainer">
-    <div class="pollTitle">{{ title }}</div>
-    <div class="pollSubtitle">{{ subtitle }}</div>
+  <div class="poll-title-container">
+    <div class="poll-title">{{ title }}</div>
+    <div class="poll-subtitle">{{ subtitle }}</div>
   </div>
 </template>
 <script>
@@ -22,13 +22,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.pollTitleContainer {
-  .pollTitle {
+.poll-title-container {
+  .poll-title {
     font-size: 24px;
     overflow-wrap: break-word;
   }
 
-  .pollSubtitle {
+  .poll-subtitle {
     font-size: 14px;
   }
 }

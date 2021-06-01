@@ -2,16 +2,16 @@
   <div
     id="scaleId"
     @click="handleScalesStatus(scaleIndex, scaleId)"
-    class="scaleContainer"
+    class="scale-container"
     :style="fillResult(scaleSize)"
     :class="{
       selected: !showResult && scaleStatus,
       fillMostSelected: isMostSelected,
     }"
   >
-    <li class="eachScale">
+    <li class="each-scale">
       {{ scaleText }}
-      <span class="scaleResult" v-if="showResult">{{
+      <span class="scale-result" v-if="showResult">{{
         getResult(scaleSize)
       }}</span>
     </li>
@@ -92,7 +92,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.scaleContainer {
+.scale-container {
   position: relative;
   display: flex;
   justify-content: center;
@@ -105,12 +105,12 @@ export default {
   list-style-type: none;
   font-weight: 500;
   cursor: pointer;
-  .eachScale {
+  .each-scale {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    .scaleResult {
+    .scale-result {
       font-size: 12px;
     }
   }
@@ -121,18 +121,18 @@ export default {
     font-weight: 500;
   }
 
-  &.fillMostSelected {
+  &.fill-most-selected {
     border: 1px solid #3281d5;
     background-color: #e6eef8;
   }
 }
 @media screen and (max-width: 500px) {
-  .scaleContainer {
+  .scale-container {
     width: 40px;
     height: 40px;
-    .eachScale {
+    .each-scale {
       font-size: 14px;
-      .scaleResult {
+      .scale-result {
         font-size: 10px;
       }
     }

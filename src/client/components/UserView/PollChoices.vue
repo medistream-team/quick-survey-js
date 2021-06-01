@@ -1,5 +1,5 @@
 <template>
-  <ul class="pollChoices">
+  <ul class="poll-choices">
     <Choice
       v-for="(choice, index) in choices"
       :key="choice._id"

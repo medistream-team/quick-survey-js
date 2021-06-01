@@ -1,5 +1,5 @@
 <template>
-  <ul class="pollScales">
+  <ul class="poll-scales">
     <span class="min">{{ minDescription }}</span>
     <Scale
       v-for="(scale, index) in scales"
@@ -90,7 +90,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.pollScales {
+.poll-scales {
   display: flex;
   overflow: scroll;
   justify-content: center;

@@ -1,30 +1,30 @@
 <template>
-  <form @submit.prevent class="pollAdminContainer">
-    <div class="pollAdmin">
-      <div class="pollSetting">
+  <form @submit.prevent class="poll-admin-container">
+    <div class="poll-admin">
+      <div class="poll-setting">
         <h2>투표 설정</h2>
-        <div class="expiryOption">
+        <div class="expiry-option">
           <v-switch
             label="투표 기한 적용"
             v-model="createPoll.hasExpiry"
             dense
             inset
-            class="toggleBox"
+            class="toggle-box"
           ></v-switch>
           <input
             v-model="createPoll.closeAt"
-            class="dateBox"
+            class="date-box"
             v-if="createPoll.hasExpiry"
             type="date"
           />
         </div>
-        <div class="resultsOption">
+        <div class="results-option">
           <v-switch
             label="결과 공개"
             v-model="createPoll.isPublic"
             dense
             inset
-            class="toggleBox"
+            class="toggle-box"
           ></v-switch>
         </div>
       </div>
@@ -130,7 +130,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.pollAdminContainer {
+.poll-admin-container {
   max-width: 600px;
   margin: 50px auto;
   padding: 10px;
@@ -140,12 +140,12 @@ export default {
     border-bottom: 1px solid #d8d8d8;
   }
 
-  .pollSetting {
+  .poll-setting {
     margin-bottom: 25px;
   }
 
-  .pollTypes {
-    .typeCheckbox {
+  .poll-types {
+    .type-checkbox {
       display: flex;
     }
     .checkbox {
@@ -153,10 +153,10 @@ export default {
     }
   }
 
-  .expiryOption {
+  .expiry-option {
     display: flex;
     align-items: baseline;
-    .dateBox {
+    .date-box {
       margin-left: 20px;
       width: 150px;
     }

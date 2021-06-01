@@ -2,16 +2,16 @@
   <div
     id="choiceId"
     @click="handleChoicesStatus(choiceIndex, choiceId)"
-    class="choiceContainer"
+    class="choice-container"
     :class="{
       blueBorder: isSelected || isMostSelected,
     }"
   >
     <div
-      :class="{ withResult: showResult, fillMostSelected: isMostSelected }"
+      :class="{ ['with-result']: showResult, ['fill-most-selected']: isMostSelected }"
       :style="showResult ? fillResult : null"
     >
-      <li class="choiceBox">
+      <li class="choice-box">
         <v-checkbox
           :id="choiceId"
           type="checkbox"
@@ -94,7 +94,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.choiceContainer {
+.choice-container {
   position: relative;
   display: flex;
   align-items: center;
@@ -107,12 +107,12 @@ export default {
   cursor: pointer;
   font-weight: 500;
 
-  &.blueBorder {
+  &.blue-border {
     border: 1px solid rgb(50, 129, 213);
     background-color: #e6eef8;
   }
 
-  .choiceBox {
+  .choice-box {
     white-space: nowrap;
     display: flex;
     align-items: center;
@@ -121,7 +121,7 @@ export default {
       font-size: 12px;
     }
   }
-  .withResult {
+  .with-result {
     position: absolute;
     display: flex;
     align-items: center;
@@ -133,7 +133,7 @@ export default {
     background-color: #ddd;
   }
 
-  .fillMostSelected {
+  .fill-most-selected {
     background-color: #e6eef8;
   }
 }
