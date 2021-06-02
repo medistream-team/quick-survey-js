@@ -1,55 +1,55 @@
 {
-  "name": "quick-survey-js",
-  "version": "0.1.9",
-  "description": "",
-  "main": "./dist/quick-survey-js.umd.min.js",
-  "files": [
-    "./dist/quick-survey-js.css",
-    "./dist/quick-survey-js.umd.min.js"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/medistream-team/quick-survey-js.git"
-  },
-  "author": {
-    "name": "jessica.lee",
-    "email": "to.jessywlee@gmail.com"
-  },
-  "scripts": {
-    "serve": "vue-cli-service serve ./main.js",
-    "build": "vue-cli-service build ./index.js --target lib"
-  },
-  "dependencies": {
-    "dotenv": "^9.0.2",
-    "vue": "^2.6.11"
-  },
-  "devDependencies": {
-    "@mdi/font": "^5.9.55",
-    "@vue/cli-plugin-babel": "~4.5.0",
-    "@vue/cli-plugin-eslint": "~4.5.0",
-    "@vue/cli-plugin-router": "~4.5.0",
-    "@vue/cli-service": "~4.5.0",
-    "@vue/eslint-config-prettier": "^6.0.0",
-    "axios": "^0.21.1",
-    "babel-eslint": "^10.1.0",
-    "core-js": "^3.6.5",
-    "deepmerge": "^4.2.2",
-    "eslint": "^6.7.2",
-    "eslint-plugin-prettier": "^3.3.1",
-    "eslint-plugin-vue": "^6.2.2",
-    "node-sass": "^4.12.0",
-    "prettier": "^2.2.1",
-    "sass": "^1.34.0",
-    "sass-loader": "^8.0.2",
-    "vue-axios": "^3.2.4",
-    "vue-router": "^3.2.0",
-    "vue-template-compiler": "^2.6.11",
-    "vuetify": "^2.5.1",
-    "vuetify-loader": "^1.7.2"
-  },
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/medistream-team/quick-survey-js/issues"
-  },
-  "homepage": "https://github.com/medistream-team/quick-survey-js#readme"
+	"name": "quick-survey-js",
+	"version": "0.1.0",
+	"description": "",
+	"main": "dist/quick-survey-js.umd.min.js",
+	"files": [
+		"dist/quick-survey-js.css",
+		"dist/quick-survey-js.umd.min.js"
+	],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/medistream-team/quick-survey-js.git"
+	},
+	"author": {
+		"name": "jessica.lee",
+		"email": "to.jessywlee@gmail.com"
+	},
+	"scripts": {
+		"serve": "vue-cli-service serve ./main.js",
+		"build": "vue-cli-service build ./index.js --target lib"
+	},
+	"dependencies": {
+		"dotenv": "^9.0.2",
+		"vue": "^2.6.11"
+	},
+	"devDependencies": {
+		"@mdi/font": "^5.9.55",
+		"@vue/cli-plugin-babel": "~4.5.0",
+		"@vue/cli-plugin-eslint": "~4.5.0",
+		"@vue/cli-plugin-router": "~4.5.0",
+		"@vue/cli-service": "~4.5.0",
+		"@vue/eslint-config-prettier": "^6.0.0",
+		"axios": "^0.21.1",
+		"babel-eslint": "^10.1.0",
+		"core-js": "^3.6.5",
+		"deepmerge": "^4.2.2",
+		"eslint": "^6.7.2",
+		"eslint-plugin-prettier": "^3.3.1",
+		"eslint-plugin-vue": "^6.2.2",
+		"node-sass": "^4.12.0",
+		"prettier": "^2.2.1",
+		"sass": "^1.34.0",
+		"sass-loader": "^8.0.2",
+		"vue-axios": "^3.2.4",
+		"vue-router": "^3.2.0",
+		"vue-template-compiler": "^2.6.11",
+		"vuetify": "^2.5.1",
+		"vuetify-loader": "^1.7.2"
+	},
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/medistream-team/quick-survey-js/issues"
+	},
+	"homepage": "https://github.com/medistream-team/quick-survey-js#readme"
 }
