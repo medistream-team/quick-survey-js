@@ -1,29 +1,29 @@
 <template>
-  <Poll
+  <Survey
     :surveyId="'60b5d70dfb89aa54854713f6'"
     :userKey="'thu'"
     @vote-success="voteSucceed"
     @already-voted="alreadyVoted"
-    @poll-closed="pollClosed"
+    @survey-closed="surveyClosed"
   />
 </template>
 
 <script>
-import Poll from "../components/Poll";
+import Survey from "../components/Survey";
 
 export default {
-  name: "InvolvePoll",
-  components: { Poll },
+  name: "InvolveSurvey",
+  components: { Survey },
   methods: {
     voteSucceed(surveyId) {
-      this.$router.push(`/poll/results/${surveyId}`);
+      this.$router.push(`/survey/results/${surveyId}`);
     },
     alreadyVoted(surveyId) {
       alert("이미 참여한 투표입니다.");
-      this.$router.push(`/poll/results/${surveyId}`);
+      this.$router.push(`/survey/results/${surveyId}`);
     },
-    pollClosed(surveyId) {
-      console.log("poll-closed", surveyId);
+    surveyClosed(surveyId) {
+      console.log("survey-closed", surveyId);
     },
   },
 };

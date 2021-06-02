@@ -1,5 +1,5 @@
 <template>
-  <ul class="poll-choices">
+  <ul class="survey-choices">
     <Choice
       v-for="(choice, index) in choices"
       :key="choice._id"
@@ -19,7 +19,7 @@
 import Choice from "./Choice";
 
 export default {
-  name: "PollChoices",
+  name: "SurveyChoices",
   components: { Choice },
   props: {
     choices: {

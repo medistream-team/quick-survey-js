@@ -1,12 +1,12 @@
 <template>
-  <div class="poll-question-container">
+  <div class="survey-question-container">
     <div
-      class="poll-question"
+      class="survey-question"
       v-for="question in page.elements"
       :key="question._id"
     >
-      <PollTitles :title="question.title" :subtitle="question.description" />
-      <PollChoices
+      <SurveyTitles :title="question.title" :subtitle="question.description" />
+      <SurveyChoices
         v-if="question.type === 'checkbox'"
         :choices="question.choices"
         :showResult="showResult"
@@ -14,7 +14,7 @@
         :questionId="question._id"
         :handleAnswersInfo="handleAnswersInfo"
       />
-      <PollScales
+      <SurveyScales
         v-if="question.type === 'rating'"
         :scales="question.type === 'rating' ? question.choices : null"
         :showResult="showResult"
@@ -27,13 +27,13 @@
   </div>
 </template>
 <script>
-import PollTitles from "./PollTitles";
-import PollChoices from "./PollChoices";
-import PollScales from "./PollScales";
+import SurveyTitles from "./SurveyTitles";
+import SurveyChoices from "./SurveyChoices";
+import SurveyScales from "./SurveyScales";
 
 export default {
-  name: "PollQuestion",
-  components: { PollTitles, PollChoices, PollScales },
+  name: "SurveyQuestion",
+  components: { SurveyTitles, SurveyChoices, SurveyScales },
   data() {
     return {
       answersStatus: this.page.elements.map((q) => {
@@ -111,7 +111,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.poll-question {
+.survey-question {
   margin-bottom: 40px;
 }
 </style>

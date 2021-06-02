@@ -1,5 +1,5 @@
 <template>
-  <div class="poll-info" :id="pollId">
+  <div class="survey-info" :id="surveyId">
     <span class="total-answered">총 응답 수: {{ totalCount }}</span>
     <span v-if="hasExpiry" class="closing-date"
       >설문 기한: {{ getDate[0] }}년 {{ getDate[1] }}월 {{ getDate[2] }}일
@@ -9,9 +9,9 @@
 </template>
 <script>
 export default {
-  name: "PollInfo",
+  name: "SurveyInfo",
   props: {
-    pollId: {
+    surveyId: {
       type: String,
       required: true,
     },
@@ -39,7 +39,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.poll-info {
+.survey-info {
   margin-bottom: 10px;
   span {
     margin-right: 10px;

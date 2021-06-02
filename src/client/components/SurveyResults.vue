@@ -1,13 +1,13 @@
 <template>
   <v-app>
-    <div v-if="pollData" class="poll-results-container">
-      <PollInfo
-        :pollId="pollData._id"
-        :totalCount="pollData.responseCount"
-        :expiryDate="pollData.closeAt"
-        :hasExpiry="pollData.hasExpiry"
+    <div v-if="surveyData" class="survey-results-container">
+      <SurveyInfo
+        :surveyId="surveyData._id"
+        :totalCount="surveyData.responseCount"
+        :expiryDate="surveyData.closeAt"
+        :hasExpiry="surveyData.hasExpiry"
       />
-      <PollQuestion
+      <SurveyQuestion
         v-for="page in pages"
         :key="page._id"
         :page="page"
@@ -18,9 +18,9 @@
 </template>
 
 <script>
-import { USER_POLL_API, SURVEY_ID, USER_KEY } from "../config";
-import PollInfo from "../components/UserView/PollInfo";
-import PollQuestion from "../components/UserView/PollQuestion";
+import { USER_SURVEY_API, SURVEY_ID, USER_KEY } from "../config";
+import SurveyInfo from "../components/UserView/SurveyInfo";
+import SurveyQuestion from "../components/UserView/SurveyQuestion";
 import vuetify from "../plugins/vuetify";
 
 const axios = require("axios");
@@ -29,9 +29,9 @@ const headers = {
 };
 
 export default {
-  name: "Poll",
+  name: "SurveyResults",
   vuetify,
-  components: { PollInfo, PollQuestion },
+  components: { SurveyInfo, SurveyQuestion },
   props: {
     surveyId: {
       type: String,
@@ -44,19 +44,18 @@ export default {
   },
   data() {
     return {
-      pollData: null,
+      surveyData: null,
       pages: null,
       showResult: true,
     };
   },
   created() {
     axios
-      // .get("../public/pollData.json")
-      .get(`${USER_POLL_API}/${this.$route.params.id}`, {
+      .get(`${USER_SURVEY_API}/${this.$route.params.id}`, {
         headers: headers,
       })
       .then((res) => {
-        this.pollData = res.data.survey;
+        this.surveyData = res.data.survey;
         this.pages = res.data.survey.pages;
       })
       .catch((err) => console.log(err));
@@ -65,7 +64,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.poll-results-container {
+.survey-results-container {
   width: 100%;
   max-width: 600px;
   margin: 50px auto;

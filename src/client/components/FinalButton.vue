@@ -39,7 +39,7 @@ export default {
         this.$emit("submitResponsesData");
       }
       if (this.readyToCreate) {
-        this.$emit("sendPollData");
+        this.$emit("sendSurveyData");
       }
     },
   },

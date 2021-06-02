@@ -1,18 +1,18 @@
 <template>
-  <div class="poll-input-container">
+  <div class="survey-input-container">
     <input
-      @change="handlePollInput"
-      :placeholder="placeholder"
-      class="poll-input-box"
-      :name="name"
+      class="survey-input-box"
       :id="boxId"
+      :name="name"
+      :placeholder="placeholder"
+      @change="handleSurveyInput"
     />
     <button
+      v-if="deleteOption"
+      class="delete-button"
       @click="$emit('deleteChoiceBox', boxId)"
       depressed
       text
-      class="delete-button"
-      v-if="deleteOption"
     >
       <v-icon>mdi-trash-can-outline</v-icon>
     </button>
@@ -20,7 +20,7 @@
 </template>
 <script>
 export default {
-  name: "PollInput",
+  name: "SurveyInput",
   props: {
     deleteOption: {
       type: Boolean,
@@ -34,7 +34,7 @@ export default {
       type: Function,
       required: false,
     },
-    handlePollInput: {
+    handleSurveyInput: {
       type: Function,
     },
     name: {
@@ -44,18 +44,13 @@ export default {
       type: Number,
     },
   },
-  methods: {
-    // handleInput(e) {
-    //   console.log(e.target.value);
-    // },
-  },
 };
 </script>
 <style lang="scss" scoped>
-.poll-input-container {
+.survey-input-container {
   position: relative;
   width: 100%;
-  .poll-input-box {
+  .survey-input-box {
     display: block;
     width: 100%;
     border: 1px solid #d8d8d8;

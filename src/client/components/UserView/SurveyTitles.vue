@@ -1,12 +1,12 @@
 <template>
-  <div class="poll-title-container">
-    <div class="poll-title">{{ title }}</div>
-    <div class="poll-subtitle">{{ subtitle }}</div>
+  <div class="survey-title-container">
+    <div class="survey-title">{{ title }}</div>
+    <div class="survey-subtitle">{{ subtitle }}</div>
   </div>
 </template>
 <script>
 export default {
-  name: "PollTitle",
+  name: "SurveyTitle",
   props: {
     title: {
       type: String,
@@ -22,13 +22,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.poll-title-container {
-  .poll-title {
+.survey-title-container {
+  .survey-title {
     font-size: 24px;
     overflow-wrap: break-word;
   }
 
-  .poll-subtitle {
+  .survey-subtitle {
     font-size: 14px;
   }
 }

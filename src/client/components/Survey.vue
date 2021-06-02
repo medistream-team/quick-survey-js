@@ -1,21 +1,21 @@
 <template>
   <v-app>
-    <form @submit.prevent class="poll-container">
-      <div class="closed-poll" v-if="isClosed">
+    <form @submit.prevent class="survey-container">
+      <div class="closed-survey" v-if="isClosed">
         <h3>종료된 투표입니다.</h3>
       </div>
-      <div v-if="pollData" class="poll-page">
-        <PollInfo
-          :pollId="pollData._id"
-          :totalCount="pollData.responseCount"
-          :expiryDate="pollData.closeAt"
-          :hasExpiry="pollData.hasExpiry"
+      <div v-if="surveyData" class="survey-page">
+        <SurveyInfo
+          :surveyId="surveyData._id"
+          :totalCount="surveyData.responseCount"
+          :expiryDate="surveyData.closeAt"
+          :hasExpiry="surveyData.hasExpiry"
         />
-        <PollQuestion
+        <SurveyQuestion
           v-for="page in pages"
           :key="page._id"
           :page="page"
-          :totalCount="pollData.responseCount"
+          :totalCount="surveyData.responseCount"
           :showResult="showResult"
           :getResponsesData="getResponsesData"
         />
@@ -53,7 +53,7 @@
 
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="primary" text @click="closePoll"> 확인 </v-btn>
+              <v-btn color="primary" text @click="closeSurvey"> 확인 </v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -67,9 +67,14 @@
 // TODO: headers도 userKey prop을 이용해 만들기
 // TODO: getResonseData vue스럽게 바꾸기
 // TODO: survey id, userkey 삭제
-import { ADMIN_POLL_API, USER_POLL_API, SURVEY_ID, USER_KEY } from "../config";
-import PollInfo from "./UserView/PollInfo";
-import PollQuestion from "./UserView/PollQuestion";
+import {
+  ADMIN_SURVEY_API,
+  USER_SURVEY_API,
+  SURVEY_ID,
+  USER_KEY,
+} from "../config";
+import SurveyInfo from "./UserView/SurveyInfo";
+import SurveyQuestion from "./UserView/SurveyQuestion";
 import FinalButton from "./FinalButton";
 import vuetify from "../plugins/vuetify";
 
@@ -79,11 +84,11 @@ const headers = {
 };
 
 export default {
-  name: "Poll",
+  name: "Survey",
   vuetify,
   components: {
-    PollInfo,
-    PollQuestion,
+    SurveyInfo,
+    SurveyQuestion,
     FinalButton,
   },
   props: {
@@ -102,7 +107,7 @@ export default {
       isClosed: false,
       isAdmin: false,
       dialog: false,
-      pollData: null,
+      surveyData: null,
       pages: null,
       showResult: false,
       isSubmitted: false,
@@ -114,15 +119,13 @@ export default {
   },
   computed: {},
   created() {
-    console.log(this.$route.params);
     axios
-      // .get("/pollData2.json")
-      .get(`${USER_POLL_API}/${this.$route.params.id}`, {
+      .get(`${USER_SURVEY_API}/${this.$route.params.id}`, {
         headers: headers,
       })
       .then((res) => {
         if (res.data.survey.isActive) {
-          this.pollData = res.data.survey;
+          this.surveyData = res.data.survey;
           this.pages = res.data.survey.pages;
         } else {
           this.isClosed = true;
@@ -130,34 +133,41 @@ export default {
 
         let today = new Date();
 
-        if (this.pollData.closeAt && new Date(this.pollData.closeAt) < today) {
-          this.pollData.isPublic
-            ? this.$router.push(`/poll/results/${this.surveyId}`)
+        if (
+          this.surveyData.closeAt &&
+          new Date(this.surveyData.closeAt) < today
+        ) {
+          this.surveyData.isPublic
+            ? this.$router.push(`/survey/results/${this.surveyId}`)
             : (this.isClosed = true);
         }
 
-        if (this.pollData.creatorKey === this.userKey) {
+        if (this.surveyData.creatorKey === this.userKey) {
           this.isAdmin = true;
         }
 
-        if (this.pollData.voted) {
+        if (this.surveyData.voted) {
           alert("이미 참여한 투표입니다.");
-          this.$router.push(`/poll/results/${this.surveyId}`);
+          this.$router.push(`/survey/results/${this.surveyId}`);
         }
       })
       .catch((err) => console.log(err));
   },
   methods: {
-    getResponsesData(allAnswered, pollAnswers) {
+    getResponsesData(allAnswered, surveyAnswers) {
       let ready = allAnswered ? true : false;
       this.readyToSubmit = ready;
-      this.ResponsesData.answers = pollAnswers;
+      this.ResponsesData.answers = surveyAnswers;
     },
     submitResponsesData() {
       axios
-        .post(`${USER_POLL_API}/${this.$route.params.id}`, this.ResponsesData, {
-          headers: headers,
-        })
+        .post(
+          `${USER_SURVEY_API}/${this.$route.params.id}`,
+          this.ResponsesData,
+          {
+            headers: headers,
+          }
+        )
         .then((res) => {
           if (res.response.data.message === "success") {
             this.$emit("vote-success", this.surveyId);
@@ -169,23 +179,23 @@ export default {
           }
         });
     },
-    closePoll() {
+    closeSurvey() {
       this.dialog = false;
-      //POST close poll - test needed
+      //POST close survey - test needed
       const body = {
         isActive: false,
       };
 
       axios
-        .post(`${ADMIN_POLL_API}/${this.surveyId}`, body, {
+        .post(`${ADMIN_SURVEY_API}/${this.surveyId}`, body, {
           headers: headers,
         })
         .then(() => {
-          this.$emit("poll-closed", this.surveyId);
+          this.$emit("survey-closed", this.surveyId);
         })
         .catch((err) => {
           // TODO: 실패 이벤트도 적용하기
-          // this.$emit("failed-to-close-poll", this.surveyId);
+          // this.$emit("failed-to-close-survey", this.surveyId);
           console.log(err);
         });
     },
@@ -194,14 +204,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.poll-container {
+.survey-container {
   position: relative;
   width: 100%;
   max-width: 600px;
   margin: 50px auto;
   padding: 10px;
 
-  .closed-poll {
+  .closed-survey {
     position: absolute;
     display: flex;
     align-items: center;
