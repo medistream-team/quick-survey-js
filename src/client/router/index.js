@@ -1,36 +1,36 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Poll from "../views/Poll.vue";
-import PollResults from "../views/PollResults.vue";
-import PollAdmin from "../views/PollAdmin.vue";
+import InvolvePoll from "../views/InvolvePoll.vue";
+import ResultsPoll from "../views/ResultsPoll.vue";
+import CreatePoll from "../views/CreatePoll.vue";
 
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: "/poll/results",
-    name: "PollResults",
-    component: PollResults,
+    name: "ResultsPoll",
+    component: ResultsPoll,
   },
   {
     path: "/poll/results/:id",
-    name: "PollResults",
-    component: PollResults,
+    name: "ResultsPoll",
+    component: ResultsPoll,
   },
   {
     path: "/poll/admin",
-    name: "PollAdmin",
-    component: PollAdmin,
+    name: "CreatePoll",
+    component: CreatePoll,
   },
   {
     path: "/poll",
-    name: "Poll",
-    component: Poll,
+    name: "InvolvePoll",
+    component: InvolvePoll,
   },
   {
     path: "/poll/:id",
-    name: "Poll",
-    component: Poll,
+    name: "InvolvePoll",
+    component: InvolvePoll,
   },
 ];
 

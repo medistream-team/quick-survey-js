@@ -45,15 +45,14 @@
   </v-app>
 </template>
 <script>
+// TODO: apiEndpoint, userKey를 prop으로 받을 수 있게하기
+// TODO: poll-created, failed-to-create-poll 2개의 event를 문서에서 명시해주기
 import { ADMIN_POLL_API, USER_KEY } from "../config";
-import PollPage from "../components/AdminView/PollPage";
-import FinalButton from "../components/FinalButton";
+import PollPage from "./AdminView/PollPage";
+import FinalButton from "./FinalButton";
 import vuetify from "../plugins/vuetify";
 
 const axios = require("axios");
-const headers = {
-  Authorization: USER_KEY,
-};
 
 export default {
   name: "PollAdmin",
@@ -65,7 +64,6 @@ export default {
   data() {
     return {
       createPoll: {
-        newSurveyId: "",
         hasExpiry: false,
         closeAt: "",
         isPublic: true,
@@ -92,24 +90,37 @@ export default {
   },
   computed: {
     readyToCreate() {
-      return (
-        this.createPoll.pages[0].elements[0].title !== "" &&
-        this.createPoll.pages[0].elements[0].choices.length >= 2
-      );
+      const titlesAreValid = this.createPoll.pages.every((page) => {
+        return page.elements.every((element) => {
+          return element.title !== "";
+        });
+      });
+
+      const choicesAreValid = this.createPoll.pages.every((page) => {
+        return page.elements.every((element) => {
+          return element.choices.length >= 2;
+        });
+      });
+
+      return titlesAreValid && choicesAreValid;
     },
   },
   methods: {
     sendPollData() {
+      const headers = {
+        Authorization: USER_KEY,
+      };
+
       axios
         .post(ADMIN_POLL_API, this.createPoll, {
           headers: headers,
         })
         .then((res) => {
-          // console.log(res.data.surveyId);
-          this.newSurveyId = res.data.surveyId;
-          this.$router.push(`/poll/${this.newSurveyId}`);
+          this.$emit("poll-created", res.data.surveyId);
         })
-        .catch((err) => console.log(err));
+        .catch(() => {
+          this.$emit("failed-to-create-poll");
+        });
     },
   },
 };

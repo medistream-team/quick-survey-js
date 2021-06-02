@@ -63,11 +63,16 @@
 </template>
 
 <script>
+// TODO: event 문서에 명시하기
+// TODO: headers도 userKey prop을 이용해 만들기
+// TODO: getResonseData vue스럽게 바꾸기
+// TODO: survey id, userkey 삭제
 import { ADMIN_POLL_API, USER_POLL_API, SURVEY_ID, USER_KEY } from "../config";
-import PollInfo from "../components/UserView/PollInfo";
-import PollQuestion from "../components/UserView/PollQuestion";
-import FinalButton from "../components/FinalButton";
+import PollInfo from "./UserView/PollInfo";
+import PollQuestion from "./UserView/PollQuestion";
+import FinalButton from "./FinalButton";
 import vuetify from "../plugins/vuetify";
+
 const axios = require("axios");
 const headers = {
   Authorization: USER_KEY,
@@ -82,6 +87,7 @@ export default {
     FinalButton,
   },
   props: {
+    // TODO: default 삭제, required
     surveyId: {
       type: String,
       default: SURVEY_ID,
@@ -152,15 +158,14 @@ export default {
         .post(`${USER_POLL_API}/${this.$route.params.id}`, this.ResponsesData, {
           headers: headers,
         })
-        .then((res) =>
-          res.response.data.message === "success"
-            ? this.$router.push(`/poll/results/${this.$route.params.id}`)
-            : console.log(res)
-        )
+        .then((res) => {
+          if (res.response.data.message === "success") {
+            this.$emit("vote-success", this.surveyId);
+          }
+        })
         .catch((err) => {
           if (err.response.data.message === "already voted") {
-            alert("이미 참여한 투표입니다.");
-            this.$router.push(`/poll/results/${this.$route.params.id}`);
+            this.$emit("already-voted", this.surveyId);
           }
         });
     },
@@ -172,13 +177,15 @@ export default {
       };
 
       axios
-        .patch(`${ADMIN_POLL_API}/${this.$route.params.id}/status`, body, {
+        .post(`${ADMIN_POLL_API}/${this.surveyId}`, body, {
           headers: headers,
         })
         .then(() => {
-          this.isClosed = true;
+          this.$emit("poll-closed", this.surveyId);
         })
         .catch((err) => {
+          // TODO: 실패 이벤트도 적용하기
+          // this.$emit("failed-to-close-poll", this.surveyId);
           console.log(err);
         });
     },
