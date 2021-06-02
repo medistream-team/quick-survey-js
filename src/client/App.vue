@@ -1,13 +1,12 @@
 <template>
-  <v-app>
-    <div id="app">
-      <router-link to="/poll/admin">Create Poll</router-link> |
-      <router-link to="/poll">Poll</router-link> |
-      <router-link to="/poll/results/:id">Poll Results</router-link>
-      <router-view />
-    </div>
-  </v-app>
+  <div id="app">
+    <router-link to="/poll/admin">Create Poll</router-link> |
+    <router-link to="/poll">Poll</router-link> |
+    <router-link to="/poll/results/:id">Poll Results</router-link>
+    <router-view />
+  </div>
 </template>
+
 <style lang="scss">
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;

@@ -37,11 +37,9 @@ export default {
     clickFinalButton() {
       if (this.readyToSubmit) {
         this.$emit("submitResponsesData");
-        this.$router.push("/poll/results");
       }
       if (this.readyToCreate) {
         this.$emit("sendPollData");
-        this.$router.push("/poll");
       }
     },
   },

@@ -21,7 +21,7 @@ export default {
     },
     expiryDate: {
       type: String,
-      required: true,
+      required: false,
     },
     hasExpiry: {
       type: Boolean,
