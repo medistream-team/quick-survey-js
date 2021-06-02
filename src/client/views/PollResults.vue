@@ -1,22 +1,6 @@
 <template>
-<<<<<<< HEAD
-  <div v-if="pollData" class="poll-results-container">
-    <PollInfo
-      :pollId="pollData._id"
-      :totalCount="pollData.responseCount"
-      :expiryDate="pollData.closeAt"
-      :hasExpiry="pollData.hasExpiry"
-    />
-    <PollQuestion
-      v-for="page in pages"
-      :key="page._id"
-      :page="page"
-      :showResult="showResult"
-    />
-  </div>
-=======
   <v-app>
-    <div v-if="pollData" class="pollResultsContainer">
+    <div v-if="pollData" class="poll-results-container">
       <PollInfo
         :pollId="pollData._id"
         :totalCount="pollData.responseCount"
@@ -31,7 +15,6 @@
       />
     </div>
   </v-app>
->>>>>>> 149bc79... Modify: 투표 객관식 옵션 로직 수정 중
 </template>
 
 <script>
@@ -82,12 +65,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-<<<<<<< HEAD
 .poll-results-container {
-=======
-.pollResultsContainer {
   width: 100%;
->>>>>>> 149bc79... Modify: 투표 객관식 옵션 로직 수정 중
   max-width: 600px;
   margin: 50px auto;
   padding: 10px;

@@ -8,11 +8,10 @@
     }"
   >
     <div
-<<<<<<< HEAD
-      :class="{ ['with-result']: showResult, ['fill-most-selected']: isMostSelected }"
-=======
-      :class="{ withResult: showResult }"
->>>>>>> 149bc79... Modify: 투표 객관식 옵션 로직 수정 중
+      :class="{
+        ['with-result']: showResult,
+        ['fill-most-selected']: isMostSelected,
+      }"
       :style="showResult ? fillResult : null"
     >
       <li class="choice-box">
@@ -147,12 +146,8 @@ export default {
     padding: 0px 10px;
     background-color: #ddd;
   }
-<<<<<<< HEAD
 
   .fill-most-selected {
-=======
-  .fillMostSelected {
->>>>>>> 149bc79... Modify: 투표 객관식 옵션 로직 수정 중
     background-color: #e6eef8;
   }
 }

@@ -1,8 +1,4 @@
 import Vue from "vue";
-<<<<<<< HEAD
-import Vuetify from "vuetify/lib";
-import "vuetify/dist/vuetify.min.css";
-=======
 import Vuetify, {
   VApp,
   VDialog,
@@ -17,7 +13,6 @@ import Vuetify, {
   VCheckbox,
   VIcon,
 } from "vuetify/lib";
->>>>>>> 149bc79... Modify: 투표 객관식 옵션 로직 수정 중
 import "@mdi/font/css/materialdesignicons.css";
 
 Vue.use(Vuetify, {

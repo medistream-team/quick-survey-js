@@ -1,55 +1,10 @@
 <template>
-<<<<<<< HEAD
-  <form @submit.prevent class="poll-container">
-    <div class="closed-poll" v-if="isClosed">
-      <h3>종료된 투표입니다.</h3>
-    </div>
-    <div v-if="pollData" class="poll-page">
-      <PollInfo
-        :pollId="pollData._id"
-        :totalCount="pollData.responseCount"
-        :expiryDate="pollData.closeAt"
-        :hasExpiry="pollData.hasExpiry"
-      />
-      <PollQuestion
-        v-for="page in pages"
-        :key="page._id"
-        :page="page"
-        :totalCount="pollData.responseCount"
-        :showResult="showResult"
-        :getResponsesData="getResponsesData"
-      />
-    </div>
-    <FinalButton
-      :isAdmin="false"
-      finalButtonText="투표하기"
-      :readyToSubmit="readyToSubmit"
-      @submitResponsesData="submitResponsesData"
-    />
-    <div class="text-center">
-      <v-dialog v-model="dialog" width="500">
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn
-            v-if="isAdmin"
-            depressed
-            small
-            outlined
-            class="close-button"
-            color="red lighten-2"
-            dark
-            v-bind="attrs"
-            v-on="on"
-          >
-            투표 종료하기
-          </v-btn>
-        </template>
-=======
   <v-app>
-    <form @submit.prevent class="pollContainer">
-      <div class="closedPoll" v-if="isClosed">
+    <form @submit.prevent class="poll-container">
+      <div class="closed-poll" v-if="isClosed">
         <h3>종료된 투표입니다.</h3>
       </div>
-      <div v-if="pollData" class="pollPage">
+      <div v-if="pollData" class="poll-page">
         <PollInfo
           :pollId="pollData._id"
           :totalCount="pollData.responseCount"
@@ -75,11 +30,11 @@
         <v-dialog v-model="dialog" width="500">
           <template v-slot:activator="{ on, attrs }">
             <v-btn
-              v-model="isAdmin"
+              v-if="isAdmin"
               depressed
               small
               outlined
-              class="closeButton"
+              class="close-button"
               color="red lighten-2"
               dark
               v-bind="attrs"
@@ -88,7 +43,6 @@
               투표 종료하기
             </v-btn>
           </template>
->>>>>>> 149bc79... Modify: 투표 객관식 옵션 로직 수정 중
 
           <v-card>
             <v-card-title class="headline grey lighten-2">

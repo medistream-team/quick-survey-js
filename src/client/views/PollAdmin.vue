@@ -1,33 +1,4 @@
 <template>
-<<<<<<< HEAD
-  <form @submit.prevent class="poll-admin-container">
-    <div class="poll-admin">
-      <div class="poll-setting">
-        <h2>투표 설정</h2>
-        <div class="expiry-option">
-          <v-switch
-            label="투표 기한 적용"
-            v-model="createPoll.hasExpiry"
-            dense
-            inset
-            class="toggle-box"
-          ></v-switch>
-          <input
-            v-model="createPoll.closeAt"
-            class="date-box"
-            v-if="createPoll.hasExpiry"
-            type="date"
-          />
-        </div>
-        <div class="results-option">
-          <v-switch
-            label="결과 공개"
-            v-model="createPoll.isPublic"
-            dense
-            inset
-            class="toggle-box"
-          ></v-switch>
-=======
   <v-app>
     <form @submit.prevent class="pollAdminContainer">
       <div class="pollAdmin">
@@ -57,7 +28,6 @@
               class="toggleBox"
             ></v-switch>
           </div>
->>>>>>> 149bc79... Modify: 투표 객관식 옵션 로직 수정 중
         </div>
         <PollPage
           v-for="(page, index) in createPoll.pages"
@@ -144,13 +114,10 @@ export default {
   },
 };
 </script>
+
 <style lang="scss" scoped>
-<<<<<<< HEAD
 .poll-admin-container {
-=======
-.pollAdminContainer {
   width: 100%;
->>>>>>> 149bc79... Modify: 투표 객관식 옵션 로직 수정 중
   max-width: 600px;
   margin: 50px auto;
   padding: 10px;
