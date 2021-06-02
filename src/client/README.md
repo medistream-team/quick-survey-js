@@ -42,7 +42,7 @@ Please refer to below for **required** props and methods.
 
 ```js
 <SurveyAdmin
-		:userKey="yourUserKey"
+    :userKey="yourUserKey"
     @survey-created="yourMethod"
     @failed-to-create-survey="yourMethod"
   />
@@ -56,9 +56,9 @@ Please refer to below for **required** props and methods.
     :surveyId="yourSurveyID"
     :userKey="yourUserKey"
     @sent-vote="yourMethod"
-		@voted-already="yourMethod"
-		@closed-survey="yourMethod"
-		@failed-to-close-survey="yourMethod"
+    @voted-already="yourMethod"
+    @closed-survey="yourMethod"
+    @failed-to-close-survey="yourMethod"
   />
 ```
 
