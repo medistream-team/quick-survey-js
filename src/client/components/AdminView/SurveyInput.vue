@@ -14,7 +14,7 @@
       depressed
       text
     >
-      <v-icon>mdi-trash-can-outline</v-icon>
+      삭제
     </button>
   </div>
 </template>
@@ -61,9 +61,11 @@ export default {
   }
   .delete-button {
     position: absolute;
-    top: 20%;
+    top: 25%;
     right: 10px;
     background-color: transparent;
+    color: gray;
+    font-size: 14px;
   }
 }
 </style>

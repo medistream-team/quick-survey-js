@@ -61,7 +61,6 @@
           :handleSurveyInput="handleSurveyInput"
           :placeholder="`최하 스케일 설명 예)매우 싫다`"
           :name="`minRateDescription`"
-          v-model="minText"
         />
       </div>
       <div class="max-scale">
@@ -70,7 +69,6 @@
           :handleSurveyInput="handleSurveyInput"
           :placeholder="`최상 스케일 설명 예)매우 좋다`"
           :name="`maxRateDescription`"
-          v-model="maxText"
         />
       </div>
     </div>
@@ -99,11 +97,19 @@ export default {
     return {
       surveyType: true,
       choiceBoxes: [0, 1],
+      choicesArray: [
+        {
+          text: "",
+          value: null,
+        },
+        {
+          text: "",
+          value: null,
+        },
+      ],
       surveyInputValue: "",
       minScale: 1,
       maxScale: null,
-      minText: "",
-      maxText: "",
     };
   },
 
@@ -124,11 +130,11 @@ export default {
       }
 
       if (this.surveyType && name === "text") {
-        if (surveyQuestion.choices[id]) {
-          surveyQuestion.choices[id] = { [name]: value, value: null };
-        } else {
-          surveyQuestion.choices.push({ [name]: value, value: null });
-        }
+        this.choicesArray[id] = { [name]: value, value: null };
+        const filledChoicesArray = this.choicesArray.filter((choice) => {
+          return choice[name] !== "" && choice !== undefined;
+        });
+        surveyQuestion.choices = filledChoicesArray;
         console.log(surveyQuestion.choices);
       }
 
@@ -137,14 +143,22 @@ export default {
       }
     },
     deleteChoiceBox(id) {
+      //순서대로 delete 하지 않을떄?
       const deleteBox = this.choiceBoxes.filter((el) => {
         return el !== id;
       });
       this.choiceBoxes = deleteBox;
-      this.surveyQuestion.choices.splice(id, 1);
+      delete this.choicesArray[id];
+      const filteredChoicesArray = this.choicesArray.filter((choice) => {
+        return choice !== undefined;
+      });
+
+      this.surveyQuestion.choices = filteredChoicesArray;
+      this.choicesArray = filteredChoicesArray;
     },
     addChoiceBox() {
       this.choiceBoxes = [...this.choiceBoxes, this.choiceBoxes.length];
+      this.choicesArray = [...this.choicesArray, { text: "", value: null }];
     },
     handleScaleNum(e) {
       if (e.target.value > 10) {
