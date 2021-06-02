@@ -7,7 +7,7 @@
           <div class="expiry-option">
             <v-switch
               v-model="createSurvey.hasExpiry"
-              class="toggleBox"
+              class="toggle-box"
               label="투표 기한 적용"
               dense
               inset
@@ -15,31 +15,31 @@
             <input
               v-if="createSurvey.hasExpiry"
               v-model="createSurvey.closeAt"
-              class="dateBox"
+              class="date-box"
               type="date"
             />
           </div>
-          <div class="resultsOption">
+          <div class="results-option">
             <v-switch
               v-model="createSurvey.isPublic"
-              class="toggleBox"
+              class="toggle-box"
               label="결과 공개"
               dense
               inset
             ></v-switch>
           </div>
+          <SurveyPage
+            v-for="(page, index) in createSurvey.pages"
+            :key="index"
+            :surveyPage="page"
+          />
+          <FinalButton
+            :isAdmin="true"
+            :readyToCreate="readyToCreate"
+            :finalButtonText="`투표생성`"
+            @sendSurveyData="sendSurveyData"
+          />
         </div>
-        <SurveyPage
-          v-for="(page, index) in createSurvey.pages"
-          :key="index"
-          :surveyPage="page"
-        />
-        <FinalButton
-          :isAdmin="true"
-          :readyToCreate="readyToCreate"
-          :finalButtonText="`투표생성`"
-          @sendSurveyData="sendSurveyData"
-        />
       </div>
     </form>
   </v-app>
@@ -47,7 +47,7 @@
 <script>
 // TODO: apiEndpoint, userKey를 prop으로 받을 수 있게하기
 // TODO: survey-created, failed-to-create-survey 2개의 event를 문서에서 명시해주기
-import { ADMIN_SURVEY_API, USER_KEY } from "../config";
+import { ADMIN_SURVEY_API } from "../config";
 import SurveyPage from "./AdminView/SurveyPage";
 import FinalButton from "./FinalButton";
 import vuetify from "../plugins/vuetify";
@@ -60,6 +60,12 @@ export default {
   components: {
     SurveyPage,
     FinalButton,
+  },
+  props: {
+    userKey: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
@@ -108,7 +114,7 @@ export default {
   methods: {
     sendSurveyData() {
       const headers = {
-        Authorization: USER_KEY,
+        Authorization: this.userKey,
       };
 
       axios
@@ -141,7 +147,7 @@ export default {
 
   .survey-setting {
     margin-bottom: 25px;
-    .toggleBox {
+    .toggle-box {
       margin-top: 0;
     }
   }

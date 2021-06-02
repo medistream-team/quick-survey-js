@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <div v-if="surveyData" class="survey-results-container">
+    <div v-if="isAdmin || isPublic" class="survey-results-container">
       <SurveyInfo
         :surveyId="surveyData._id"
         :totalCount="surveyData.responseCount"
@@ -24,9 +24,6 @@ import SurveyQuestion from "../components/UserView/SurveyQuestion";
 import vuetify from "../plugins/vuetify";
 
 const axios = require("axios");
-const headers = {
-  Authorization: USER_KEY,
-};
 
 export default {
   name: "SurveyResults",
@@ -45,18 +42,33 @@ export default {
   data() {
     return {
       surveyData: null,
+      isAdmin: null,
+      isPublic: null,
       pages: null,
       showResult: true,
     };
   },
+  computed: {
+    headers() {
+      return {
+        Authorization: this.userKey,
+      };
+    },
+  },
   created() {
     axios
       .get(`${USER_SURVEY_API}/${this.$route.params.id}`, {
-        headers: headers,
+        headers: this.headers,
       })
       .then((res) => {
+        this.isAdmin = res.data.isAdmin;
+        this.isPublic = res.data.survey.isPublic;
         this.surveyData = res.data.survey;
         this.pages = res.data.survey.pages;
+
+        if (!this.isPublic && !this.isAdmin) {
+          alert("Results cannot be loaded");
+        }
       })
       .catch((err) => console.log(err));
   },

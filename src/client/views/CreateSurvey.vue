@@ -1,5 +1,6 @@
 <template>
   <SurveyAdmin
+    :userKey="'wednesday'"
     @survey-created="onCreated"
     @failed-to-create-survey="onFailed"
   />
@@ -13,8 +14,8 @@ export default {
     SurveyAdmin,
   },
   methods: {
-    onCreated() {
-      this.$router.push("/survey");
+    onCreated(surveyId) {
+      this.$router.push(`/survey/${surveyId}`);
     },
     onFailed() {
       console.log("create failed");

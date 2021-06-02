@@ -4,7 +4,7 @@
     @click="handleChoicesStatus(choiceIndex, choiceId)"
     class="choice-container"
     :class="{
-      blueBorder: isSelected || isMostSelected,
+      ['blue-border']: isSelected || isMostSelected,
     }"
   >
     <div

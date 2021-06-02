@@ -30,7 +30,7 @@
         <v-dialog v-model="dialog" width="500">
           <template v-slot:activator="{ on, attrs }">
             <v-btn
-              v-if="isAdmin"
+              v-model="isAdmin"
               depressed
               small
               outlined
@@ -67,21 +67,13 @@
 // TODO: headers도 userKey prop을 이용해 만들기
 // TODO: getResonseData vue스럽게 바꾸기
 // TODO: survey id, userkey 삭제
-import {
-  ADMIN_SURVEY_API,
-  USER_SURVEY_API,
-  SURVEY_ID,
-  USER_KEY,
-} from "../config";
+import { ADMIN_SURVEY_API, USER_SURVEY_API } from "../config";
 import SurveyInfo from "./UserView/SurveyInfo";
 import SurveyQuestion from "./UserView/SurveyQuestion";
 import FinalButton from "./FinalButton";
 import vuetify from "../plugins/vuetify";
 
 const axios = require("axios");
-const headers = {
-  Authorization: USER_KEY,
-};
 
 export default {
   name: "Survey",
@@ -95,17 +87,18 @@ export default {
     // TODO: default 삭제, required
     surveyId: {
       type: String,
-      default: SURVEY_ID,
+      required: true,
     },
     userKey: {
       type: String,
-      default: USER_KEY,
+      required: true,
     },
   },
   data() {
     return {
       isClosed: false,
       isAdmin: false,
+      isVoted: false,
       dialog: false,
       surveyData: null,
       pages: null,
@@ -117,16 +110,24 @@ export default {
       readyToSubmit: false,
     };
   },
-  computed: {},
+  computed: {
+    headers() {
+      return {
+        Authorization: this.userKey,
+      };
+    },
+  },
   created() {
     axios
       .get(`${USER_SURVEY_API}/${this.$route.params.id}`, {
-        headers: headers,
+        headers: this.headers,
       })
       .then((res) => {
         if (res.data.survey.isActive) {
           this.surveyData = res.data.survey;
           this.pages = res.data.survey.pages;
+          this.isAdmin = res.data.isAdmin;
+          this.isVoted = res.data.voted;
         } else {
           this.isClosed = true;
         }
@@ -142,11 +143,7 @@ export default {
             : (this.isClosed = true);
         }
 
-        if (this.surveyData.creatorKey === this.userKey) {
-          this.isAdmin = true;
-        }
-
-        if (this.surveyData.voted) {
+        if (this.isVoted) {
           alert("이미 참여한 투표입니다.");
           this.$router.push(`/survey/results/${this.surveyId}`);
         }
@@ -165,38 +162,36 @@ export default {
           `${USER_SURVEY_API}/${this.$route.params.id}`,
           this.ResponsesData,
           {
-            headers: headers,
+            headers: this.headers,
           }
         )
-        .then((res) => {
-          if (res.response.data.message === "success") {
-            this.$emit("vote-success", this.surveyId);
-          }
+        .then(() => {
+          this.$emit("sent-vote", this.$route.params.id);
         })
         .catch((err) => {
           if (err.response.data.message === "already voted") {
-            this.$emit("already-voted", this.surveyId);
+            this.$emit("voted-already", this.surveyId);
+          } else {
+            console.log(err);
           }
         });
     },
     closeSurvey() {
       this.dialog = false;
-      //POST close survey - test needed
       const body = {
         isActive: false,
       };
 
       axios
-        .post(`${ADMIN_SURVEY_API}/${this.surveyId}`, body, {
-          headers: headers,
+        .patch(`${ADMIN_SURVEY_API}/${this.surveyId}/status`, body, {
+          headers: this.headers,
         })
         .then(() => {
-          this.$emit("survey-closed", this.surveyId);
+          this.isClosed = true;
+          this.$emit("closed-poll", this.surveyId);
         })
-        .catch((err) => {
-          // TODO: 실패 이벤트도 적용하기
-          // this.$emit("failed-to-close-survey", this.surveyId);
-          console.log(err);
+        .catch(() => {
+          this.$emit("failed-to-close-poll", this.surveyId);
         });
     },
   },
