@@ -6,7 +6,7 @@
     :style="fillResult(scaleSize)"
     :class="{
       selected: !showResult && scaleStatus,
-      fillMostSelected: isMostSelected,
+      ['fill-most-selected']: isMostSelected,
     }"
   >
     <li class="each-scale">

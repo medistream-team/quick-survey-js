@@ -1,10 +1,11 @@
 <template>
   <Survey
-    :surveyId="'60b5d70dfb89aa54854713f6'"
-    :userKey="'thu'"
-    @vote-success="voteSucceed"
-    @already-voted="alreadyVoted"
-    @survey-closed="surveyClosed"
+    :surveyId="surveyId"
+    :userKey="'wednesday'"
+    @sent-vote="voteSent"
+    @voted-already="votedAlready"
+    @closed-survey="closedSurvey"
+    @failed-to-close-survey="failedToCloseSurvey"
   />
 </template>
 
@@ -14,16 +15,25 @@ import Survey from "../components/Survey";
 export default {
   name: "InvolveSurvey",
   components: { Survey },
+  data() {
+    return {
+      surveyId: this.$route.params.id,
+    };
+  },
   methods: {
-    voteSucceed(surveyId) {
+    voteSent(surveyId) {
       this.$router.push(`/survey/results/${surveyId}`);
     },
-    alreadyVoted(surveyId) {
+    votedAlready(surveyId) {
       alert("이미 참여한 투표입니다.");
       this.$router.push(`/survey/results/${surveyId}`);
     },
-    surveyClosed(surveyId) {
+    closedSurvey(surveyId) {
       console.log("survey-closed", surveyId);
+      this.$router.push(`/survey/results/${surveyId}`);
+    },
+    failedToCloseSurvey() {
+      console.log("failed to close surveu.");
     },
   },
 };

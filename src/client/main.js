@@ -3,8 +3,6 @@ import App from "./App.vue";
 import router from "./router";
 import axios from "axios";
 import VueAxios from "vue-axios";
-// import vuetify from "./plugins/vuetify";
-// require("./vuetify-reset.css");
 import "vuetify/dist/vuetify.min.css";
 
 Vue.config.productionTip = false;
