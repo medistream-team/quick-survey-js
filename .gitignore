@@ -561,4 +561,6 @@ FodyWeavers.xsd
 # Additional files built by Visual Studio
 *.tlog
 
+aws-settings.sh
+
 # End of https://www.toptal.com/developers/gitignore/api/node,serverless,sass,vue,vuejs,macos,visualstudio,visualstudiocode
