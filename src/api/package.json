@@ -13,7 +13,7 @@
   },
   "scripts": {
     "dev": "./node_modules/serverless/bin/serverless.js offline --httpPort ${API_PORT:-8000}",
-    "deploy": "./node_modules/serverless/bin/serverless.js deploy"
+    "deploy": "src ./config/aws-settings.sh && ./node_modules/serverless/bin/serverless.js deploy"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
