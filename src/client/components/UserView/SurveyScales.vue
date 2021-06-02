@@ -1,5 +1,5 @@
 <template>
-  <ul class="poll-scales">
+  <ul class="survey-scales">
     <span class="min">{{ minDescription }}</span>
     <Scale
       v-for="(scale, index) in scales"
@@ -21,7 +21,7 @@
 import Scale from "./Scale";
 
 export default {
-  name: "PollScales",
+  name: "SurveyScales",
   components: { Scale },
   props: {
     questionId: {
@@ -90,7 +90,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.poll-scales {
+.survey-scales {
   display: flex;
   overflow: scroll;
   justify-content: center;

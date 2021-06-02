@@ -1,36 +1,36 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import InvolvePoll from "../views/InvolvePoll.vue";
-import ResultsPoll from "../views/ResultsPoll.vue";
-import CreatePoll from "../views/CreatePoll.vue";
+import InvolveSurvey from "../views/InvolveSurvey.vue";
+import ResultsSurvey from "../views/ResultsSurvey.vue";
+import CreateSurvey from "../views/CreateSurvey.vue";
 
 Vue.use(VueRouter);
 
 const routes = [
   {
-    path: "/poll/results",
-    name: "ResultsPoll",
-    component: ResultsPoll,
+    path: "/survey/results",
+    name: "ResultsSurvey",
+    component: ResultsSurvey,
   },
   {
-    path: "/poll/results/:id",
-    name: "ResultsPoll",
-    component: ResultsPoll,
+    path: "/survey/results/:id",
+    name: "ResultsSurvey",
+    component: ResultsSurvey,
   },
   {
-    path: "/poll/admin",
-    name: "CreatePoll",
-    component: CreatePoll,
+    path: "/survey/admin",
+    name: "CreateSurvey",
+    component: CreateSurvey,
   },
   {
-    path: "/poll",
-    name: "InvolvePoll",
-    component: InvolvePoll,
+    path: "/survey",
+    name: "InvolveSurvey",
+    component: InvolveSurvey,
   },
   {
-    path: "/poll/:id",
-    name: "InvolvePoll",
-    component: InvolvePoll,
+    path: "/survey/:id",
+    name: "InvolveSurvey",
+    component: InvolveSurvey,
   },
 ];
 

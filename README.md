@@ -124,18 +124,18 @@ npm run serve:client
 ```
 ### 3. Import components
 
-There are 3 components that you may import as needed - to create a poll, submit answers to a poll, and view poll results.
+There are 3 components that you may import as needed - to create a survey, submit answers to a survey, and view survey results.
 You may import the components on your existing or new application as guided below. 
 
 #### Example
 
 ```js
 <template>
-  <PollAdmin @poll-created="onCreated" @failed-to-create-poll="onFailed" />
+  <SurveyAdmin @survey-created="onCreated" @failed-to-create-survey="onFailed" />
 </template>
 
 <script>
-  import PollAdmin from "../components/PollAdmin";
+  import SurveyAdmin from "../components/SurveyAdmin";
   ...
 </script>
 ```
@@ -144,29 +144,29 @@ You may import the components on your existing or new application as guided belo
 To get the components working, there are required props to pass each, and methods that you can specify the actions to take in each component.
 Please refer to below for **required** props and methods.
 
-#### Create Poll
+#### Create Survey
 ```js
-<PollAdmin 
-    @poll-created="yourMethodOnCreated" 
-    @failed-to-create-poll="yourMethodOnFailed" 
+<SurveyAdmin 
+    @survey-created="yourMethodOnCreated" 
+    @failed-to-create-survey="yourMethodOnFailed" 
   />
 
 ```
 
-#### Submit Poll
+#### Submit Survey
 ```js
-<Poll
+<Survey
     :surveyId="yourSurveyID"
     :userKey="yourUserKey"
     @vote-success="yourMethodOnVoted"
     @already-voted="yourMethodOnAlreadyVoted"
-    @poll-closed="yourMethodOnPollClosed"
+    @survey-closed="yourMethodOnSurveyClosed"
   />
 ```
 
-#### View Poll Results
+#### View Survey Results
 ```js
-<PollResults 
+<SurveyResults 
     :surveyId="yourSurveyID"
     :userKey="yourUserKey"
   />

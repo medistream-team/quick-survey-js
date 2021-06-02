@@ -1,8 +1,8 @@
 <template>
   <div id="app">
-    <router-link to="/poll/admin">Create Poll</router-link> |
-    <router-link to="/poll">Poll</router-link> |
-    <router-link to="/poll/results/:id">Poll Results</router-link>
+    <router-link to="/survey/admin">Create Survey</router-link> |
+    <router-link to="/survey">Survey</router-link> |
+    <router-link to="/survey/results/:id">Survey Results</router-link>
     <router-view />
   </div>
 </template>

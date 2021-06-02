@@ -1,48 +1,48 @@
 <template>
-  <div class="poll-page">
-    <div class="poll-admin-info">
+  <div class="survey-page">
+    <div class="survey-admin-info">
       <h2>투표</h2>
-      <PollInput
-        :handlePollInput="handlePollInput"
+      <SurveyInput
+        :handleSurveyInput="handleSurveyInput"
         :placeholder="`투표 제목`"
         :name="`title`"
       />
-      <PollInput
-        :handlePollInput="handlePollInput"
+      <SurveyInput
+        :handleSurveyInput="handleSurveyInput"
         :placeholder="`투표 추가 설명 예)복수 선택 가능`"
         :name="`description`"
       />
     </div>
-    <div class="poll-types">
+    <div class="survey-types">
       <h2>투표 유형</h2>
       <div class="type-checkbox">
         <v-checkbox
-          v-model="pollType"
+          v-model="surveyType"
           class="typeBox checkbox"
-          @click="handlePollType(true, 'checkbox')"
+          @click="handleSurveyType(true, 'checkbox')"
           :label="`객관식`"
         ></v-checkbox>
         <v-checkbox
-          :value="!pollType"
+          :value="!surveyType"
           class="typeBox"
-          @click="handlePollType(false, 'rating')"
+          @click="handleSurveyType(false, 'rating')"
           :label="`스케일`"
         ></v-checkbox>
       </div>
     </div>
-    <div v-if="pollType" class="choice-poll">
+    <div v-if="surveyType" class="choice-survey">
       <h2>객관식 항목</h2>
       <div class="multiple-option">
         <v-switch
           label="중복 선택 가능"
-          v-model="pollQuestion.multipleSelectOption.allowed"
+          v-model="surveyQuestion.multipleSelectOption.allowed"
           dense
           inset
           class="toggle-box"
         ></v-switch>
       </div>
-      <PollInput
-        :handlePollInput="handlePollInput"
+      <SurveyInput
+        :handleSurveyInput="handleSurveyInput"
         @deleteChoiceBox="deleteChoiceBox"
         :placeholder="`객관식 항목 설명`"
         :deleteOption="true"
@@ -53,12 +53,12 @@
       />
       <AddButton @addChoiceBox="addChoiceBox" />
     </div>
-    <div v-if="!pollType" class="scale-poll">
+    <div v-if="!surveyType" class="scale-survey">
       <h2>스케일 항목</h2>
       <div class="min-scale">
         <input name="value" class="min-num" value="1" disabled />
-        <PollInput
-          :handlePollInput="handlePollInput"
+        <SurveyInput
+          :handleSurveyInput="handleSurveyInput"
           :placeholder="`최하 스케일 설명 예)매우 싫다`"
           :name="`minRateDescription`"
           v-model="minText"
@@ -66,8 +66,8 @@
       </div>
       <div class="max-scale">
         <input v-model="maxScale" class="max-num" @change="handleScaleNum" />
-        <PollInput
-          :handlePollInput="handlePollInput"
+        <SurveyInput
+          :handleSurveyInput="handleSurveyInput"
           :placeholder="`최상 스케일 설명 예)매우 좋다`"
           :name="`maxRateDescription`"
           v-model="maxText"
@@ -77,17 +77,17 @@
   </div>
 </template>
 <script>
-import PollInput from "./PollInput";
+import SurveyInput from "./SurveyInput";
 import AddButton from "./AddButton";
 
 export default {
-  name: "PollElement",
+  name: "SurveyElement",
   components: {
-    PollInput,
+    SurveyInput,
     AddButton,
   },
   props: {
-    pollQuestion: {
+    surveyQuestion: {
       type: Object,
       required: true,
     },
@@ -97,9 +97,9 @@ export default {
   },
   data() {
     return {
-      pollType: true,
+      surveyType: true,
       choiceBoxes: [0, 1],
-      pollInputValue: "",
+      surveyInputValue: "",
       minScale: 1,
       maxScale: null,
       minText: "",
@@ -108,32 +108,32 @@ export default {
   },
 
   methods: {
-    handlePollType(boolean, name) {
-      this.pollType = boolean;
-      this.pollQuestion.type = name;
-      this.pollQuestion.choices = [];
+    handleSurveyType(boolean, name) {
+      this.surveyType = boolean;
+      this.surveyQuestion.type = name;
+      this.surveyQuestion.choices = [];
     },
 
-    handlePollInput(e) {
+    handleSurveyInput(e) {
       const { value, name, id } = e.target;
-      const { pollQuestion } = this;
+      const { surveyQuestion } = this;
 
-      if (this.pollType && name !== "text") {
-        pollQuestion[name] = value;
-        this.pollInputValue = value;
+      if (this.surveyType && name !== "text") {
+        surveyQuestion[name] = value;
+        this.surveyInputValue = value;
       }
 
-      if (this.pollType && name === "text") {
-        if (pollQuestion.choices[id]) {
-          pollQuestion.choices[id] = { [name]: value, value: null };
+      if (this.surveyType && name === "text") {
+        if (surveyQuestion.choices[id]) {
+          surveyQuestion.choices[id] = { [name]: value, value: null };
         } else {
-          pollQuestion.choices.push({ [name]: value, value: null });
+          surveyQuestion.choices.push({ [name]: value, value: null });
         }
-        console.log(pollQuestion.choices);
+        console.log(surveyQuestion.choices);
       }
 
-      if (!this.pollType && name !== "text") {
-        pollQuestion[name] = value;
+      if (!this.surveyType && name !== "text") {
+        surveyQuestion[name] = value;
       }
     },
     deleteChoiceBox(id) {
@@ -141,7 +141,7 @@ export default {
         return el !== id;
       });
       this.choiceBoxes = deleteBox;
-      this.pollQuestion.choices.splice(id, 1);
+      this.surveyQuestion.choices.splice(id, 1);
     },
     addChoiceBox() {
       this.choiceBoxes = [...this.choiceBoxes, this.choiceBoxes.length];
@@ -151,39 +151,39 @@ export default {
         e.target.value = 10;
         this.maxScale = 10;
       }
-      this.pollQuestion.rateMax = Number(this.maxScale);
-      this.pollQuestion.rateMin = this.minScale;
+      this.surveyQuestion.rateMax = Number(this.maxScale);
+      this.surveyQuestion.rateMin = this.minScale;
 
       let scaleArr = Array.from(
         { length: this.maxScale - this.minScale + 1 },
         (_, i) => i + 1
       );
 
-      this.pollQuestion.choices = scaleArr.map((scale) => {
+      this.surveyQuestion.choices = scaleArr.map((scale) => {
         return {
           value: scale,
           text: "",
         };
       });
-      console.log(this.pollQuestion);
+      console.log(this.surveyQuestion);
     },
   },
 };
 </script>
 <style lang="scss" scoped>
-.poll-page {
+.survey-page {
   h2 {
     margin-bottom: 20px;
     padding-bottom: 5px;
     border-bottom: 1px solid #d8d8d8;
   }
-  .poll-admin-info,
-  .poll-types,
-  .choice-poll {
+  .survey-admin-info,
+  .survey-types,
+  .choice-survey {
     margin-bottom: 25px;
   }
 
-  .poll-types {
+  .survey-types {
     .type-checkbox {
       display: flex;
     }
@@ -195,7 +195,7 @@ export default {
     }
   }
 
-  .scale-poll {
+  .scale-survey {
     .min-scale,
     .max-scale {
       display: flex;

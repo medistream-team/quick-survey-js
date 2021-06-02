@@ -1,44 +1,44 @@
 <template>
   <v-app>
-    <form @submit.prevent class="pollAdminContainer">
-      <div class="pollAdmin">
-        <div class="pollSetting">
+    <form @submit.prevent class="survey-admin-container">
+      <div class="survey-admin">
+        <div class="survey-setting">
           <h2>투표 설정</h2>
-          <div class="expiryOption">
+          <div class="expiry-option">
             <v-switch
+              v-model="createSurvey.hasExpiry"
+              class="toggleBox"
               label="투표 기한 적용"
-              v-model="createPoll.hasExpiry"
               dense
               inset
-              class="toggleBox"
             ></v-switch>
             <input
-              v-model="createPoll.closeAt"
+              v-if="createSurvey.hasExpiry"
+              v-model="createSurvey.closeAt"
               class="dateBox"
-              v-if="createPoll.hasExpiry"
               type="date"
             />
           </div>
           <div class="resultsOption">
             <v-switch
+              v-model="createSurvey.isPublic"
+              class="toggleBox"
               label="결과 공개"
-              v-model="createPoll.isPublic"
               dense
               inset
-              class="toggleBox"
             ></v-switch>
           </div>
         </div>
-        <PollPage
-          v-for="(page, index) in createPoll.pages"
+        <SurveyPage
+          v-for="(page, index) in createSurvey.pages"
           :key="index"
-          :pollPage="page"
+          :surveyPage="page"
         />
         <FinalButton
           :isAdmin="true"
           :readyToCreate="readyToCreate"
-          @sendPollData="sendPollData"
           :finalButtonText="`투표생성`"
+          @sendSurveyData="sendSurveyData"
         />
       </div>
     </form>
@@ -46,24 +46,24 @@
 </template>
 <script>
 // TODO: apiEndpoint, userKey를 prop으로 받을 수 있게하기
-// TODO: poll-created, failed-to-create-poll 2개의 event를 문서에서 명시해주기
-import { ADMIN_POLL_API, USER_KEY } from "../config";
-import PollPage from "./AdminView/PollPage";
+// TODO: survey-created, failed-to-create-survey 2개의 event를 문서에서 명시해주기
+import { ADMIN_SURVEY_API, USER_KEY } from "../config";
+import SurveyPage from "./AdminView/SurveyPage";
 import FinalButton from "./FinalButton";
 import vuetify from "../plugins/vuetify";
 
 const axios = require("axios");
 
 export default {
-  name: "PollAdmin",
+  name: "SurveyAdmin",
   vuetify,
   components: {
-    PollPage,
+    SurveyPage,
     FinalButton,
   },
   data() {
     return {
-      createPoll: {
+      createSurvey: {
         hasExpiry: false,
         closeAt: "",
         isPublic: true,
@@ -90,13 +90,13 @@ export default {
   },
   computed: {
     readyToCreate() {
-      const titlesAreValid = this.createPoll.pages.every((page) => {
+      const titlesAreValid = this.createSurvey.pages.every((page) => {
         return page.elements.every((element) => {
           return element.title !== "";
         });
       });
 
-      const choicesAreValid = this.createPoll.pages.every((page) => {
+      const choicesAreValid = this.createSurvey.pages.every((page) => {
         return page.elements.every((element) => {
           return element.choices.length >= 2;
         });
@@ -106,20 +106,20 @@ export default {
     },
   },
   methods: {
-    sendPollData() {
+    sendSurveyData() {
       const headers = {
         Authorization: USER_KEY,
       };
 
       axios
-        .post(ADMIN_POLL_API, this.createPoll, {
+        .post(ADMIN_SURVEY_API, this.createSurvey, {
           headers: headers,
         })
         .then((res) => {
-          this.$emit("poll-created", res.data.surveyId);
+          this.$emit("survey-created", res.data.surveyId);
         })
         .catch(() => {
-          this.$emit("failed-to-create-poll");
+          this.$emit("failed-to-create-survey");
         });
     },
   },
@@ -127,7 +127,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.poll-admin-container {
+.survey-admin-container {
   width: 100%;
   max-width: 600px;
   margin: 50px auto;
@@ -139,14 +139,14 @@ export default {
     border-bottom: 1px solid #d8d8d8;
   }
 
-  .poll-setting {
+  .survey-setting {
     margin-bottom: 25px;
     .toggleBox {
       margin-top: 0;
     }
   }
 
-  .poll-types {
+  .survey-types {
     .type-checkbox {
       display: flex;
     }
