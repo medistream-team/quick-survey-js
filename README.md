@@ -143,9 +143,10 @@ You may import the components on your existing or new application as guided belo
 
 ```js
 // main.js
-import { SurveyAdmin, Survey, SurveyResults } from 'quick-survey-js';
+import { quickSurveyJS } from 'quick-survey-js';
+import 'quick-survey-js/dis/quick-survey-js.css';
 
-Vue.use(SurveyAdmin, Survey, SurveyResults);
+Vue.use(quickSurveyJS);
 ```
 
 ### 5. Use components
