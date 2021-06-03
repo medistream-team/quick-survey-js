@@ -1,6 +1,7 @@
 <template>
   <div class="survey-input-container">
     <input
+      :style="{ width: '100%' }"
       class="survey-input-box"
       :id="boxId"
       :name="name"
@@ -50,6 +51,9 @@ export default {
 .survey-input-container {
   position: relative;
   width: 100%;
+  input {
+    width: 100%;
+  }
   .survey-input-box {
     display: block;
     width: 100%;

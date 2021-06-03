@@ -33,8 +33,11 @@ You may import the components on your existing or new application as guided belo
 
 ```js
 // main.js
-import { SurveyAdmin, Survey, SurveyResults } from 'quick-survey-js';
-Vue.use(SruveyAdmin, Survey, SurveyResults);
+import { quickSurveyJS } from 'quick-survey-js';
+import 'quick-survey-js/dis/quick-survey-js.css';
+
+Vue.use(quickSurveyJS);
+
 ```
 
 ### 1. Use components

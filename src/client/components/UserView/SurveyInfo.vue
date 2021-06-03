@@ -1,6 +1,6 @@
 <template>
   <div class="survey-info" :id="surveyId">
-    <span class="total-answered">총 응답 수: {{ totalCount }}</span>
+    <span class="total-answered">총 응답자 수: {{ totalCount }}</span>
     <span v-if="hasExpiry" class="closing-date"
       >설문 기한: {{ getDate[0] }}년 {{ getDate[1] }}월 {{ getDate[2] }}일
       {{ getTime[0] }}시 {{ getTime[1] }}분 까지
