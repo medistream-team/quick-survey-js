@@ -1,9 +1,13 @@
 <template>
-  <v-app>
-    <div v-if="isAdmin || isPublic" class="survey-results-container">
+  <v-app :style="{ width: '600px', margin: '50px auto' }">
+    <div
+      v-if="isAdmin || isPublic"
+      class="survey-results-container"
+      :style="{ width: '600px', margin: '50px auto' }"
+    >
       <SurveyInfo
         :surveyId="surveyData._id"
-        :totalCount="surveyData.responseCount"
+        :totalCount="surveyData.participantCount"
         :expiryDate="surveyData.closeAt"
         :hasExpiry="surveyData.hasExpiry"
       />
@@ -18,7 +22,7 @@
 </template>
 
 <script>
-import { USER_SURVEY_API, SURVEY_ID, USER_KEY } from "../config";
+import { USER_SURVEY_API } from "../config";
 import SurveyInfo from "../components/UserView/SurveyInfo";
 import SurveyQuestion from "../components/UserView/SurveyQuestion";
 import vuetify from "../plugins/vuetify";
@@ -32,11 +36,11 @@ export default {
   props: {
     surveyId: {
       type: String,
-      default: SURVEY_ID,
+      required: true,
     },
     userKey: {
       type: String,
-      default: USER_KEY,
+      required: true,
     },
   },
   data() {
@@ -57,7 +61,7 @@ export default {
   },
   created() {
     axios
-      .get(`${USER_SURVEY_API}/${this.$route.params.id}`, {
+      .get(`${USER_SURVEY_API}/${this.surveyId}`, {
         headers: this.headers,
       })
       .then((res) => {

@@ -1,5 +1,5 @@
 <template>
-  <ul class="survey-choices">
+  <ul class="survey-choices" :style="{ 'padding-left': '0' }">
     <Choice
       v-for="(choice, index) in choices"
       :key="choice._id"
@@ -101,7 +101,6 @@ export default {
           );
         }
       }
-      console.log(this.choicesStatus);
     },
   },
 };

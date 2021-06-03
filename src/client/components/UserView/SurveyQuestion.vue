@@ -90,7 +90,6 @@ export default {
             }
           }
         }
-        console.log(this.allAnswered);
       }
 
       if (this.allAnswered) {

@@ -15,7 +15,7 @@
     </div>
     <div class="survey-types">
       <h2>투표 유형</h2>
-      <div class="type-checkbox">
+      <div class="type-checkbox" :style="{ display: 'flex' }">
         <v-checkbox
           v-model="surveyType"
           class="typeBox checkbox"
@@ -135,7 +135,6 @@ export default {
           return choice[name] !== "" && choice !== undefined;
         });
         surveyQuestion.choices = filledChoicesArray;
-        console.log(surveyQuestion.choices);
       }
 
       if (!this.surveyType && name !== "text") {
@@ -179,7 +178,6 @@ export default {
           text: "",
         };
       });
-      console.log(this.surveyQuestion);
     },
   },
 };
@@ -187,6 +185,7 @@ export default {
 <style lang="scss" scoped>
 .survey-page {
   h2 {
+    font-weight: normal;
     margin-bottom: 20px;
     padding-bottom: 5px;
     border-bottom: 1px solid #d8d8d8;

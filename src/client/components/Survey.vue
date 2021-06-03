@@ -1,13 +1,23 @@
 <template>
   <v-app>
-    <form @submit.prevent class="survey-container">
+    <form
+      @submit.prevent
+      id="survey-container"
+      :style="{
+        position: 'relative',
+        width: '100%',
+        'max-width': '600px',
+        margin: '50px auto',
+        padding: '10px',
+      }"
+    >
       <div class="closed-survey" v-if="isClosed">
         <h3>종료된 투표입니다.</h3>
       </div>
       <div v-if="surveyData" class="survey-page">
         <SurveyInfo
           :surveyId="surveyData._id"
-          :totalCount="surveyData.responseCount"
+          :totalCount="surveyData.participantCount"
           :expiryDate="surveyData.closeAt"
           :hasExpiry="surveyData.hasExpiry"
         />
@@ -26,37 +36,44 @@
         :readyToSubmit="readyToSubmit"
         @submitResponsesData="submitResponsesData"
       />
-      <div class="text-center">
-        <v-dialog v-model="dialog" width="500">
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              v-model="isAdmin"
-              depressed
-              small
-              outlined
-              class="close-button"
-              color="red lighten-2"
-              dark
-              v-bind="attrs"
-              v-on="on"
-            >
-              투표 종료하기
-            </v-btn>
-          </template>
+      <div v-if="isAdmin">
+        <div class="text-center">
+          <v-dialog v-model="dialog" width="500">
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                depressed
+                small
+                outlined
+                id="close-button"
+                color="red lighten-2"
+                dark
+                v-bind="attrs"
+                v-on="on"
+                :style="{
+                  position: 'absolute',
+                  top: '10px',
+                  right: '10px',
+                  color: '#fd6261',
+                }"
+              >
+                투표 종료하기
+              </v-btn>
+            </template>
 
-          <v-card>
-            <v-card-title class="headline grey lighten-2">
-              투표를 완전히 종료하시겠습니까?
-            </v-card-title>
-            <v-card-text> 확인을 누르면 투표가 종료됩니다. </v-card-text>
-            <v-divider></v-divider>
+            <v-card>
+              <v-card-title class="headline grey lighten-2">
+                투표를 완전히 종료하시겠습니까?
+              </v-card-title>
+              <v-card-text> 확인을 누르면 투표가 종료됩니다. </v-card-text>
+              <v-divider></v-divider>
 
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="primary" text @click="closeSurvey"> 확인 </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="primary" text @click="closeSurvey"> 확인 </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </div>
       </div>
     </form>
   </v-app>
@@ -119,7 +136,7 @@ export default {
   },
   created() {
     axios
-      .get(`${USER_SURVEY_API}/${this.$route.params.id}`, {
+      .get(`${USER_SURVEY_API}/${this.surveyId}`, {
         headers: this.headers,
       })
       .then((res) => {
@@ -199,7 +216,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.survey-container {
+form {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  margin: 50px auto;
+  padding: 10px;
+}
+#survey-container {
   position: relative;
   width: 100%;
   max-width: 600px;
@@ -218,7 +242,7 @@ export default {
     font-size: 24px;
   }
 
-  .close-button {
+  #close-button {
     position: absolute;
     top: 10px;
     right: 10px;

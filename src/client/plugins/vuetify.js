@@ -12,6 +12,7 @@ import Vuetify, {
   VSwitch,
   VCheckbox,
 } from "vuetify/lib";
+import "@mdi/font/css/materialdesignicons.css";
 
 Vue.use(Vuetify, {
   components: {
