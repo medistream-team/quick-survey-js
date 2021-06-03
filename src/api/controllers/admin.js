@@ -25,7 +25,6 @@ exports.createSurvey = async (req, res, next) => {
 
   try {
     validateKeyError(req.body, "pages");
-    validateKeyError(req.body, "closeAt");
     validateKeyError(req.body, "isPublic");
     validateKeyError(req.body, "hasExpiry");
 
