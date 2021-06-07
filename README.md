@@ -112,13 +112,13 @@ You should fill out `API_ENDPOINTS` value inside `.env` file at `./src/client`. 
 As an example, 👇
 
 ```
-API_ENDPOINTS=https://92pz8mf1w2.execute-api.ap-northeast-2.amazonaws.com/dev
+VUE_APP_API_ENDPOINTS=https://92pz8mf1w2.execute-api.ap-northeast-2.amazonaws.com/dev
 ```
 
 or 👇, if you're running an API server on local. 
 
 ```
-API_ENDPOINTS=http://localhost:8000/dev
+VUE_APP_API_ENDPOINTS=http://localhost:8000/dev
 ```
 
 ### 2. Set up API in `config.js`
