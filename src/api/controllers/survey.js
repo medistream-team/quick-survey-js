@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const Survey = require("../models/surveys");
 const Question = require("../models/questions");
-const User = require("../models/users");
+const surveyService = require("../services/survey");
 
 const { connectToDatabase } = require("../models/utils/connectDB");
 
@@ -106,33 +106,12 @@ exports.getSurvey = async (req, res, next) => {
   await connectToDatabase();
 
   const surveyId = req.params.surveyId;
-  const userKey = req.header("authorization");
+  const user = req.header("authorization");
 
-  try {
-    await validateId(surveyId, Survey);
-  } catch (error) {
-    return res
-      .status(error.code ? error.code : 400)
-      .json({ message: error.message });
-  }
-
-  const survey = await Survey.findById(surveyId).populate("pages.elements");
-
-  survey.createdAt = convertUTCToLocalTime(survey.createdAt);
-  survey.closeAt = survey.closeAt
-    ? convertUTCToLocalTime(survey.closeAt)
-    : null;
-
-  const isAdmin = survey.creatorKey === userKey ? true : false;
-  const user = await User.findOne({ userKey: userKey }).select("votedSurvey");
-
-  let voted = false;
-  if (user) {
-    const votedSurvey = user.votedSurvey.filter((votedHistory) => {
-      return String(votedHistory.surveyId) === surveyId;
-    });
-    voted = votedSurvey.length ? true : false;
-  }
+  const { survey, isAdmin, voted } = await surveyService.getSurvey(
+    user,
+    surveyId
+  );
   return res
     .status(200)
     .json({ survey: survey, isAdmin: isAdmin, voted: voted });
