@@ -14,3 +14,11 @@ exports.throwCustomError = (message, statusCode) => {
   error.code = statusCode;
   throw error;
 };
+
+exports.evadePathForMiddleware = async (
+  /**@array */ evadingPathsArray,
+  /**@pathString */ path,
+  next
+) => {
+  if (evadingPathsArray.includes(path)) next();
+};

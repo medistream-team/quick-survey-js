@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const Survey = require("../models/surveys");
 const Question = require("../models/questions");
-const surveyService = require("../services/survey");
+const SurveyService = require("../services/survey");
 
 const { connectToDatabase } = require("../models/utils/connectDB");
 
@@ -108,7 +108,7 @@ exports.getSurvey = async (req, res, next) => {
   const surveyId = req.params.surveyId;
   const user = req.header("authorization");
 
-  const { survey, isAdmin, voted } = await surveyService.getSurvey(
+  const { survey, isAdmin, voted } = await SurveyService.getSurvey(
     user,
     surveyId
   );
