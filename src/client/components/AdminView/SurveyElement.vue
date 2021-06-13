@@ -46,9 +46,9 @@
         @deleteChoiceBox="deleteChoiceBox"
         :placeholder="`객관식 항목 설명`"
         :deleteOption="true"
-        v-for="box in choiceBoxes"
-        :key="box"
-        :boxId="box"
+        v-for="(box, index) in choiceBoxes"
+        :key="index"
+        :boxId="index"
         :name="`text`"
       />
       <AddButton @addChoiceBox="addChoiceBox" />
@@ -142,6 +142,7 @@ export default {
       }
     },
     deleteChoiceBox(id) {
+      //순서대로 delete 하지 않을떄?
       const deleteBox = this.choiceBoxes.filter((el) => {
         return el !== id;
       });

@@ -1,7 +1,3 @@
-<div align="center">
-<img width="600px" alt="Vue.js" src="./logo.png"/> 
-</div>
-
 ## Quick-Survey-JS is a JavaScript Survey Module.
 
 Quick-Survey-JS offers a quick way to add a simple survey to your website.<br>
