@@ -1,8 +1,8 @@
+## Quick-Survey-JS is a quick and simple JavaScript Survey Module.
+
 <div align="center">
 <img width="600px" alt="Vue.js" src="./logo.png"/> 
 </div>
-
-## Quick-Survey-JS is a JavaScript Survey Module.
 
 Quick-Survey-JS offers a quick way to add a simple survey to your website.<br>
 It is a set of Vue JS components of creating, completing, and viewing survey questions and results.<br>
