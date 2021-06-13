@@ -1,6 +1,6 @@
 {
 	"name": "quick-survey-js",
-	"version": "0.1.4",
+	"version": "0.1.6",
 	"description": "",
 	"main": "dist/quick-survey-js.umd.min.js",
 	"files": [
