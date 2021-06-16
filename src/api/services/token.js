@@ -9,9 +9,9 @@ class TokenService {
   }
 
   async verifyToken(token) {
-    await jwt.verify(token, SECRET_KEY, (err, payload) => {
+    await jwt.verify(token, SECRET_KEY, (err, decoded) => {
       if (err) throwCustomError(err.message, 400);
-      return payload;
+      return decoded.user;
     });
   }
 }
