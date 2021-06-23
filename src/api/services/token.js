@@ -5,14 +5,23 @@ const { SECRET_KEY } = process.env;
 
 class TokenService {
   async createToken(user) {
-    return jwt.sign({ user: user }, SECRET_KEY);
+    try {
+      return jwt.sign({ user: user }, SECRET_KEY);
+    } catch (err) {
+      throwCustomError(err.message, 400);
+    }
   }
 
   async verifyToken(token) {
-    await jwt.verify(token, SECRET_KEY, (err, decoded) => {
-      if (err) throwCustomError(err.message, 400);
+    try {
+      const decoded = await jwt.verify(token, SECRET_KEY);
+      if (!decoded.user) {
+        throwCustomError("invalid payload", 400);
+      }
       return decoded.user;
-    });
+    } catch (err) {
+      throwCustomError(err.message, 400);
+    }
   }
 }
 
