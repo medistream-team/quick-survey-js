@@ -12,8 +12,5 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/medistream-team/quick-survey-js.git"
-  },
-  "dependencies": {
-    "http-errors": "^1.8.0"
   }
 }
