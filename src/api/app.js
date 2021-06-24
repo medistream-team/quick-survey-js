@@ -6,6 +6,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 
 const auth = require("./libs/token");
+const error = require("./libs/error");
 
 const app = express();
 
@@ -18,9 +19,8 @@ const adminRouter = require("./routes/admin");
 const surveyRouter = require("./routes/survey");
 const authRouter = require("./routes/auth");
 
-
 app.use("/auth", authRouter);
 app.use("/admin", adminRouter);
 app.use("/survey", surveyRouter);
-
+app.on("error", error.errorHandler(app));
 module.exports.handler = serverless(app);
