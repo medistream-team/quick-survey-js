@@ -7,7 +7,11 @@ exports.applyTokenMiddleware = (app) => {
   app.use("/", async (req, res, next) => {
     await evadePathForMiddleware(PATHS_WITH_OPEN_ACCESS, req.path, next);
     const token = req.header("authorization");
-    req.user = await TokenService.verifyToken(token);
-    next();
+    try {
+      req.user = await TokenService.verifyToken(token);
+      next();
+    } catch (err) {
+      next(err);
+    }
   });
 };

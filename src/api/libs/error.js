@@ -1,11 +1,11 @@
-exports.errorHandler = (app) => {
-  app.use((req, res, next) => {
-    try {
-      next();
-    } catch (error) {
-      const status = error.status || 500;
-      const message = error.message;
-      return res.status(status).json({ messge: message });
-    }
-  });
+exports.logHandler = (err, req, res, next) => {
+  console.log("error occured!");
+  console.log(`[${new Date()}] : ${err.stack} `);
+  next(err);
+};
+
+exports.errorHandler = (err, req, res, next) => {
+  const status = err.status || 500;
+  const message = err.message;
+  return res.status(status).json({ messge: message });
 };
