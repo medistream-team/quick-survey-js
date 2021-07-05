@@ -4,11 +4,17 @@ const UserSchema = require("../models/users/schema");
 const userDataAccess = require("../models/users");
 const { checkIfUserVoted } = require("../utils");
 
-const createOrUpdateUser = async (userId, answers, session) => {
+const createOrUpdateUser = async (userId, surveyId, answers, session) => {
   const user = await userDataAccess.get(UserSchema, userId, session);
 
   if (!user) {
-    return await userDataAccess.create(UserSchema, userId, answers, session);
+    return await userDataAccess.create(
+      UserSchema,
+      userId,
+      surveyId,
+      answers,
+      session
+    );
   }
 
   if (checkIfUserVoted(user, surveyId)) {

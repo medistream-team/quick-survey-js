@@ -1,12 +1,11 @@
-const get = (modelSchema, userId, session) => {
-  return modelSchema
-    .findOne({ userKey: userId })
+const get = (Schema, userId, session) => {
+  return Schema.findOne({ userKey: userId })
     .select("votedSurvey")
     .session(session);
 };
 
-const create = (modelSchema, userId, answers, session) => {
-  return modelSchema.create(
+const create = (Schema, userId, surveyId, answers, session) => {
+  return Schema.create(
     [
       {
         userKey: userId,
