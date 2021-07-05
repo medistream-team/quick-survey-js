@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const { surveyService } = require("../services/survey");
+const surveyService = require("../services/survey");
 const userService = require("../services/user");
 const { connectToDatabase } = require("../models/utils/connectDB");
 
@@ -14,7 +14,7 @@ exports.voteSurvey = async (req, res, next) => {
   try {
     await session.withTransaction(async () => {
       await surveyService.voteSurvey(surveyId, answers, session);
-      await userService.createOrUpdateUser(user, answers, session);
+      await userService.createOrUpdateUser(user, surveyId, answers, session);
     });
     return res.status(200).json({ message: "success" });
   } catch (error) {

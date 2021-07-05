@@ -1,11 +1,13 @@
-const get = (Schema, userId, session) => {
-  return Schema.findOne({ userKey: userId })
+const User = require("./schema");
+
+const get = (userId, session) => {
+  return User.findOne({ userKey: userId })
     .select("votedSurvey")
     .session(session);
 };
 
-const create = (Schema, userId, surveyId, answers, session) => {
-  return Schema.create(
+const create = (userId, surveyId, answers, session) => {
+  return User.create(
     [
       {
         userKey: userId,

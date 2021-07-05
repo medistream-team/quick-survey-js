@@ -1,7 +1,6 @@
 const createError = require("http-errors");
 
 const Question = require("../models/questions/schema");
-const SurveySchema = require("../models/surveys/schema");
 const surveyDataAccess = require("../models/surveys");
 const User = require("../models/users/schema");
 
@@ -13,11 +12,7 @@ const {
 } = require("../utils");
 
 const voteSurvey = async (surveyId, answers, session) => {
-  const survey = await surveyDataAccess.get(
-    SurveySchema,
-    surveyId,
-    "pages.elements"
-  );
+  const survey = await surveyDataAccess.get(surveyId, "pages.elements");
 
   if (
     !survey.isActive ||
@@ -38,11 +33,11 @@ const voteSurvey = async (surveyId, answers, session) => {
       )
       .session(session);
 
-    validateSelectedChoices(
-      question.type,
-      question.multipleSelectOption,
-      answer.choiceIds.length
-    );
+    // validateSelectedChoices(
+    //   question.type,
+    //   question.multipleSelectOption,
+    //   answer.choiceIds.length
+    // );
 
     for await (const choiceId of answer.choiceIds) {
       const choice = question.choices.find((choiceObj) => {
@@ -67,11 +62,7 @@ const voteSurvey = async (surveyId, answers, session) => {
 };
 
 const getSurvey = async (user, surveyId) => {
-  const survey = await surveyDataAccess.get(
-    SurveySchema,
-    surveyId,
-    "pages.elements"
-  );
+  const survey = await surveyDataAccess.get(surveyId, "pages.elements");
 
   survey.createdAt = convertUTCToLocalTime(survey.createdAt);
   survey.closeAt = survey.closeAt

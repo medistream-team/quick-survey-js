@@ -1,5 +1,7 @@
-const get = (Schema, surveyId, populateDoc) => {
-  return Schema.findById(surveyId).populate(populateDoc);
+const Survey = require("./schema");
+
+const get = (surveyId, populateDoc) => {
+  return Survey.findById(surveyId).populate(populateDoc);
 };
 
 module.exports = { get };
