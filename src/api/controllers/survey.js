@@ -1,21 +1,21 @@
 const mongoose = require("mongoose");
-const createError = require("http-errors");
 
 const { surveyService } = require("../services/survey");
+const userService = require("../services/user");
 const { connectToDatabase } = require("../models/utils/connectDB");
 
 exports.voteSurvey = async (req, res, next) => {
   await connectToDatabase();
   const session = await mongoose.startSession();
+  const user = req.user;
+  const { answers } = req.body;
   const surveyId = req.params.surveyId;
 
   try {
-    const { answers } = req.body;
-
-    session.startTransaction();
-    await surveyService.voteSurvey(surveyId, answers, session);
-    await session.commitTransaction();
-    session.endSession();
+    await session.withTransaction(async () => {
+      await surveyService.voteSurvey(surveyId, answers, session);
+      await userService.createOrUpdateUser(user, answers, session);
+    });
     return res.status(200).json({ message: "success" });
   } catch (error) {
     if (session.inTransaction()) {

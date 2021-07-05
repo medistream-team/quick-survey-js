@@ -1,49 +1,25 @@
 const createError = require("http-errors");
 
-const User = require("../models/users");
+const UserSchema = require("../models/users/schema");
+const userDataAccess = require("../models/users");
+const { checkIfUserVoted } = require("../utils");
 
-class UserService {
-  /**
-   * 
-   * @param {string} user 
-   * @param {string} surveyId 
-   * @param {object} answer 
-   * @param {*} session 
-   */
-  async createOrUpdateVoter(user, surveyId, answer, session) {
-    if (await User.exists({ userKey: user })) {
-      const user = await User.findOne({ userKey: user })
-        .select("votedSurvey")
-        .session(session);
+const createOrUpdateUser = async (userId, answers, session) => {
+  const user = await userDataAccess.get(UserSchema, userId, session);
 
-      const voted = user.votedSurvey.filter((history) => {
-        return String(history.surveyId) === surveyId;
-      });
-
-      if (voted.length) throw createError(400, "already voted");
-
-      user.votedSurvey.push({
-        surveyId: surveyId,
-        responses: answer,
-      });
-      await user.save();
-    } else {
-      return await User.create(
-        [
-          {
-            userKey: user,
-            votedSurvey: [
-              {
-                surveyId: surveyId,
-                responses: answer,
-              },
-            ],
-          },
-        ],
-        { session: session }
-      );
-    }
+  if (!user) {
+    return await userDataAccess.create(UserSchema, userId, answers, session);
   }
-}
 
-exports.userService = new UserService();
+  if (checkIfUserVoted(user, surveyId)) {
+    throw createError(400, "already voted");
+  }
+
+  user.votedSurvey.push({
+    surveyId: surveyId,
+    responses: answers,
+  });
+  return await user.save();
+};
+
+module.exports = { createOrUpdateUser };
