@@ -1,0 +1,17 @@
+service: surveys-test
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: dev
+  region: ap-northeast-2
+
+functions:
+  app:
+    handler: app.handler
+    events:
+      - http: ANY /
+      - http: "ANY {proxy+}"
+
+plugins:
+  - serverless-offline
