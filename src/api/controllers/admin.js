@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
-const Survey = require("../models/surveys");
-const Question = require("../models/questions");
+const Survey = require("../models/surveys/schema");
+const Question = require("../models/questions/schema");
 
 const { connectToDatabase } = require("../models/utils/connectDB");
 const {
