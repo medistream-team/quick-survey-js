@@ -22,8 +22,7 @@
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.12.10",
-    "serverless-http": "^2.7.0",
-    "http-errors": "^1.8.0"
+    "serverless-http": "^2.7.0"
   },
   "devDependencies": {
     "serverless": "^2.43.0",

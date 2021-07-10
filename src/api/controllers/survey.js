@@ -2,11 +2,12 @@ const mongoose = require("mongoose");
 
 const surveyService = require("../services/survey");
 const userService = require("../services/user");
-const { connectToDatabase } = require("../models/utils/connectDB");
+const { connectToDatabase } = require("../libs/mongoose");
 
-exports.voteSurvey = async (req, res, next) => {
+const voteSurvey = async (req, res, next) => {
   await connectToDatabase();
   const session = await mongoose.startSession();
+
   const user = req.user;
   const { answers } = req.body;
   const surveyId = req.params.surveyId;
@@ -25,10 +26,12 @@ exports.voteSurvey = async (req, res, next) => {
   }
 };
 
-exports.getSurvey = async (req, res, next) => {
+const getSurvey = async (req, res, next) => {
   await connectToDatabase();
+
   const surveyId = req.params.surveyId;
   const user = req.header("authorization");
+
   try {
     const { survey, isAdmin, voted } = await surveyService.getSurvey(
       user,
@@ -42,3 +45,5 @@ exports.getSurvey = async (req, res, next) => {
     return next(err);
   }
 };
+
+module.exports = { voteSurvey, getSurvey };

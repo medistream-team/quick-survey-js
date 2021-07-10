@@ -3,74 +3,44 @@ const mongoose = require("mongoose");
 const Survey = require("../models/surveys/schema");
 const Question = require("../models/questions/schema");
 
-const { connectToDatabase } = require("../models/utils/connectDB");
-const {
-  throwError,
-  convertUTCToLocalTime,
-  insertSurveyCreatorInfo,
-} = require("./utils/utils");
+const { connectToDatabase } = require("../libs/mongoose");
+const { convertUTCToLocalTime } = require("../utils/date");
+const { customError } = require("../utils/custom-errors");
 
-const {
-  validateId,
-  validateAuth,
-  validateKeyError,
-  validateValueError,
-  validateReqMultipleSelectOption,
-} = require("./utils/validators");
+const { insertSurveyCreatorInfo } = require("./utils/utils");
 
 exports.createSurvey = async (req, res, next) => {
   await connectToDatabase();
+
   const session = await mongoose.startSession();
   const creatorKey = req.header("authorization");
 
   try {
-    validateKeyError(req.body, "pages");
-    validateKeyError(req.body, "isPublic");
-    validateKeyError(req.body, "hasExpiry");
-
     const { pages, hasExpiry, closeAt, isPublic } = req.body;
 
-    validateAuth(creatorKey);
-
     if (hasExpiry && !closeAt) {
-      throwError("closing time is required", 400);
+      const error = customError.omissionError("closing time");
+      throw error;
     }
-
-    validateValueError(pages, Array);
-    validateValueError(hasExpiry, Boolean);
-    validateValueError(isPublic, Boolean);
 
     if (
       closeAt &&
       convertUTCToLocalTime(new Date()) >=
         convertUTCToLocalTime(new Date(closeAt) || isNaN(new Date(closeAt)))
     ) {
-      throwError("invalid closing time", 400);
+      const error = customError.invalidInputError("closing time");
+      throw error;
     }
 
     session.startTransaction();
 
-    let pageObjs = [];
+    const pageObjs = [];
     for (const page of pages) {
       const elements = page.elements.map((element /** @object */) => {
-        validateKeyError(element, "type");
-        validateKeyError(element, "title");
-        validateKeyError(element, "isRequired");
-        validateKeyError(element, "multipleSelectOption");
-        validateKeyError(element, "choices");
-
-        validateValueError(element.choices, Array);
-        validateValueError(element.isRequired, Boolean);
-        validateValueError(element.multipleSelectOption, Object);
-
         if (element.choices.length < 2) {
-          throwError("at least two choices are required", 400);
+          const error = customError.omissionError("more than two choices");
+          throw error;
         }
-
-        validateReqMultipleSelectOption(
-          element.type,
-          element.multipleSelectOption
-        );
 
         return new Question({
           ...element,
@@ -113,22 +83,18 @@ exports.createSurvey = async (req, res, next) => {
 
 exports.patchSurvey = async (req, res, next) => {
   await connectToDatabase();
+
   const creatorKey = req.header("authorization");
   const surveyId = req.params.surveyId;
+  const { isActive } = req.body;
 
   try {
-    validateKeyError(req.body, "isActive");
-    const { isActive } = req.body;
-
-    await validateId(surveyId, Survey);
-    validateAuth(creatorKey);
-    validateValueError(isActive, Boolean);
-
     const survey = await Survey.findById(surveyId).select(
       "isActive creatorKey"
     );
     if (survey.creatorKey !== creatorKey) {
-      throwError("unauthorized", 401);
+      const error = customError.unauthorizedError();
+      throw error;
     }
     survey.isActive = isActive;
     survey.save();

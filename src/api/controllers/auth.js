@@ -1,7 +1,14 @@
-const TokenService = require("../services/token");
+const tokenService = require("../services/token");
 
-exports.authenticateUser = async (req, res, next) => {
+const authenticateUser = async (req, res, next) => {
   const { user } = req.body;
-  const token = await TokenService.createToken(user);
-  return res.status(201).json({ token: token });
+
+  try {
+    const token = await tokenService.createToken(user);
+    return res.status(201).json({ token: token });
+  } catch (err) {
+    return next(err);
+  }
 };
+
+module.exports = { authenticateUser };

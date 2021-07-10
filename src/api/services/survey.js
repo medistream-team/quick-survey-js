@@ -1,29 +1,22 @@
-const createError = require("http-errors");
-
 const Question = require("../models/questions/schema");
 const surveyDataAccess = require("../models/surveys");
 const User = require("../models/users/schema");
 
-const {
-  convertUTCToLocalTime,
-  checkIfUserVoted,
-  findMissingEssentialQuestions,
-  validateSelectedChoices,
-} = require("../utils");
+const { convertUTCToLocalTime } = require("../utils/date");
+const { customError } = require("../utils/custom-errors");
+const validator = require("../utils/validators");
 
 const voteSurvey = async (surveyId, answers, session) => {
   const survey = await surveyDataAccess.get(surveyId, "pages.elements");
 
-  if (
-    !survey.isActive ||
-    (survey.closeAt &&
-      convertUTCToLocalTime(new Date()) > convertUTCToLocalTime(survey.closeAt))
-  ) {
-    throw createError(400, "closed survey");
+  if (!validator.isSurveyOpen(survey)) {
+    const error = customError.forbiddenError("closed survey");
+    throw error;
   }
 
-  if (findMissingEssentialQuestions(survey, answers)) {
-    throw createError(404, "some neccessary questions not answered");
+  if (validator.isNecessaryQuestionMissing(survey, answers)) {
+    const error = customError.omissionError("necessary questions");
+    throw error;
   }
 
   for await (const answer of answers) {
@@ -33,27 +26,22 @@ const voteSurvey = async (surveyId, answers, session) => {
       )
       .session(session);
 
-    // validateSelectedChoices(
-    //   question.type,
-    //   question.multipleSelectOption,
-    //   answer.choiceIds.length
-    // );
-
     for await (const choiceId of answer.choiceIds) {
-      const choice = question.choices.find((choiceObj) => {
-        return String(choiceObj._id) === choiceId;
-      });
-      if (!choice) {
-        throw createError(
-          400,
-          "choice belonging to a given question not found"
+      if (!validator.isChoiceCorrespondToQuestion(question, choiceId)) {
+        const error = customError.notFoundError(
+          `question containing choice id ${choiceId}`
         );
+        throw error;
       }
+
+      const choice = question.choices.find((choice) => {
+        return String(choice._id) === choiceId;
+      });
+
       choice.responseCount++;
       question.responseCount++;
       survey.responseCount++;
     }
-
     question.participantCount++;
     await question.save();
   }
@@ -61,16 +49,16 @@ const voteSurvey = async (surveyId, answers, session) => {
   await survey.save();
 };
 
-const getSurvey = async (user, surveyId) => {
+const getSurvey = async (userId, surveyId) => {
   const survey = await surveyDataAccess.get(surveyId, "pages.elements");
 
   survey.createdAt = convertUTCToLocalTime(survey.createdAt);
   survey.closeAt = survey.closeAt
     ? convertUTCToLocalTime(survey.closeAt)
     : null;
-  const userData = await User.findOne({ userKey: user }).select("votedSurvey");
-  const isAdmin = survey.creatorKey === userData ? true : false;
-  const voted = checkIfUserVoted(userData, surveyId) ? true : false;
+  const user = await User.findOne({ userKey: userId }).select("votedSurvey");
+  const isAdmin = survey.creatorKey === user ? true : false;
+  const voted = validator.isVoted(user, surveyId) ? true : false;
   return { survey: survey, isAdmin: isAdmin, voted: voted };
 };
 

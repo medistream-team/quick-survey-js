@@ -6,6 +6,7 @@ mongoose.Promise = global.Promise;
 
 let isConnected;
 
+// TODO 미들웨어 처리로 수정 필요.
 exports.connectToDatabase = () => {
   if (isConnected) {
     console.log("=> using existing database connection");
