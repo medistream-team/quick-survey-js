@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const surveyService = require("../services/survey");
 const userService = require("../services/user");
-const { connectToDatabase } = require("../models/utils/connectDB");
+const { connectToDatabase } = require("../libs/mongoose");
 
 const voteSurvey = async (req, res, next) => {
   try {

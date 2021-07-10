@@ -1,17 +1,8 @@
+// TODO 
+// 곧 제거될 파일.
+// db access 작업 단위로 함수 분산 필요. 
+
 const User = require("../../models/users");
-
-const throwError = (message, statusCode) => {
-  const error = new Error(message);
-  error.code = statusCode;
-  throw error;
-};
-
-exports.throwError = throwError;
-
-exports.convertUTCToLocalTime = (date) => {
-  date.setHours(date.getHours() + 9);
-  return date;
-};
 
 exports.insertSurveyCreatorInfo = async (surveyObj, creatorKey, session) => {
   if (await User.exists({ userKey: creatorKey })) {

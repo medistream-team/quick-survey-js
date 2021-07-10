@@ -11,6 +11,9 @@ const errorMessage = {
   forbiddenError: (details) => {
     return `access denied for ${details}`;
   },
+  invalidInputError: (property) => {
+    return `invalid ${property}`
+  },
   invalidTokenError: `invalid token`,
   unauthorizedError: `unauthorized access`,
 };
@@ -34,6 +37,11 @@ const customError = {
   forbiddenError: (details) => {
     const error = new Error(errorMessage.forbiddenError(details));
     error.status = 403;
+    return error;
+  },
+  invalidInputError: (property) => {
+    const error = new Error(errorMessage.invalidInputError(property));
+    error.status = 400;
     return error;
   },
   invalidTokenError: () => {
