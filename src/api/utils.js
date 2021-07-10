@@ -1,6 +1,9 @@
 const createError = require("http-errors");
 
 exports.checkIfUserVoted = async (userData, surveyId) => {
+  if (!userData) {
+    return false;
+  }
   return userData.votedSurvey.find((votedSurvey) => {
     return String(votedSurvey.surveyId) === surveyId;
   });
