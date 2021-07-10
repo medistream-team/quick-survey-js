@@ -17,25 +17,28 @@ exports.voteSurvey = async (req, res, next) => {
       await userService.createOrUpdateUser(user, surveyId, answers, session);
     });
     return res.status(200).json({ message: "success" });
-  } catch (error) {
+  } catch (err) {
     if (session.inTransaction()) {
       await session.abortTransaction();
     }
-    next(error);
+    return next(err);
   }
 };
 
 exports.getSurvey = async (req, res, next) => {
   await connectToDatabase();
-
   const surveyId = req.params.surveyId;
   const user = req.header("authorization");
+  try {
+    const { survey, isAdmin, voted } = await surveyService.getSurvey(
+      user,
+      surveyId
+    );
 
-  const { survey, isAdmin, voted } = await surveyService.getSurvey(
-    user,
-    surveyId
-  );
-  return res
-    .status(200)
-    .json({ survey: survey, isAdmin: isAdmin, voted: voted });
+    return res
+      .status(200)
+      .json({ survey: survey, isAdmin: isAdmin, voted: voted });
+  } catch (err) {
+    return next(err);
+  }
 };
