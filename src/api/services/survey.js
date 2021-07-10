@@ -33,6 +33,11 @@ const voteSurvey = async (surveyId, answers, session) => {
         );
         throw error;
       }
+
+      const choice = question.choices.find((choice) => {
+        return String(choice._id) === choiceId;
+      });
+
       choice.responseCount++;
       question.responseCount++;
       survey.responseCount++;

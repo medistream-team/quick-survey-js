@@ -11,6 +11,7 @@ const { insertSurveyCreatorInfo } = require("./utils/utils");
 
 exports.createSurvey = async (req, res, next) => {
   await connectToDatabase();
+
   const session = await mongoose.startSession();
   const creatorKey = req.header("authorization");
 
@@ -82,12 +83,12 @@ exports.createSurvey = async (req, res, next) => {
 
 exports.patchSurvey = async (req, res, next) => {
   await connectToDatabase();
+
   const creatorKey = req.header("authorization");
   const surveyId = req.params.surveyId;
+  const { isActive } = req.body;
 
   try {
-    const { isActive } = req.body;
-
     const survey = await Survey.findById(surveyId).select(
       "isActive creatorKey"
     );
