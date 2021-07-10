@@ -1,6 +1,6 @@
-const createError = require("http-errors");
-
 const userDataAccess = require("../models/users");
+
+const { customError } = require("../utils/custom-errors");
 const { checkIfUserVoted } = require("../utils");
 
 const createOrUpdateUser = async (userId, surveyId, answers, session) => {
@@ -11,7 +11,8 @@ const createOrUpdateUser = async (userId, surveyId, answers, session) => {
   }
 
   if (checkIfUserVoted(user, surveyId)) {
-    throw createError(400, "already voted");
+    const error = customError.forbiddenError("already voted survey");
+    throw error;
   }
 
   user.votedSurvey.push({

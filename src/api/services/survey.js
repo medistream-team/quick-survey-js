@@ -1,8 +1,8 @@
-const createError = require("http-errors");
-
 const Question = require("../models/questions/schema");
 const surveyDataAccess = require("../models/surveys");
 const User = require("../models/users/schema");
+
+const { customError } = require("../utils/custom-errors");
 
 const {
   convertUTCToLocalTime,
@@ -19,11 +19,13 @@ const voteSurvey = async (surveyId, answers, session) => {
     (survey.closeAt &&
       convertUTCToLocalTime(new Date()) > convertUTCToLocalTime(survey.closeAt))
   ) {
-    throw createError(400, "closed survey");
+    const error = customError.forbiddenError("closed survey");
+    throw error;
   }
 
   if (findMissingEssentialQuestions(survey, answers)) {
-    throw createError(404, "some neccessary questions not answered");
+    const error = customError.omissionError("necessary questions");
+    throw error;
   }
 
   for await (const answer of answers) {
@@ -44,16 +46,15 @@ const voteSurvey = async (surveyId, answers, session) => {
         return String(choiceObj._id) === choiceId;
       });
       if (!choice) {
-        throw createError(
-          400,
-          "choice belonging to a given question not found"
+        const error = customError.notFoundError(
+          `question containing choice id ${choiceId}`
         );
+        throw error;
       }
       choice.responseCount++;
       question.responseCount++;
       survey.responseCount++;
     }
-
     question.participantCount++;
     await question.save();
   }
@@ -68,9 +69,9 @@ const getSurvey = async (user, surveyId) => {
   survey.closeAt = survey.closeAt
     ? convertUTCToLocalTime(survey.closeAt)
     : null;
-  const userData = await User.findOne({ userKey: user }).select("votedSurvey");
-  const isAdmin = survey.creatorKey === userData ? true : false;
-  const voted = checkIfUserVoted(userData, surveyId) ? true : false;
+  const user = await User.findOne({ userKey: user }).select("votedSurvey");
+  const isAdmin = survey.creatorKey === user ? true : false;
+  const voted = checkIfUserVoted(user, surveyId) ? true : false;
   return { survey: survey, isAdmin: isAdmin, voted: voted };
 };
 
