@@ -84,13 +84,14 @@
 // TODO: headers도 userKey prop을 이용해 만들기
 // TODO: getResonseData vue스럽게 바꾸기
 // TODO: survey id, userkey 삭제
-import { ADMIN_SURVEY_API, USER_SURVEY_API } from "../config";
+import { ADMIN_SURVEY_API, USER_SURVEY_API, CREATE_TOKEN_API } from "../config";
 import SurveyInfo from "./UserView/SurveyInfo";
 import SurveyQuestion from "./UserView/SurveyQuestion";
 import FinalButton from "./FinalButton";
 import vuetify from "../plugins/vuetify";
 
 const axios = require("axios");
+const token = localStorage.getItem("TOKEN");
 
 export default {
   name: "Survey",
@@ -135,37 +136,52 @@ export default {
     },
   },
   created() {
-    axios
-      .get(`${USER_SURVEY_API}/${this.surveyId}`, {
-        headers: this.headers,
-      })
-      .then((res) => {
-        if (res.data.survey.isActive) {
-          this.surveyData = res.data.survey;
-          this.pages = res.data.survey.pages;
-          this.isAdmin = res.data.isAdmin;
-          this.isVoted = res.data.voted;
-        } else {
-          this.isClosed = true;
-        }
+    //토큰 유무 확인 후 토큰 생성
+    if (!token) {
+      axios
+        .post(CREATE_TOKEN_API, {
+          headers: this.userKey,
+        })
+        .then((res) => {
+          console.log(res.token);
+          localStorage.setItem("TOKEN", res.token);
+        })
+        .catch((err) => console.log(err));
+    }
 
-        let today = new Date();
+    if (token) {
+      axios
+        .get(`${USER_SURVEY_API}/${this.surveyId}`, {
+          headers: token,
+        })
+        .then((res) => {
+          if (res.data.survey.isActive) {
+            this.surveyData = res.data.survey;
+            this.pages = res.data.survey.pages;
+            this.isAdmin = res.data.isAdmin;
+            this.isVoted = res.data.voted;
+          } else {
+            this.isClosed = true;
+          }
 
-        if (
-          this.surveyData.closeAt &&
-          new Date(this.surveyData.closeAt) < today
-        ) {
-          this.surveyData.isPublic
-            ? this.$router.push(`/survey/results/${this.surveyId}`)
-            : (this.isClosed = true);
-        }
+          let today = new Date();
 
-        if (this.isVoted) {
-          alert("이미 참여한 투표입니다.");
-          this.$router.push(`/survey/results/${this.surveyId}`);
-        }
-      })
-      .catch((err) => console.log(err));
+          if (
+            this.surveyData.closeAt &&
+            new Date(this.surveyData.closeAt) < today
+          ) {
+            this.surveyData.isPublic
+              ? this.$router.push(`/survey/results/${this.surveyId}`)
+              : (this.isClosed = true);
+          }
+
+          if (this.isVoted) {
+            alert("이미 참여한 투표입니다.");
+            this.$router.push(`/survey/results/${this.surveyId}`);
+          }
+        })
+        .catch((err) => console.log(err));
+    }
   },
   methods: {
     getResponsesData(allAnswered, surveyAnswers) {

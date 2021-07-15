@@ -1,6 +1,6 @@
 <template>
   <Survey
-    :surveyId="surveyId"
+    :surveyId="`60dacf9ab0f6710008e077e5`"
     :userKey="'wednesday'"
     @sent-vote="voteSent"
     @voted-already="votedAlready"
