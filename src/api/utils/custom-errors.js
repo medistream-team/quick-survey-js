@@ -12,8 +12,9 @@ const errorMessage = {
     return `access denied for ${details}`;
   },
   invalidInputError: (property) => {
-    return `invalid ${property}`
+    return `invalid ${property}`;
   },
+  databaseConnectionError: `cannot connect to mongoDB`,
   invalidTokenError: `invalid token`,
   unauthorizedError: `unauthorized access`,
 };
@@ -53,7 +54,12 @@ const customError = {
     const error = new Error(errorMessage.unauthorizedError);
     error.status = 401;
     return error;
-  }
+  },
+  databaseConnectionError: () => {
+    const error = new Error(errorMessage.databaseConnectionError);
+    error.status = 500;
+    return error;
+  },
 };
 
 module.exports = { customError };

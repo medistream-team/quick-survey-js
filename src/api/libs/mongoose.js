@@ -1,25 +1,25 @@
 const mongoose = require("mongoose");
 
 const { MONGO_URI } = process.env;
+const { customError } = require("../utils/custom-errors");
 
-mongoose.Promise = global.Promise;
-
-let isConnected;
-
-// TODO 미들웨어 처리로 수정 필요.
-exports.connectToDatabase = () => {
-  if (isConnected) {
-    console.log("=> using existing database connection");
-    return Promise.resolve();
+const connectDB = (req, res, next) => {
+  try {
+    return mongoose
+      .connect(MONGO_URI, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      })
+      .then((db) => {
+        return next();
+      })
+      .catch((err) => {
+        throw err;
+      });
+  } catch (err) {
+    const error = customError.databaseConnectionError();
+    return res.status(error.status).json({ message: error.message });
   }
-
-  console.log("=> using new database connection");
-  return mongoose
-    .connect(MONGO_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    })
-    .then((db) => {
-      isConnected = db.connections[0].readyState;
-    });
 };
+
+module.exports = { connectDB };

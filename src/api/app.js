@@ -7,6 +7,7 @@ const cors = require("cors");
 
 const auth = require("./libs/token");
 const error = require("./libs/error");
+const { connectDB } = require("./libs/mongoose");
 
 const app = express();
 
@@ -19,6 +20,7 @@ const surveyRouter = require("./routes/survey");
 const authRouter = require("./routes/auth");
 
 auth.applyTokenMiddleware(app);
+app.use(connectDB);
 app.use("/auth", authRouter);
 app.use("/admin", adminRouter);
 app.use("/survey", surveyRouter);
