@@ -1,6 +1,6 @@
 const tokenService = require("../services/token");
 
-const PATHS_WITH_OPEN_ACCESS = ["/auth/token", "/admin/survey"];
+const PATHS_WITH_OPEN_ACCESS = ["/auth/token"];
 
 exports.applyTokenMiddleware = (app) => {
   app.use("/", async (req, res, next) => {

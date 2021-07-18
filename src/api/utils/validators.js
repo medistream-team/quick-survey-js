@@ -1,5 +1,18 @@
 const { convertUTCToLocalTime } = require("./date");
 
+const isClosingTimeValid = (closeAt) => {
+  const now = convertUTCToLocalTime(new Date());
+  const closingTime = convertUTCToLocalTime(new Date(closeAt));
+  const isInvalidType = isNaN(new Date(closeAt));
+
+  const isClosingTimePast = now >= closingTime;
+
+  if (isClosingTimePast || isInvalidType) {
+    return false;
+  }
+  return true;
+};
+
 const isSurveyOpen = (survey) => {
   const isActive = survey.isActive;
   const isTerminated =
@@ -48,6 +61,7 @@ const isChoiceCorrespondToQuestion = (question, choiceId) => {
 };
 
 module.exports = {
+  isClosingTimeValid,
   isSurveyOpen,
   isVoted,
   isNecessaryQuestionMissing,
