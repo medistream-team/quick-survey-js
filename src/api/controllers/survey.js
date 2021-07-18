@@ -19,9 +19,6 @@ const voteSurvey = async (req, res, next) => {
     });
     return res.status(200).json({ message: "success" });
   } catch (err) {
-    if (session.inTransaction()) {
-      await session.abortTransaction();
-    }
     return next(err);
   }
 };
