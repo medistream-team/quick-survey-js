@@ -6,6 +6,49 @@ const { convertUTCToLocalTime } = require("../utils/date");
 const { customError } = require("../utils/custom-errors");
 const validator = require("../utils/validators");
 
+const createSurvey = async (userId, pages, hasExpiry, closeAt, isPublic, session) => {
+  if (hasExpiry && !closeAt) {
+    const error = customError.omissionError("closing time");
+    throw error;
+  }
+
+  if (!validator.isClosingTimeValid(closeAt)) {
+    const error = customError.invalidInputError("closeAt");
+    throw error;
+  }
+
+  const pageContent = [];
+
+  for (const page of pages) {
+    const elements = page.elements.map((element) => {
+      if (element.choices.length < 2) {
+        const error = customError.omissionError("more than two choices");
+        throw error;
+      }
+
+      return new Question({
+        ...element,
+        description: element.description ? element.description : null,
+      });
+    });
+
+    const questions = await Question.insertMany(elements, {
+      session: session,
+    });
+
+    pageContent.push({ ...page, elements: questions });
+  }
+
+  return await surveyDataAccess.create(
+    userId,
+    hasExpiry,
+    isPublic,
+    pageContent,
+    closeAt,
+    session
+  );
+};
+
 const voteSurvey = async (surveyId, answers, session) => {
   const survey = await surveyDataAccess.get(surveyId, "pages.elements");
 
@@ -46,7 +89,7 @@ const voteSurvey = async (surveyId, answers, session) => {
     await question.save();
   }
   survey.participantCount++;
-  await survey.save();
+  return await survey.save();
 };
 
 const getSurvey = async (userId, surveyId) => {
@@ -62,4 +105,4 @@ const getSurvey = async (userId, surveyId) => {
   return { survey: survey, isAdmin: isAdmin, voted: voted };
 };
 
-module.exports = { voteSurvey, getSurvey };
+module.exports = { voteSurvey, getSurvey, createSurvey };
