@@ -1,6 +1,6 @@
 const Question = require("../models/questions/schema");
 const surveyDataAccess = require("../models/surveys");
-const User = require("../models/users/schema");
+const userDataAccess = require("../models/users");
 
 const { convertUTCToLocalTime } = require("../utils/date");
 const { customError } = require("../utils/custom-errors");
@@ -112,7 +112,8 @@ const getSurvey = async (userId, surveyId) => {
   survey.closeAt = survey.closeAt
     ? convertUTCToLocalTime(survey.closeAt)
     : null;
-  const user = await User.findOne({ userKey: userId }).select("votedSurvey");
+
+  const user = await userDataAccess.getVoter(userId, null);
   const isAdmin = survey.creatorKey === userId ? true : false;
   const voted = validator.isVoted(user, surveyId) ? true : false;
   return { survey: survey, isAdmin: isAdmin, voted: voted };
