@@ -6,7 +6,14 @@ const { convertUTCToLocalTime } = require("../utils/date");
 const { customError } = require("../utils/custom-errors");
 const validator = require("../utils/validators");
 
-const createSurvey = async (userId, pages, hasExpiry, closeAt, isPublic, session) => {
+const createSurvey = async (
+  userId,
+  pages,
+  hasExpiry,
+  closeAt,
+  isPublic,
+  session
+) => {
   if (hasExpiry && !closeAt) {
     const error = customError.omissionError("closing time");
     throw error;
@@ -50,7 +57,10 @@ const createSurvey = async (userId, pages, hasExpiry, closeAt, isPublic, session
 };
 
 const voteSurvey = async (surveyId, answers, session) => {
-  const survey = await surveyDataAccess.get(surveyId, "pages.elements");
+  const populateOption = "pages.elements";
+  const survey = await surveyDataAccess.get(surveyId, {
+    populateOption: populateOption,
+  });
 
   if (!validator.isSurveyOpen(survey)) {
     const error = customError.forbiddenError("closed survey");
@@ -93,7 +103,10 @@ const voteSurvey = async (surveyId, answers, session) => {
 };
 
 const getSurvey = async (userId, surveyId) => {
-  const survey = await surveyDataAccess.get(surveyId, "pages.elements");
+  const populateOption = "pages.elements";
+  const survey = await surveyDataAccess.get(surveyId, {
+    populateOption: populateOption,
+  });
 
   survey.createdAt = convertUTCToLocalTime(survey.createdAt);
   survey.closeAt = survey.closeAt
@@ -105,4 +118,24 @@ const getSurvey = async (userId, surveyId) => {
   return { survey: survey, isAdmin: isAdmin, voted: voted };
 };
 
-module.exports = { voteSurvey, getSurvey, createSurvey };
+const patchSurvey = async (userId, surveyId, isActive) => {
+  const selectOption = "isActive creatorKey";
+  const survey = await surveyDataAccess.get(surveyId, {
+    selectOption: selectOption,
+  });
+
+  if (!survey) {
+    const error = customError.notFoundError("survey");
+    throw error;
+  }
+
+  if (userId !== survey.creatorKey) {
+    const error = customError.unauthorizedError();
+    throw error;
+  }
+
+  survey.isActive = isActive;
+  return survey.save();
+};
+
+module.exports = { voteSurvey, getSurvey, createSurvey, patchSurvey };

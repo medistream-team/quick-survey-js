@@ -1,7 +1,15 @@
 const Survey = require("./schema");
 
-const get = (surveyId, populateDoc) => {
-  return Survey.findById(surveyId).populate(populateDoc);
+const get = (surveyId, options) => {
+  const { selectOption, populateOption } = options;
+
+  if (!populateOption) {
+    return Survey.findById(surveyId).select(selectOption);
+  }
+
+  return Survey.findById(surveyId)
+    .select(selectOption)
+    .populate(populateOption);
 };
 
 const create = (userId, hasExpiry, isPublic, pageContent, closeAt, session) => {
