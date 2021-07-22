@@ -5,10 +5,11 @@ const userService = require("../services/user");
 
 const voteSurvey = async (req, res, next) => {
   try {
-    const session = await mongoose.startSession();
     const user = req.user;
+    const { surveyId } = req.params;
     const { answers } = req.body;
-    const surveyId = req.params.surveyId;
+
+    const session = await mongoose.startSession();
 
     await session.withTransaction(async () => {
       await surveyService.voteSurvey(surveyId, answers, session);
@@ -22,8 +23,8 @@ const voteSurvey = async (req, res, next) => {
 
 const getSurvey = async (req, res, next) => {
   try {
-    const surveyId = req.params.surveyId;
-    const user = req.header("authorization");
+    const user = req.user;
+    const { surveyId } = req.params;
 
     const { survey, isAdmin, voted } = await surveyService.getSurvey(
       user,

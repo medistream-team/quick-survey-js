@@ -113,7 +113,7 @@ const getSurvey = async (userId, surveyId) => {
     ? convertUTCToLocalTime(survey.closeAt)
     : null;
   const user = await User.findOne({ userKey: userId }).select("votedSurvey");
-  const isAdmin = survey.creatorKey === user ? true : false;
+  const isAdmin = survey.creatorKey === userId ? true : false;
   const voted = validator.isVoted(user, surveyId) ? true : false;
   return { survey: survey, isAdmin: isAdmin, voted: voted };
 };

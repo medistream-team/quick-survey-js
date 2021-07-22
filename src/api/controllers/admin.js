@@ -6,9 +6,10 @@ const userService = require("../services/user");
 const createSurvey = async (req, res, next) => {
   try {
     const user = req.user;
-    const session = await mongoose.startSession();
     const { pages, hasExpiry, closeAt, isPublic } = req.body;
-
+    
+    const session = await mongoose.startSession();
+    
     await session.withTransaction(async () => {
       const survey = await surveyService.createSurvey(
         user,
