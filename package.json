@@ -1,11 +1,13 @@
 {
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "sls offline --httpPort ${API_PORT:-8000}",
-    "deploy": "sls deploy",
-    "serve": "vue-cli-service serve src/client/main.js",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "publish": "cd src/client && npm publish",
+    "install:client": "cd src/client && npm install && cp .env.example .env",
+    "install:api": "cd src/api && npm install && cp .env.example .env && echo -e SECRET_KEY=$(openssl rand -base64 16) >> .env && cp ./config/aws-settings-example.sh ./config/aws-settings.sh",
+    "dev": "cd src/api && npm run dev",
+    "deploy:api": "cd src/api && npm run deploy",
+    "serve:client": "cd src/client && npm run serve",
+    "build:client": "cd src/client && npm run build"
   },
   "repository": {
     "type": "git",
